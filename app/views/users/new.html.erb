@@ -1,0 +1,30 @@
+<% content_for :title, t("users.new.title") %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel auth-panel">
+    <p class="eyebrow"><%= cultivation_icon(:mountain) %> <%= t(".eyebrow") %></p>
+    <h1><%= t(".heading") %></h1>
+
+    <%= tag.div(flash[:alert], class: "form-alert") if flash[:alert] %>
+
+    <%= form_with model: @user, class: "auth-form" do |form| %>
+      <%= form.label :character_name, t(".character_name") %>
+      <%= form.text_field :character_name, required: true, maxlength: 40, placeholder: t(".character_name_placeholder") %>
+
+      <%= form.label :email_address, t("shared.email") %>
+      <%= form.email_field :email_address, required: true, autocomplete: "username", placeholder: t("shared.email_placeholder") %>
+
+      <%= form.label :password, t("shared.password") %>
+      <%= form.password_field :password, required: true, autocomplete: "new-password", maxlength: 72 %>
+
+      <%= form.label :password_confirmation, t("shared.password_confirmation") %>
+      <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", maxlength: 72 %>
+
+      <%= form.submit t(".submit"), class: "ceremonial-button" %>
+    <% end %>
+
+    <nav class="quiet-nav" aria-label="<%= t(".navigation_aria") %>">
+      <%= link_to t(".sign_in_link"), new_session_path %>
+    </nav>
+  </section>
+</main>

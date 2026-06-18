@@ -1,0 +1,471 @@
+/*
+ * This is a manifest file that'll be compiled into application.css.
+ *
+ * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
+ * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
+ * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
+ * depending on specificity.
+ *
+ * Consider organizing styles into separate files for maintainability.
+ */
+
+:root {
+  --dark-brown: #2C1810;
+  --ancient-gold: #D4AF37;
+  --jade-green: #3A7D44;
+  --warm-beige: #F5E6C8;
+  --dark-ink: #1E1E1E;
+  --soft-gray: #777777;
+  --qi-blue: #6FA8DC;
+}
+
+body {
+  margin: 0;
+  color: var(--dark-ink);
+  background: var(--dark-brown);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.language-switch {
+  position: fixed;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 10;
+}
+
+.language-switch__button {
+  display: inline-block;
+  padding: 0.45rem 0.65rem;
+  color: var(--warm-beige);
+  background: rgb(44 24 16 / 88%);
+  border: 1px solid var(--ancient-gold);
+  border-radius: 0.25rem;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.language-switch__button:hover {
+  box-shadow: 0 0 0.6rem rgb(212 175 55 / 35%);
+}
+
+.site-footer {
+  padding: 0 1rem 1rem;
+  color: rgb(245 230 200 / 72%);
+  text-align: center;
+}
+
+.site-footer a {
+  color: var(--ancient-gold);
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  text-decoration: underline;
+}
+
+.site-footer a + a {
+  margin-left: 0.75rem;
+}
+
+.policy-content {
+  display: grid;
+  gap: 0.75rem;
+  color: var(--soft-gray);
+  line-height: 1.55;
+}
+
+.policy-content h2 {
+  margin: 0.5rem 0 0;
+  color: var(--dark-brown);
+  font-size: 1rem;
+}
+
+.policy-content p {
+  margin: 0;
+}
+
+.cultivation-page {
+  box-sizing: border-box;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  display: grid;
+  place-items: center;
+}
+
+.cultivation-panel {
+  width: min(100%, 34rem);
+  box-sizing: border-box;
+  padding: 1.5rem;
+  background: var(--warm-beige);
+  border: 1px solid var(--ancient-gold);
+  border-radius: 0.35rem;
+  box-shadow: 0 1rem 2rem rgb(0 0 0 / 22%);
+}
+
+#cultivation_panel {
+  display: block;
+  width: min(100%, 34rem);
+}
+
+#cultivation_panel .cultivation-panel {
+  width: 100%;
+}
+
+.cultivation-panel h1 {
+  margin: 0 0 1.25rem;
+  color: var(--dark-brown);
+  font-size: clamp(2rem, 10vw, 3.5rem);
+  line-height: 1;
+}
+
+.eyebrow,
+.realm-label,
+.total-qi,
+.next-breakthrough,
+.breakthrough-ready {
+  color: var(--soft-gray);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 0.5rem;
+  font-size: 0.78rem;
+}
+
+.thematic-icon {
+  width: 1.05em;
+  height: 1.05em;
+  flex: 0 0 auto;
+  color: var(--ancient-gold);
+  vertical-align: -0.16em;
+}
+
+.offline-gain {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 1rem;
+  padding: 0.75rem;
+  color: var(--dark-brown);
+  background: rgb(212 175 55 / 16%);
+  border: 1px solid rgb(44 24 16 / 18%);
+  border-radius: 0.25rem;
+}
+
+.event-notice {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0 0 1rem;
+  padding: 0.75rem;
+  color: var(--dark-brown);
+  background: rgb(111 168 220 / 16%);
+  border: 1px solid rgb(44 24 16 / 18%);
+  border-radius: 0.25rem;
+}
+
+.event-notice strong {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.screen-note {
+  margin: -0.5rem 0 1.25rem;
+  color: var(--soft-gray);
+  line-height: 1.5;
+}
+
+.realm-card {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgb(44 24 16 / 8%);
+  border: 1px solid rgb(44 24 16 / 18%);
+  border-radius: 0.25rem;
+}
+
+.realm-card strong,
+.realm-card span {
+  display: block;
+}
+
+.realm-card strong {
+  margin: 0.2rem 0;
+  color: var(--dark-brown);
+  font-size: 1.45rem;
+}
+
+.realm-label,
+.total-qi,
+.next-breakthrough,
+.breakthrough-ready {
+  font-size: 0.72rem;
+}
+
+.realm-label,
+.breakthrough-ready,
+.qi-progress__text span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.qi-progress__text {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--dark-brown);
+}
+
+.qi-progress__track {
+  height: 1rem;
+  overflow: hidden;
+  background: #9b927f;
+  border: 1px solid var(--ancient-gold);
+  border-radius: 999px;
+}
+
+.qi-progress__fill {
+  height: 100%;
+  max-width: 100%;
+  background: var(--jade-green);
+  transition: width 600ms ease;
+}
+
+.total-qi {
+  margin: 1rem 0 0;
+}
+
+.next-breakthrough {
+  margin: 0.35rem 0 0;
+}
+
+.breakthrough-ready {
+  margin: 0.8rem 0 0.75rem;
+  color: var(--jade-green);
+}
+
+.breakthrough-button {
+  margin-top: 0.25rem;
+}
+
+.achievements,
+.events,
+.inventory {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgb(44 24 16 / 18%);
+}
+
+.achievements h2,
+.events h2,
+.inventory h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.75rem;
+  color: var(--dark-brown);
+  font-size: 1rem;
+}
+
+.achievement-list,
+.event-list {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.achievement-list li,
+.event-list li {
+  padding: 0.75rem;
+  background: rgb(212 175 55 / 12%);
+  border: 1px solid rgb(44 24 16 / 16%);
+  border-radius: 0.25rem;
+}
+
+.achievement-list strong,
+.achievement-list span,
+.event-list strong,
+.event-list span {
+  display: block;
+}
+
+.achievement-list strong,
+.event-list strong {
+  color: var(--dark-brown);
+}
+
+.achievement-list span,
+.event-list span {
+  margin-top: 0.2rem;
+  color: var(--soft-gray);
+  font-size: 0.9rem;
+}
+
+.equipment-grid,
+.inventory-grid {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.inventory-grid {
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+}
+
+.inventory-card {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  background: rgb(44 24 16 / 8%);
+  border: 1px solid rgb(44 24 16 / 16%);
+  border-radius: 0.25rem;
+}
+
+.inventory-card strong {
+  color: var(--dark-brown);
+}
+
+.inventory-card span {
+  color: var(--soft-gray);
+  font-size: 0.9rem;
+}
+
+.inventory-slot {
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.inventory-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+}
+
+.quiet-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.quiet-nav a,
+.ceremonial-button,
+.small-button {
+  display: inline-block;
+  padding: 0.7rem 0.9rem;
+  color: var(--warm-beige);
+  background: var(--dark-brown);
+  border: 1px solid var(--ancient-gold);
+  border-radius: 0.25rem;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.quiet-nav a:hover,
+.ceremonial-button:hover,
+.small-button:hover {
+  box-shadow: 0 0 0.6rem rgb(212 175 55 / 35%);
+}
+
+.small-button {
+  padding: 0.45rem 0.55rem;
+  font-size: 0.85rem;
+}
+
+.auth-form {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.auth-form label {
+  color: var(--dark-brown);
+  font-weight: 700;
+}
+
+.auth-form input:not([type="submit"]) {
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 0.45rem;
+  padding: 0.75rem;
+  color: var(--dark-ink);
+  background: #fff8e8;
+  border: 1px solid rgb(44 24 16 / 30%);
+  border-radius: 0.25rem;
+  font: inherit;
+}
+
+.form-alert,
+.form-notice {
+  margin: 0 0 1rem;
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+}
+
+.form-alert {
+  color: #6d1e1e;
+  background: rgb(179 57 57 / 14%);
+  border: 1px solid rgb(179 57 57 / 35%);
+}
+
+.form-notice {
+  color: var(--dark-brown);
+  background: rgb(58 125 68 / 14%);
+  border: 1px solid rgb(58 125 68 / 35%);
+}
+
+.leaderboard-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.leaderboard-entry {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  background: rgb(44 24 16 / 8%);
+  border: 1px solid rgb(44 24 16 / 18%);
+  border-radius: 0.25rem;
+}
+
+.leaderboard-rank {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--ancient-gold);
+  font-weight: 700;
+}
+
+.leaderboard-rank .thematic-icon {
+  width: 0.85em;
+  height: 0.85em;
+}
+
+.leaderboard-entry strong,
+.leaderboard-entry small,
+.leaderboard-qi {
+  display: block;
+}
+
+.leaderboard-entry small,
+.leaderboard-qi,
+.leaderboard-power {
+  color: var(--soft-gray);
+}
+
+.leaderboard-qi,
+.leaderboard-power {
+  grid-column: 2;
+  font-size: 0.9rem;
+}

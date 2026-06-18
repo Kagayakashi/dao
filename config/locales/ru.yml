@@ -1,0 +1,266 @@
+ru:
+  app:
+    name: "Дао"
+
+  language_switch:
+    navigation_aria: "Навигация языка"
+    label: "English"
+    aria_label: "Переключить язык на английский"
+
+  footer:
+    copyright_html: "Сделано: %{name}."
+    cookie_policy: "Политика cookies"
+
+  pages:
+    cookie_policy:
+      title: "Политика cookies"
+      eyebrow: "Доверие"
+      heading: "Политика cookies"
+      intro: "На этой странице объясняется, как Dao использует cookies и похожее хранилище браузера."
+      necessary_heading: "Необходимые cookies"
+      necessary_text: "Dao использует необходимый сессионный cookie, чтобы сохранять вход в аккаунт и защищать учетную запись. Этот cookie нужен для аутентификации и базовой безопасности."
+      no_tracking_heading: "Без отслеживающих cookies"
+      no_tracking_text: "Сейчас Dao не использует аналитику, рекламные пиксели, маркетинговые cookies или сторонние cookies для отслеживания."
+      future_heading: "Если это изменится"
+      future_text: "Если позже будут добавлены необязательная аналитика или инструменты отслеживания, эту политику нужно обновить и запросить согласие там, где это требуется."
+      navigation_aria: "Навигация политики cookies"
+      return_link: "Вернуться к культивации"
+
+  shared:
+    email: "Эл. почта"
+    email_placeholder: "you@example.com"
+    password: "Пароль"
+    password_confirmation: "Подтвердите пароль"
+    power_bonus: "Сила +%{power}"
+    power_with_value: "Сила %{power}"
+    qi: "Ци"
+    qi_with_value: "%{qi} Ци"
+    rate_limit: "Попробуйте позже."
+    realm: "Сфера"
+    star:
+      one: "%{count} звезда"
+      other: "%{count} звезды"
+
+  sessions:
+    create:
+      invalid: "Попробуйте другой адрес эл. почты или пароль."
+    new:
+      title: "Вход"
+      eyebrow: "Возвращение"
+      heading: "Вход"
+      submit: "Продолжить культивацию"
+      navigation_aria: "Навигация сессии"
+      new_user_link: "Начать как новый культиватор"
+      forgot_password_link: "Забыли пароль?"
+
+  users:
+    create:
+      notice: "Ваша культивация начинается."
+      alert: "Проверьте данные и попробуйте снова."
+    new:
+      title: "Начать культивацию"
+      eyebrow: "Первый шаг"
+      heading: "Начать культивацию"
+      character_name: "Имя культиватора"
+      character_name_placeholder: "Нефритовая Река"
+      submit: "Войти в Дао"
+      navigation_aria: "Навигация регистрации"
+      sign_in_link: "Уже культивируете? Войти"
+
+  passwords:
+    create:
+      notice: "Инструкции по сбросу пароля отправлены, если пользователь с такой эл. почтой существует."
+    update:
+      notice: "Пароль был сброшен."
+      mismatch: "Пароли не совпали."
+    invalid_token: "Ссылка для сброса пароля недействительна или устарела."
+    new:
+      title: "Восстановить доступ"
+      eyebrow: "Восстановить доступ"
+      heading: "Забыли пароль?"
+      submit: "Отправить инструкции"
+      navigation_aria: "Навигация пароля"
+      return_link: "Вернуться ко входу"
+    edit:
+      title: "Обновить пароль"
+      eyebrow: "Новая печать"
+      heading: "Обновить пароль"
+      password: "Новый пароль"
+      password_placeholder: "Введите новый пароль"
+      password_confirmation_placeholder: "Повторите новый пароль"
+      submit: "Сохранить"
+
+  passwords_mailer:
+    reset:
+      subject: "Сброс пароля"
+      html:
+        intro: "Вы можете сбросить пароль на"
+        link_text: "этой странице сброса пароля"
+        expires_in: "Ссылка истечет через %{duration}."
+      text:
+        intro: "Вы можете сбросить пароль по ссылке"
+        expires_in: "Ссылка истечет через %{duration}."
+
+  cultivation:
+    show:
+      title: "Культивация"
+    breakthrough:
+      notice:
+        complete: "Прорыв завершен."
+        unstable_qi_dispersed: "Прорыв завершен. %{qi} нестабильной Ци рассеялось."
+    panel:
+      eyebrow: "Тихая культивация"
+      screen_note: "Ци собирается, пока вы наблюдаете и пока вы в отлучке. Когда шкала заполнится, выберите Прорыв для продвижения."
+      offline_gain: "Поглощено %{qi} Ци за время отсутствия."
+      progress_aria: "Прогресс культивации"
+      qi_progress: "%{current} / %{required}"
+      total_qi: "Всего Ци: %{qi}"
+      breakthrough_ready: "Ваша Ци стабильна. Прорыв готов."
+      breakthrough_button: "Прорыв"
+      next_breakthrough: "До следующего прорыва: %{qi} Ци."
+      achievements_heading: "Достижения"
+      events_heading: "Недавние события"
+      equipment_heading: "Снаряжение"
+      inventory_heading: "Инвентарь"
+      unequip_button: "Снять"
+      equip_button: "Надеть"
+      drop_button: "Выбросить"
+      empty_slot: "Пусто"
+      inventory_slot: "Ячейка %{slot}"
+      inventory_item_summary: "%{kind}, Сила +%{power}"
+      navigation_aria: "Навигация культивации"
+      leaderboard_link: "Рейтинг"
+      sign_out_button: "Выйти"
+
+  leaderboards:
+    show:
+      title: "Рейтинг"
+      eyebrow: "Небесный рейтинг"
+      heading: "Рейтинг"
+      cultivator_summary: "%{realm}, %{star}"
+      navigation_aria: "Навигация рейтинга"
+      return_link: "Вернуться к культивации"
+
+  characters:
+    default_name: "Странствующий культиватор"
+    realms:
+      fallback: "Сфера %{realm}"
+      "1": "Стадия Доу Ци"
+      "2": "Практик Доу"
+      "3": "Мастер Доу"
+      "4": "Великий мастер Доу"
+      "5": "Дух Доу"
+      "6": "Король Доу"
+      "7": "Император Доу"
+      "8": "Предок Доу"
+    achievements:
+      first_star:
+        name: "Первая звезда"
+        description: "Впервые достигнута вторая звезда."
+      first_realm:
+        name: "Прорыв сферы"
+        description: "Вы вступили в новую сферу."
+      thousand_qi:
+        name: "Тысяча Ци"
+        description: "Накоплено 1 000 общей Ци."
+
+  cultivation_events:
+    good_cultivation_place:
+      title: "Скрытый духовный источник"
+      description: "Вы нашли тихое место, где Ци текла словно скрытый источник."
+    mysterious_item:
+      title: "Таинственный предмет"
+      items:
+        jade_pill: "Нефритовая пилюля"
+        cracked_spirit_stone: "Треснувший духовный камень"
+        dusty_talisman: "Пыльный талисман"
+      neutral_description: "Вы использовали %{item_name} и почувствовали, что Ци осталась без изменений."
+      positive_description: "Вы очистили %{item_name} и получили всплеск Ци."
+      negative_description: "Вы использовали %{item_name}, но его нестабильная аура нарушила вашу культивацию."
+    stranger_cultivator:
+      title: "Незнакомый культиватор"
+      passing_cultivator: "проходящий культиватор"
+      peaceful_description: "Вы встретили %{name} и спокойно поговорили о Дао."
+      victory_description: "Ваш путь пересекся с %{name}. Короткая стычка завершилась вашей победой."
+      defeat_description: "Ваш путь пересекся с %{name}. Его более сильная аура вынудила вас отступить."
+    found_equipment_item:
+      title: "Забытое сокровище"
+      description: "Вы нашли %{item_name} и положили его в инвентарь."
+      inventory_full_description: "Вы нашли сокровище, но инвентарь был полон, и вы оставили его позади."
+
+  inventory_items:
+    kinds:
+      weapon: "Оружие"
+      ring: "Кольцо"
+      pendant: "Подвеска"
+    slots:
+      weapon: "Оружие"
+      ring_one: "Кольцо I"
+      ring_two: "Кольцо II"
+      pendant: "Подвеска"
+    names:
+      weapon:
+        - "Железный клинок Дао"
+        - "Бамбуковый духовный меч"
+        - "Пепельное копье"
+      ring:
+        - "Облачное кольцо"
+        - "Нефритовый обруч"
+        - "Кольцо Тихой Луны"
+      pendant:
+        - "Старая подвеска дракона"
+        - "Речная нефритовая подвеска"
+        - "Потертый духовный оберег"
+    power_options:
+      power: "Сила"
+
+  pwa:
+    manifest:
+      name: "Дао"
+      description: "Дао."
+
+  errors:
+    models:
+      inventory_item:
+        attributes:
+          base:
+            stored_in_one_place: "Предмет должен быть либо в инвентаре, либо надет"
+          equipment_slot:
+            equipment_slot_mismatch: "не соответствует типу предмета"
+
+  datetime:
+    distance_in_words:
+      half_a_minute: "полминуты"
+      less_than_x_seconds:
+        one: "меньше %{count} секунды"
+        other: "меньше %{count} секунд"
+      x_seconds:
+        one: "%{count} секунда"
+        other: "%{count} секунд"
+      less_than_x_minutes:
+        one: "меньше %{count} минуты"
+        other: "меньше %{count} минут"
+      x_minutes:
+        one: "%{count} минута"
+        other: "%{count} минут"
+      about_x_hours:
+        one: "около %{count} часа"
+        other: "около %{count} часов"
+      x_days:
+        one: "%{count} день"
+        other: "%{count} дней"
+      about_x_months:
+        one: "около %{count} месяца"
+        other: "около %{count} месяцев"
+      x_months:
+        one: "%{count} месяц"
+        other: "%{count} месяцев"
+      about_x_years:
+        one: "около %{count} года"
+        other: "около %{count} лет"
+      over_x_years:
+        one: "больше %{count} года"
+        other: "больше %{count} лет"
+      almost_x_years:
+        one: "почти %{count} год"
+        other: "почти %{count} лет"

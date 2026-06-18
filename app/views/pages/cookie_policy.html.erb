@@ -1,0 +1,25 @@
+<% content_for :title, t("pages.cookie_policy.title") %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel policy-panel">
+    <p class="eyebrow"><%= cultivation_icon(:scroll) %> <%= t("pages.cookie_policy.eyebrow") %></p>
+    <h1><%= t("pages.cookie_policy.heading") %></h1>
+
+    <div class="policy-content">
+      <p><%= t("pages.cookie_policy.intro") %></p>
+
+      <h2><%= t("pages.cookie_policy.necessary_heading") %></h2>
+      <p><%= t("pages.cookie_policy.necessary_text") %></p>
+
+      <h2><%= t("pages.cookie_policy.no_tracking_heading") %></h2>
+      <p><%= t("pages.cookie_policy.no_tracking_text") %></p>
+
+      <h2><%= t("pages.cookie_policy.future_heading") %></h2>
+      <p><%= t("pages.cookie_policy.future_text") %></p>
+    </div>
+
+    <nav class="quiet-nav" aria-label="<%= t("pages.cookie_policy.navigation_aria") %>">
+      <%= link_to t("pages.cookie_policy.return_link"), root_path %>
+    </nav>
+  </section>
+</main>

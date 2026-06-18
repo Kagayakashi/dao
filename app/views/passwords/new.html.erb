@@ -1,0 +1,20 @@
+<% content_for :title, t("passwords.new.title") %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel auth-panel">
+    <p class="eyebrow"><%= cultivation_icon(:key) %> <%= t(".eyebrow") %></p>
+    <h1><%= t(".heading") %></h1>
+
+    <%= tag.div(flash[:alert], class: "form-alert") if flash[:alert] %>
+
+    <%= form_with url: passwords_path, class: "auth-form" do |form| %>
+      <%= form.label :email_address, t("shared.email") %>
+      <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: t("shared.email_placeholder"), value: params[:email_address] %>
+      <%= form.submit t(".submit"), class: "ceremonial-button" %>
+    <% end %>
+
+    <nav class="quiet-nav" aria-label="<%= t(".navigation_aria") %>">
+      <%= link_to t(".return_link"), new_session_path %>
+    </nav>
+  </section>
+</main>

@@ -1,0 +1,20 @@
+<% content_for :title, t("passwords.edit.title") %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel auth-panel">
+    <p class="eyebrow"><%= cultivation_icon(:key) %> <%= t(".eyebrow") %></p>
+    <h1><%= t(".heading") %></h1>
+
+    <%= tag.div(flash[:alert], class: "form-alert") if flash[:alert] %>
+
+    <%= form_with url: password_path(token: params[:token]), method: :put, class: "auth-form" do |form| %>
+      <%= form.label :password, t(".password") %>
+      <%= form.password_field :password, required: true, autocomplete: "new-password", placeholder: t(".password_placeholder"), maxlength: 72 %>
+
+      <%= form.label :password_confirmation, t("shared.password_confirmation") %>
+      <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", placeholder: t(".password_confirmation_placeholder"), maxlength: 72 %>
+
+      <%= form.submit t(".submit"), class: "ceremonial-button" %>
+    <% end %>
+  </section>
+</main>

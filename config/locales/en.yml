@@ -1,0 +1,229 @@
+en:
+  app:
+    name: "Dao"
+
+  language_switch:
+    navigation_aria: "Language navigation"
+    label: "Русский"
+    aria_label: "Switch language to Russian"
+
+  footer:
+    copyright_html: "Made by %{name}."
+    cookie_policy: "Cookie Policy"
+
+  pages:
+    cookie_policy:
+      title: "Cookie Policy"
+      eyebrow: "Trust"
+      heading: "Cookie Policy"
+      intro: "This page explains how Dao uses cookies and similar browser storage."
+      necessary_heading: "Necessary Cookies"
+      necessary_text: "Dao uses a necessary session cookie to keep you signed in and protect your account. This cookie is required for authentication and core security features."
+      no_tracking_heading: "No Tracking Cookies"
+      no_tracking_text: "Dao does not currently use analytics, advertising pixels, marketing cookies, or third-party tracking cookies."
+      future_heading: "If This Changes"
+      future_text: "If optional analytics or tracking tools are added later, this policy should be updated and consent should be requested where required."
+      navigation_aria: "Cookie policy navigation"
+      return_link: "Return to Cultivation"
+
+  shared:
+    email: "Email"
+    email_placeholder: "you@example.com"
+    password: "Password"
+    password_confirmation: "Confirm password"
+    power_bonus: "Power +%{power}"
+    power_with_value: "Power %{power}"
+    qi: "Qi"
+    qi_with_value: "%{qi} Qi"
+    rate_limit: "Try again later."
+    realm: "Realm"
+    star:
+      one: "%{count} Star"
+      other: "%{count} Star"
+
+  sessions:
+    create:
+      invalid: "Try another email address or password."
+    new:
+      title: "Sign In"
+      eyebrow: "Return"
+      heading: "Sign In"
+      submit: "Resume Cultivation"
+      navigation_aria: "Session navigation"
+      new_user_link: "Begin as a new cultivator"
+      forgot_password_link: "Forgot password?"
+
+  users:
+    create:
+      notice: "Your cultivation begins."
+      alert: "Check your details and try again."
+    new:
+      title: "Begin Cultivation"
+      eyebrow: "First Step"
+      heading: "Begin Cultivation"
+      character_name: "Cultivator name"
+      character_name_placeholder: "Jade River"
+      submit: "Enter the Dao"
+      navigation_aria: "Signup navigation"
+      sign_in_link: "Already cultivating? Sign in"
+
+  passwords:
+    create:
+      notice: "Password reset instructions sent, if a user with that email address exists."
+    update:
+      notice: "Password has been reset."
+      mismatch: "Passwords did not match."
+    invalid_token: "Password reset link is invalid or has expired."
+    new:
+      title: "Recover Access"
+      eyebrow: "Recover Access"
+      heading: "Forgot your password?"
+      submit: "Email reset instructions"
+      navigation_aria: "Password navigation"
+      return_link: "Return to sign in"
+    edit:
+      title: "Update Password"
+      eyebrow: "New Seal"
+      heading: "Update your password"
+      password: "New password"
+      password_placeholder: "Enter new password"
+      password_confirmation_placeholder: "Repeat new password"
+      submit: "Save"
+
+  passwords_mailer:
+    reset:
+      subject: "Reset your password"
+      html:
+        intro: "You can reset your password on"
+        link_text: "this password reset page"
+        expires_in: "This link will expire in %{duration}."
+      text:
+        intro: "You can reset your password on"
+        expires_in: "This link will expire in %{duration}."
+
+  cultivation:
+    show:
+      title: "Cultivation"
+    breakthrough:
+      notice:
+        complete: "Breakthrough complete."
+        unstable_qi_dispersed: "Breakthrough complete. %{qi} unstable Qi dispersed."
+    panel:
+      eyebrow: "Quiet Cultivation"
+      screen_note: "Qi gathers while you watch and while you are away. When the bar is full, choose Breakthrough to advance."
+      offline_gain: "Absorbed %{qi} Qi while away."
+      progress_aria: "Cultivation progress"
+      qi_progress: "%{current} / %{required}"
+      total_qi: "Total Qi: %{qi}"
+      breakthrough_ready: "Your Qi is stable. A breakthrough is ready."
+      breakthrough_button: "Breakthrough"
+      next_breakthrough: "Next breakthrough in %{qi} Qi."
+      achievements_heading: "Achievements"
+      events_heading: "Recent Events"
+      equipment_heading: "Equipment"
+      inventory_heading: "Inventory"
+      unequip_button: "Unequip"
+      equip_button: "Equip"
+      drop_button: "Drop"
+      empty_slot: "Empty"
+      inventory_slot: "Slot %{slot}"
+      inventory_item_summary: "%{kind}, Power +%{power}"
+      navigation_aria: "Cultivation navigation"
+      leaderboard_link: "Leaderboard"
+      sign_out_button: "Sign out"
+
+  leaderboards:
+    show:
+      title: "Leaderboard"
+      eyebrow: "Heavenly Ranking"
+      heading: "Leaderboard"
+      cultivator_summary: "%{realm}, %{star}"
+      navigation_aria: "Leaderboard navigation"
+      return_link: "Return to Cultivation"
+
+  characters:
+    default_name: "Wandering Cultivator"
+    realms:
+      fallback: "Realm %{realm}"
+      "1": "Dou Qi Stage"
+      "2": "Dou Practitioner"
+      "3": "Dou Master"
+      "4": "Great Dou Master"
+      "5": "Dou Spirit"
+      "6": "Dou King"
+      "7": "Dou Emperor"
+      "8": "Dou Ancestor"
+    achievements:
+      first_star:
+        name: "First Star"
+        description: "Reached the second Star for the first time."
+      first_realm:
+        name: "Realm Breakthrough"
+        description: "Stepped into a new Realm."
+      thousand_qi:
+        name: "Thousand Qi"
+        description: "Accumulated 1,000 total Qi."
+
+  cultivation_events:
+    good_cultivation_place:
+      title: "Hidden Spirit Spring"
+      description: "You found a quiet place where Qi flowed like a hidden spring."
+    mysterious_item:
+      title: "Mysterious Item"
+      items:
+        jade_pill: "Jade Pill"
+        cracked_spirit_stone: "Cracked Spirit Stone"
+        dusty_talisman: "Dusty Talisman"
+      neutral_description: "You used %{item_name} and felt your Qi settle without change."
+      positive_description: "You refined %{item_name} and gained a surge of Qi."
+      negative_description: "You used %{item_name}, but its unstable aura disturbed your cultivation."
+    stranger_cultivator:
+      title: "Stranger Cultivator"
+      passing_cultivator: "a passing cultivator"
+      peaceful_description: "You met %{name} and exchanged quiet words about the Dao."
+      victory_description: "You crossed paths with %{name}. A short clash ended in your victory."
+      defeat_description: "You crossed paths with %{name}. Their stronger aura forced you to retreat."
+    found_equipment_item:
+      title: "Forgotten Treasure"
+      description: "You found %{item_name} and placed it in your inventory."
+      inventory_full_description: "You found a treasure, but your inventory was full and you left it behind."
+
+  inventory_items:
+    kinds:
+      weapon: "Weapon"
+      ring: "Ring"
+      pendant: "Pendant"
+    slots:
+      weapon: "Weapon"
+      ring_one: "Ring I"
+      ring_two: "Ring II"
+      pendant: "Pendant"
+    names:
+      weapon:
+        - "Iron Dao Blade"
+        - "Bamboo Spirit Sword"
+        - "Ashen Spear"
+      ring:
+        - "Cloud Ring"
+        - "Jade Band"
+        - "Quiet Moon Ring"
+      pendant:
+        - "Old Dragon Pendant"
+        - "River Jade Pendant"
+        - "Worn Spirit Charm"
+    power_options:
+      power: "Power"
+
+  pwa:
+    manifest:
+      name: "Dao"
+      description: "Dao."
+
+  errors:
+    models:
+      inventory_item:
+        attributes:
+          base:
+            stored_in_one_place: "Item must be either in inventory or equipped"
+          equipment_slot:
+            equipment_slot_mismatch: "does not match item kind"

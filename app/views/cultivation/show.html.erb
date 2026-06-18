@@ -1,0 +1,7 @@
+<% content_for :title, t("cultivation.show.title") %>
+
+<main class="cultivation-page">
+  <%= turbo_frame_tag "cultivation_panel", data: { controller: "auto-refresh", auto_refresh_url_value: cultivation_panel_path, auto_refresh_interval_value: 10_000 } do %>
+    <%= render "panel", character: @character, offline_qi_gained: @offline_qi_gained, triggered_event: @triggered_event %>
+  <% end %>
+</main>
