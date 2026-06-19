@@ -179,6 +179,46 @@ body {
   line-height: 1.5;
 }
 
+.main-banner {
+  margin: -0.4rem -0.4rem 1rem;
+  border: 1px solid rgb(44 24 16 / 22%);
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.main-banner__image {
+  display: block;
+  width: 100%;
+  height: 10rem;
+  object-fit: cover;
+  object-position: center;
+}
+
+.profile-banner {
+  display: flex;
+  justify-content: center;
+  min-height: 9rem;
+  margin: -0.4rem -0.4rem 1rem;
+  background:
+    linear-gradient(135deg, rgb(44 24 16 / 70%), rgb(212 175 55 / 22%)),
+    repeating-linear-gradient(45deg, rgb(245 230 200 / 16%) 0 0.35rem, transparent 0.35rem 0.7rem);
+  border: 1px solid rgb(44 24 16 / 22%);
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.profile-banner__image {
+  width: 100%;
+  height: 12rem;
+  object-fit: cover;
+  object-position: center 20%;
+}
+
+.empty-state {
+  margin: 0;
+  color: var(--soft-gray);
+}
+
 .realm-card {
   margin-bottom: 1.5rem;
   padding: 1rem;
@@ -453,9 +493,19 @@ body {
 }
 
 .leaderboard-entry strong,
+.leaderboard-entry a,
 .leaderboard-entry small,
 .leaderboard-qi {
   display: block;
+}
+
+.leaderboard-entry a {
+  color: var(--dark-brown);
+  text-decoration: none;
+}
+
+.leaderboard-entry a:hover {
+  color: var(--ancient-gold);
 }
 
 .leaderboard-entry small,

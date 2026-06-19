@@ -3,17 +3,17 @@ class InventoryItemsController < ApplicationController
 
   def equip
     Current.user.character.equip_item!(@inventory_item, preferred_slot: params[:equipment_slot])
-    redirect_to root_path, status: :see_other
+    redirect_to inventory_path, status: :see_other
   end
 
   def unequip
     Current.user.character.unequip_item!(@inventory_item)
-    redirect_to root_path, status: :see_other
+    redirect_to inventory_path, status: :see_other
   end
 
   def destroy
     @inventory_item.destroy!
-    redirect_to root_path, status: :see_other
+    redirect_to inventory_path, status: :see_other
   end
 
   private

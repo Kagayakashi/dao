@@ -11,6 +11,8 @@ class Character < ApplicationRecord
   alias_attribute :star, :sublevel
   alias_attribute :qi, :experience
 
+  enum :gender, { male: "male", female: "female" }, default: :male, validate: true
+
   class_attribute :stars_per_realm, default: 9
   class_attribute :base_qi_required, default: 5_845
   class_attribute :realm_qi_growth, default: 30**(1.0 / 4)
@@ -44,6 +46,14 @@ class Character < ApplicationRecord
 
   def realm_name
     I18n.t("characters.realms.#{realm}", default: I18n.t("characters.realms.fallback", realm:))
+  end
+
+  def gender_name
+    I18n.t("characters.genders.#{gender}")
+  end
+
+  def profile_image_name
+    "#{gender}_profile.png"
   end
 
   def qi_until_next_star
@@ -93,11 +103,11 @@ class Character < ApplicationRecord
     item.update!(equipment_slot: nil, inventory_slot: slot)
   end
 
-  def create_inventory_item!(name:, equipment_kind:, power_options:)
+  def create_inventory_item!(name:, equipment_kind:, power_options:, metadata: {})
     slot = free_inventory_slot
     return false unless slot
 
-    inventory_items.create!(name:, equipment_kind:, power_options:, inventory_slot: slot)
+    inventory_items.create!(name:, equipment_kind:, power_options:, metadata:, inventory_slot: slot)
   end
 
   def gain_qi(amount, multiplier: cultivation_multiplier)

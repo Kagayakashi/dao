@@ -110,6 +110,7 @@ ru:
         unstable_qi_dispersed: "Прорыв завершен. %{qi} нестабильной Ци рассеялось."
     panel:
       eyebrow: "Тихая культивация"
+      banner_alt: "Пейзаж культивации"
       screen_note: "Ци собирается, пока вы наблюдаете и пока вы в отлучке. Когда шкала заполнится, выберите Прорыв для продвижения."
       offline_gain: "Поглощено %{qi} Ци за время отсутствия."
       progress_aria: "Прогресс культивации"
@@ -120,17 +121,31 @@ ru:
       next_breakthrough: "До следующего прорыва: %{qi} Ци."
       achievements_heading: "Достижения"
       events_heading: "Недавние события"
+      navigation_aria: "Навигация культивации"
+      profile_link: "Профиль"
+      leaderboard_link: "Рейтинг"
+      sign_out_button: "Выйти"
+
+  inventories:
+    show:
+      title: "Инвентарь"
+      eyebrow: "Хранилище"
+      heading: "Инвентарь"
+      screen_note: "Управляйте надетыми сокровищами и предметами в хранилище."
       equipment_heading: "Снаряжение"
       inventory_heading: "Инвентарь"
+      free_slots:
+        one: "%{count} свободная ячейка"
+        other: "%{count} свободных ячеек"
       unequip_button: "Снять"
       equip_button: "Надеть"
       drop_button: "Выбросить"
       empty_slot: "Пусто"
       inventory_slot: "Ячейка %{slot}"
       inventory_item_summary: "%{kind}, Сила +%{power}"
-      navigation_aria: "Навигация культивации"
-      leaderboard_link: "Рейтинг"
-      sign_out_button: "Выйти"
+      navigation_aria: "Навигация инвентаря"
+      profile_link: "Открыть профиль"
+      return_link: "Вернуться к культивации"
 
   leaderboards:
     show:
@@ -143,6 +158,22 @@ ru:
 
   characters:
     default_name: "Странствующий культиватор"
+    genders:
+      male: "Мужчина"
+      female: "Женщина"
+    show:
+      title: "%{name}"
+      eyebrow: "Профиль культиватора"
+      profile_image_alt: "Изображение профиля культиватора: %{gender}"
+      gender: "Пол: %{gender}"
+      achievements_heading: "Достижения"
+      no_achievements: "Достижений пока нет."
+      equipment_heading: "Снаряжение"
+      empty_equipment_slot: "Пусто"
+      navigation_aria: "Навигация профиля"
+      inventory_link: "Инвентарь"
+      leaderboard_link: "Рейтинг"
+      return_link: "Вернуться к культивации"
     realms:
       fallback: "Сфера %{realm}"
       "1": "Стадия Доу Ци"
@@ -186,6 +217,7 @@ ru:
     found_equipment_item:
       title: "Забытое сокровище"
       description: "Вы нашли %{item_name} и положили его в инвентарь."
+      description_without_item: "Вы нашли сокровище и положили его в инвентарь."
       inventory_full_description: "Вы нашли сокровище, но инвентарь был полон, и вы оставили его позади."
 
   inventory_items:
@@ -198,19 +230,29 @@ ru:
       ring_one: "Кольцо I"
       ring_two: "Кольцо II"
       pendant: "Подвеска"
-    names:
+    item_keys:
       weapon:
-        - "Железный клинок Дао"
-        - "Бамбуковый духовный меч"
-        - "Пепельное копье"
+        - "iron_dao_blade"
+        - "bamboo_spirit_sword"
+        - "ashen_spear"
       ring:
-        - "Облачное кольцо"
-        - "Нефритовый обруч"
-        - "Кольцо Тихой Луны"
+        - "cloud_ring"
+        - "jade_band"
+        - "quiet_moon_ring"
       pendant:
-        - "Старая подвеска дракона"
-        - "Речная нефритовая подвеска"
-        - "Потертый духовный оберег"
+        - "old_dragon_pendant"
+        - "river_jade_pendant"
+        - "worn_spirit_charm"
+    names:
+      iron_dao_blade: "Железный клинок Дао"
+      bamboo_spirit_sword: "Бамбуковый духовный меч"
+      ashen_spear: "Пепельное копье"
+      cloud_ring: "Облачное кольцо"
+      jade_band: "Нефритовый обруч"
+      quiet_moon_ring: "Кольцо Тихой Луны"
+      old_dragon_pendant: "Старая подвеска дракона"
+      river_jade_pendant: "Речная нефритовая подвеска"
+      worn_spirit_charm: "Потертый духовный оберег"
     power_options:
       power: "Сила"
 

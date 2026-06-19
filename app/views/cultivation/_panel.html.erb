@@ -1,4 +1,8 @@
 <section class="cultivation-panel">
+  <div class="main-banner">
+    <%= image_tag "main.png", alt: t("cultivation.panel.banner_alt"), class: "main-banner__image" %>
+  </div>
+
   <p class="eyebrow"><%= cultivation_icon(:scroll) %> <%= t(".eyebrow") %></p>
   <h1><%= character.name %></h1>
   <p class="screen-note"><%= t(".screen_note") %></p>
@@ -11,10 +15,10 @@
 
   <% if triggered_event.present? %>
     <div class="event-notice">
-      <strong><%= cultivation_icon(:spark) %> <%= triggered_event.title %></strong>
-      <span><%= triggered_event.description %></span>
+      <strong><%= cultivation_icon(:spark) %> <%= triggered_event.localized_title %></strong>
+      <span><%= triggered_event.localized_description %></span>
       <% unless triggered_event.qi_delta.zero? %>
-        <span><%= triggered_event.qi_delta.positive? ? "+" : "" %><%= number_with_delimiter(triggered_event.qi_delta) %> Qi</span>
+        <span><%= triggered_event.qi_delta.positive? ? "+" : "" %><%= t("shared.qi_with_value", qi: number_with_delimiter(triggered_event.qi_delta)) %></span>
       <% end %>
     </div>
   <% end %>
@@ -68,66 +72,16 @@
       <ul class="event-list">
         <% recent_events.each do |event| %>
           <li>
-            <strong><%= event.title %></strong>
-            <span><%= event.description %></span>
+            <strong><%= event.localized_title %></strong>
+            <span><%= event.localized_description %></span>
           </li>
         <% end %>
       </ul>
     </section>
   <% end %>
 
-  <section class="inventory" aria-labelledby="equipment-heading">
-    <h2 id="equipment-heading"><%= cultivation_icon(:sword) %> <%= t(".equipment_heading") %></h2>
-
-    <div class="equipment-grid">
-      <% InventoryItem::EQUIPMENT_SLOTS.each do |slot| %>
-        <% item = character.inventory_items.equipped.find { |equipped_item| equipped_item.equipment_slot == slot } %>
-        <div class="inventory-card">
-          <span class="inventory-slot"><%= t("inventory_items.slots.#{slot}") %></span>
-          <% if item %>
-            <strong><%= item.name %></strong>
-            <span><%= t("shared.power_bonus", power: number_with_delimiter(item.inventory_power)) %></span>
-            <div class="inventory-actions">
-              <%= button_to t(".unequip_button"), unequip_inventory_item_path(id: item), class: "small-button" %>
-              <%= button_to t(".drop_button"), inventory_item_path(id: item), method: :delete, class: "small-button" %>
-            </div>
-          <% else %>
-            <span><%= t(".empty_slot") %></span>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
-  </section>
-
-  <section class="inventory" aria-labelledby="inventory-heading">
-    <h2 id="inventory-heading"><%= cultivation_icon(:satchel) %> <%= t(".inventory_heading") %></h2>
-
-    <div class="inventory-grid">
-      <% inventory_items = character.inventory_items.in_inventory.index_by(&:inventory_slot) %>
-      <% 1.upto(Character::INVENTORY_SLOTS) do |slot| %>
-        <% item = inventory_items[slot] %>
-        <div class="inventory-card">
-          <span class="inventory-slot"><%= t(".inventory_slot", slot:) %></span>
-          <% if item %>
-            <strong><%= item.name %></strong>
-            <span><%= t(".inventory_item_summary", kind: t("inventory_items.kinds.#{item.equipment_kind}"), power: number_with_delimiter(item.inventory_power)) %></span>
-            <div class="inventory-actions">
-              <% if item.equipment_kind == "ring" %>
-                <%= button_to t(".equip_button"), equip_inventory_item_path(id: item), class: "small-button" %>
-              <% else %>
-                <%= button_to t(".equip_button"), equip_inventory_item_path(id: item), class: "small-button" %>
-              <% end %>
-              <%= button_to t(".drop_button"), inventory_item_path(id: item), method: :delete, class: "small-button" %>
-            </div>
-          <% else %>
-            <span><%= t(".empty_slot") %></span>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
-  </section>
-
   <nav class="quiet-nav" aria-label="<%= t(".navigation_aria") %>">
+    <%= link_to t(".profile_link"), character_path(character), data: { turbo_frame: "_top" } %>
     <%= link_to t(".leaderboard_link"), leaderboard_path, data: { turbo_frame: "_top" } %>
     <%= button_to t(".sign_out_button"), session_path, method: :delete, form: { data: { turbo_frame: "_top" } }, class: "ceremonial-button" %>
   </nav>

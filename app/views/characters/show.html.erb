@@ -1,0 +1,66 @@
+<% content_for :title, t("characters.show.title", name: @character.name) %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel profile-panel">
+    <div class="profile-banner">
+      <%= image_tag @character.profile_image_name, alt: t("characters.show.profile_image_alt", gender: @character.gender_name), class: "profile-banner__image" %>
+    </div>
+
+    <p class="eyebrow"><%= cultivation_icon(:mountain) %> <%= t("characters.show.eyebrow") %></p>
+    <h1><%= @character.name %></h1>
+
+    <div class="realm-card">
+      <span class="realm-label"><%= cultivation_icon(:mountain) %> <%= t("shared.realm") %></span>
+      <strong><%= @character.realm_name %></strong>
+      <span><%= t("shared.star", count: @character.star) %></span>
+      <span><%= t("characters.show.gender", gender: @character.gender_name) %></span>
+      <span><%= t("shared.power_with_value", power: number_with_delimiter(@character.power)) %></span>
+      <span><%= t("shared.qi_with_value", qi: number_with_delimiter(@character.total_experience)) %></span>
+    </div>
+
+    <% achievements = @character.earned_achievement_details %>
+    <section class="achievements" aria-labelledby="profile-achievements-heading">
+      <h2 id="profile-achievements-heading"><%= cultivation_icon(:trophy) %> <%= t("characters.show.achievements_heading") %></h2>
+
+      <% if achievements.any? %>
+        <ul class="achievement-list">
+          <% achievements.each do |achievement| %>
+            <li>
+              <strong><%= achievement[:name] %></strong>
+              <span><%= achievement[:description] %></span>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p class="empty-state"><%= t("characters.show.no_achievements") %></p>
+      <% end %>
+    </section>
+
+    <section class="inventory" aria-labelledby="profile-equipment-heading">
+      <h2 id="profile-equipment-heading"><%= cultivation_icon(:sword) %> <%= t("characters.show.equipment_heading") %></h2>
+
+      <div class="equipment-grid">
+        <% InventoryItem::EQUIPMENT_SLOTS.each do |slot| %>
+          <% item = @character.inventory_items.equipped.find { |equipped_item| equipped_item.equipment_slot == slot } %>
+          <div class="inventory-card">
+            <span class="inventory-slot"><%= t("inventory_items.slots.#{slot}") %></span>
+            <% if item %>
+              <strong><%= item.localized_name %></strong>
+              <span><%= t("shared.power_bonus", power: number_with_delimiter(item.inventory_power)) %></span>
+            <% else %>
+              <span><%= t("characters.show.empty_equipment_slot") %></span>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </section>
+
+    <nav class="quiet-nav" aria-label="<%= t("characters.show.navigation_aria") %>">
+      <% if @character == Current.user.character %>
+        <%= link_to t("characters.show.inventory_link"), inventory_path %>
+      <% end %>
+      <%= link_to t("characters.show.leaderboard_link"), leaderboard_path %>
+      <%= link_to t("characters.show.return_link"), root_path %>
+    </nav>
+  </section>
+</main>

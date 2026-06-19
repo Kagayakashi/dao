@@ -25,6 +25,7 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "turbo-frame#cultivation_panel[data-controller='auto-refresh']"
+    assert_select ".main-banner img[alt='Cultivation landscape'][src*='main']"
     assert_select "h1", "Jade River"
     assert_select ".realm-card", text: /Dou Practitioner/
     assert_select ".realm-card", text: /3 Star/
@@ -32,8 +33,9 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
     assert_select ".qi-progress__text", text: /Qi/
     assert_select ".screen-note", text: /Qi gathers/
     assert_select ".next-breakthrough", text: /Next breakthrough/
-    assert_select "#equipment-heading", "Equipment"
-    assert_select "#inventory-heading", "Inventory"
+    assert_select ".quiet-nav", text: /Profile/
+    assert_select "#equipment-heading", false
+    assert_select "#inventory-heading", false
   end
 
   test "shows earned achievements on dashboard" do

@@ -4,6 +4,8 @@ Rails.application.routes.draw do
     get "cultivation/panel" => "cultivation#panel", as: :cultivation_panel
     post "cultivation/breakthrough" => "cultivation#breakthrough", as: :cultivation_breakthrough
     resource :leaderboard, only: :show
+    resource :inventory, only: :show
+    resources :characters, only: :show
     resources :inventory_items, only: :destroy do
       member do
         post :equip

@@ -68,7 +68,7 @@ module CultivationEvents
       {
         outcome: "positive",
         qi_delta:,
-        description: I18n.t("cultivation_events.good_cultivation_place.description")
+        description: "cultivation_events.good_cultivation_place.description"
       }
     end
 
@@ -79,7 +79,8 @@ module CultivationEvents
       {
         outcome: item.fetch(:outcome).to_s,
         qi_delta:,
-        description: mysterious_item_description(item, qi_delta)
+        description: mysterious_item_description_key(qi_delta),
+        metadata: mysterious_item_metadata(item)
       }
     end
 
@@ -93,14 +94,14 @@ module CultivationEvents
     end
 
     def peaceful_stranger_result(config, opponent)
-      name = opponent&.name || I18n.t("cultivation_events.stranger_cultivator.passing_cultivator")
       qi_delta = qi_for_hours(config.fetch(:peaceful_qi_hours))
 
       {
         outcome: "peaceful",
         qi_delta:,
         related_character: opponent,
-        description: I18n.t("cultivation_events.stranger_cultivator.peaceful_description", name:)
+        description: "cultivation_events.stranger_cultivator.peaceful_description",
+        metadata: stranger_metadata(opponent)
       }
     end
 
@@ -112,36 +113,42 @@ module CultivationEvents
         outcome: won ? "victory" : "defeat",
         qi_delta:,
         related_character: opponent,
-        description: fight_description(opponent, won)
+        description: fight_description_key(won),
+        metadata: {}
       }
     end
 
     def found_equipment_item_result(config)
-      item = create_inventory_item(config)
+      item_result = create_inventory_item(config)
 
-      return inventory_full_result unless item
+      return inventory_full_result unless item_result
 
       {
         outcome: "positive",
         qi_delta: 0,
-        description: I18n.t("cultivation_events.found_equipment_item.description", item_name: item.name)
+        description: "cultivation_events.found_equipment_item.description",
+        metadata: item_result.fetch(:metadata)
       }
     end
 
     def create_inventory_item(config)
       equipment_kind = config.fetch(:equipment_kinds).sample(random: rng)
-      name = I18n.t("inventory_items.names.#{equipment_kind}").sample(random: rng)
+      item_name_key = I18n.t("inventory_items.item_keys.#{equipment_kind}").sample(random: rng)
 
-      character.create_inventory_item!(
-        name:,
+      item = character.create_inventory_item!(
+        name: item_name_key,
         equipment_kind:,
-        power_options: power_options(config)
+        power_options: power_options(config),
+        metadata: {}
       )
+      return false unless item
+
+      { metadata: { "inventory_item_name_key" => item_name_key } }
     end
 
     def power_options(config)
       Array.new(random_option_count(config)) do
-        { "name" => I18n.t("inventory_items.power_options.power"), "value" => rng.rand(config.fetch(:power_option_min)..[ character.power, config.fetch(:power_option_min) ].max) }
+        { "key" => "power", "value" => rng.rand(config.fetch(:power_option_min)..[ character.power, config.fetch(:power_option_min) ].max) }
       end
     end
 
@@ -161,28 +168,33 @@ module CultivationEvents
       {
         outcome: "full_inventory",
         qi_delta: 0,
-        description: I18n.t("cultivation_events.found_equipment_item.inventory_full_description")
+        description: "cultivation_events.found_equipment_item.inventory_full_description"
       }
     end
 
-    def mysterious_item_description(item, qi_delta)
-      name = item_name(item)
-      return I18n.t("cultivation_events.mysterious_item.neutral_description", item_name: name) if qi_delta.zero?
-      return I18n.t("cultivation_events.mysterious_item.positive_description", item_name: name) if qi_delta.positive?
+    def mysterious_item_description_key(qi_delta)
+      return "cultivation_events.mysterious_item.neutral_description" if qi_delta.zero?
+      return "cultivation_events.mysterious_item.positive_description" if qi_delta.positive?
 
-      I18n.t("cultivation_events.mysterious_item.negative_description", item_name: name)
+      "cultivation_events.mysterious_item.negative_description"
     end
 
-    def fight_description(opponent, won)
-      return I18n.t("cultivation_events.stranger_cultivator.victory_description", name: opponent.name) if won
+    def mysterious_item_metadata(item)
+      return { "item_name_key" => item.fetch(:name_key).to_s } if item.key?(:name_key)
 
-      I18n.t("cultivation_events.stranger_cultivator.defeat_description", name: opponent.name)
+      { "item_name_key" => item.fetch(:name).to_s }
     end
 
-    def item_name(item)
-      return item.fetch(:name) if item.key?(:name)
+    def fight_description_key(won)
+      return "cultivation_events.stranger_cultivator.victory_description" if won
 
-      I18n.t("cultivation_events.mysterious_item.items.#{item.fetch(:name_key)}")
+      "cultivation_events.stranger_cultivator.defeat_description"
+    end
+
+    def stranger_metadata(opponent)
+      return {} if opponent
+
+      { "name_i18n_key" => "cultivation_events.stranger_cultivator.passing_cultivator" }
     end
 
     def apply_qi_delta(qi_delta)
@@ -202,8 +214,9 @@ module CultivationEvents
       character.game_events.create!(
         event_key: event_key.to_s,
         outcome: result.fetch(:outcome),
-        title: I18n.t("cultivation_events.#{event_key}.title"),
+        title: "cultivation_events.#{event_key}.title",
         description: result.fetch(:description),
+        metadata: result[:metadata] || {},
         qi_delta: result.fetch(:qi_delta),
         related_character: result[:related_character],
         happened_at: now

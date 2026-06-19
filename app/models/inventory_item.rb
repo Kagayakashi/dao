@@ -6,6 +6,7 @@ class InventoryItem < ApplicationRecord
   belongs_to :character
 
   serialize :power_options, coder: JSON
+  serialize :metadata, coder: JSON
 
   before_validation :set_default_item_type
 
@@ -27,7 +28,23 @@ class InventoryItem < ApplicationRecord
     power_options.sum { |option| option.fetch("value", 0).to_i }
   end
 
+  def localized_name
+    I18n.t("inventory_items.names.#{name}", default: name)
+  end
+
+  def localized_power_options
+    power_options.map do |option|
+      option.merge("name" => localized_power_option_name(option))
+    end
+  end
+
   private
+
+  def localized_power_option_name(option)
+    return I18n.t("inventory_items.power_options.#{option['key']}") if option["key"].present?
+
+    nil
+  end
 
   def set_default_item_type
     self.item_type = item_type.presence || "equipment"

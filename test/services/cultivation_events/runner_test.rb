@@ -28,7 +28,7 @@ class CultivationEvents::RunnerTest < ActiveSupport::TestCase
       now: @now + 30.minutes,
       rng: Random.new(1),
       forced_event_key: :mysterious_item,
-      forced_item: { name: "Jade Pill", outcome: :positive, qi_hours: 1 }
+      forced_item: { name_key: "jade_pill", outcome: :positive, qi_hours: 1 }
     ).call
 
     assert_nil event
@@ -42,7 +42,7 @@ class CultivationEvents::RunnerTest < ActiveSupport::TestCase
       now: @now + 1.hour,
       rng: Random.new(1),
       forced_event_key: :mysterious_item,
-      forced_item: { name: "Jade Pill", outcome: :positive, qi_hours: 1 }
+      forced_item: { name_key: "jade_pill", outcome: :positive, qi_hours: 1 }
     ).call
 
     assert_equal "mysterious_item", event.event_key
@@ -57,15 +57,28 @@ class CultivationEvents::RunnerTest < ActiveSupport::TestCase
   end
 
   test "mysterious item can grant qi" do
-    event = run_event(:mysterious_item, forced_item: { name: "Jade Pill", outcome: :positive, qi_hours: 1 })
+    event = run_event(:mysterious_item, forced_item: { name_key: "jade_pill", outcome: :positive, qi_hours: 1 })
 
     assert_equal "positive", event.outcome
     assert_equal 3_600, event.qi_delta
     assert_equal 8_600, @character.reload.qi
   end
 
+  test "events store translation keys and render in the current locale" do
+    event = run_event(:mysterious_item, forced_item: { name_key: "jade_pill", outcome: :positive, qi_hours: 1 })
+
+    assert_equal "cultivation_events.mysterious_item.title", event.title
+    assert_equal "cultivation_events.mysterious_item.positive_description", event.description
+    assert_equal({ "item_name_key" => "jade_pill" }, event.metadata)
+
+    I18n.with_locale(:ru) do
+      assert_equal "Таинственный предмет", event.localized_title
+      assert_equal "Вы очистили Нефритовая пилюля и получили всплеск Ци.", event.localized_description
+    end
+  end
+
   test "mysterious item can lose qi" do
-    event = run_event(:mysterious_item, forced_item: { name: "Cracked Spirit Stone", outcome: :negative, qi_hours: -3 })
+    event = run_event(:mysterious_item, forced_item: { name_key: "cracked_spirit_stone", outcome: :negative, qi_hours: -3 })
 
     assert_equal "negative", event.outcome
     assert_equal(-10_800, event.qi_delta)
@@ -73,7 +86,7 @@ class CultivationEvents::RunnerTest < ActiveSupport::TestCase
   end
 
   test "mysterious item can be neutral" do
-    event = run_event(:mysterious_item, forced_item: { name: "Dusty Talisman", outcome: :neutral, qi_hours: 0 })
+    event = run_event(:mysterious_item, forced_item: { name_key: "dusty_talisman", outcome: :neutral, qi_hours: 0 })
 
     assert_equal "neutral", event.outcome
     assert_equal 0, event.qi_delta
@@ -101,17 +114,36 @@ class CultivationEvents::RunnerTest < ActiveSupport::TestCase
     @character.inventory_items.destroy_all
 
     event = run_event(:found_equipment_item)
+    item = @character.inventory_items.in_inventory.first
 
     assert_equal "found_equipment_item", event.event_key
     assert_equal "positive", event.outcome
     assert_equal 1, @character.inventory_items.in_inventory.count
-    assert_includes 1..5, @character.inventory_items.first.power_options.size
+    assert_includes 1..5, item.power_options.size
+    assert_includes I18n.t("inventory_items.item_keys.#{item.equipment_kind}"), item.name
+    assert_equal({ "inventory_item_name_key" => item.name }, event.metadata)
+    assert_equal "power", item.power_options.first.fetch("key")
     assert_cooldown_equals(:found_equipment_item, @now + 1.day)
+  end
+
+  test "found equipment item stores locale neutral item key" do
+    @character.inventory_items.destroy_all
+
+    I18n.with_locale(:ru) do
+      run_event(:found_equipment_item)
+    end
+
+    item = @character.inventory_items.in_inventory.first
+    assert_includes I18n.t("inventory_items.item_keys.#{item.equipment_kind}"), item.name
+
+    I18n.with_locale(:ru) do
+      assert_equal I18n.t("inventory_items.names.#{item.name}"), item.localized_name
+    end
   end
 
   test "found equipment item respects full inventory" do
     @character.inventory_items.destroy_all
-    10.times { |index| @character.create_inventory_item!(name: "Stored #{index}", equipment_kind: "weapon", power_options: []) }
+    10.times { |index| @character.create_inventory_item!(name: "iron_dao_blade", equipment_kind: "weapon", power_options: [], metadata: { "test_slot" => index }) }
 
     event = run_event(:found_equipment_item)
 

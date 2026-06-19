@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_18_132000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_19_005000) do
   create_table "character_achievements", force: :cascade do |t|
     t.integer "character_id", null: false
     t.datetime "created_at", null: false
@@ -35,6 +35,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_18_132000) do
     t.datetime "created_at", null: false
     t.bigint "currency", default: 0, null: false
     t.bigint "experience", default: 0, null: false
+    t.string "gender", default: "male", null: false
     t.datetime "last_online", default: -> { "CURRENT_TIMESTAMP" }
     t.integer "level", default: 1, null: false
     t.string "name", default: "Wandering Cultivator", null: false
@@ -52,6 +53,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_18_132000) do
     t.text "description", null: false
     t.string "event_key", null: false
     t.datetime "happened_at", null: false
+    t.text "metadata", default: "{}", null: false
     t.string "outcome", null: false
     t.integer "qi_delta", default: 0, null: false
     t.integer "related_character_id"
@@ -69,6 +71,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_18_132000) do
     t.string "equipment_slot"
     t.integer "inventory_slot"
     t.string "item_type", default: "equipment", null: false
+    t.text "metadata", default: "{}", null: false
     t.string "name", null: false
     t.text "power_options", default: "[]", null: false
     t.datetime "updated_at", null: false

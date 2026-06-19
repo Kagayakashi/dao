@@ -110,6 +110,7 @@ en:
         unstable_qi_dispersed: "Breakthrough complete. %{qi} unstable Qi dispersed."
     panel:
       eyebrow: "Quiet Cultivation"
+      banner_alt: "Cultivation landscape"
       screen_note: "Qi gathers while you watch and while you are away. When the bar is full, choose Breakthrough to advance."
       offline_gain: "Absorbed %{qi} Qi while away."
       progress_aria: "Cultivation progress"
@@ -120,17 +121,31 @@ en:
       next_breakthrough: "Next breakthrough in %{qi} Qi."
       achievements_heading: "Achievements"
       events_heading: "Recent Events"
+      navigation_aria: "Cultivation navigation"
+      profile_link: "Profile"
+      leaderboard_link: "Leaderboard"
+      sign_out_button: "Sign out"
+
+  inventories:
+    show:
+      title: "Inventory"
+      eyebrow: "Storage"
+      heading: "Inventory"
+      screen_note: "Manage your equipped treasures and stored items."
       equipment_heading: "Equipment"
       inventory_heading: "Inventory"
+      free_slots:
+        one: "%{count} free slot"
+        other: "%{count} free slots"
       unequip_button: "Unequip"
       equip_button: "Equip"
       drop_button: "Drop"
       empty_slot: "Empty"
       inventory_slot: "Slot %{slot}"
       inventory_item_summary: "%{kind}, Power +%{power}"
-      navigation_aria: "Cultivation navigation"
-      leaderboard_link: "Leaderboard"
-      sign_out_button: "Sign out"
+      navigation_aria: "Inventory navigation"
+      profile_link: "View Profile"
+      return_link: "Return to Cultivation"
 
   leaderboards:
     show:
@@ -143,6 +158,22 @@ en:
 
   characters:
     default_name: "Wandering Cultivator"
+    genders:
+      male: "Male"
+      female: "Female"
+    show:
+      title: "%{name}"
+      eyebrow: "Cultivator Profile"
+      profile_image_alt: "%{gender} cultivator profile image"
+      gender: "Gender: %{gender}"
+      achievements_heading: "Achievements"
+      no_achievements: "No achievements yet."
+      equipment_heading: "Equipment"
+      empty_equipment_slot: "Empty"
+      navigation_aria: "Profile navigation"
+      inventory_link: "Inventory"
+      leaderboard_link: "Leaderboard"
+      return_link: "Return to Cultivation"
     realms:
       fallback: "Realm %{realm}"
       "1": "Dou Qi Stage"
@@ -186,6 +217,7 @@ en:
     found_equipment_item:
       title: "Forgotten Treasure"
       description: "You found %{item_name} and placed it in your inventory."
+      description_without_item: "You found a treasure and placed it in your inventory."
       inventory_full_description: "You found a treasure, but your inventory was full and you left it behind."
 
   inventory_items:
@@ -198,19 +230,29 @@ en:
       ring_one: "Ring I"
       ring_two: "Ring II"
       pendant: "Pendant"
-    names:
+    item_keys:
       weapon:
-        - "Iron Dao Blade"
-        - "Bamboo Spirit Sword"
-        - "Ashen Spear"
+        - "iron_dao_blade"
+        - "bamboo_spirit_sword"
+        - "ashen_spear"
       ring:
-        - "Cloud Ring"
-        - "Jade Band"
-        - "Quiet Moon Ring"
+        - "cloud_ring"
+        - "jade_band"
+        - "quiet_moon_ring"
       pendant:
-        - "Old Dragon Pendant"
-        - "River Jade Pendant"
-        - "Worn Spirit Charm"
+        - "old_dragon_pendant"
+        - "river_jade_pendant"
+        - "worn_spirit_charm"
+    names:
+      iron_dao_blade: "Iron Dao Blade"
+      bamboo_spirit_sword: "Bamboo Spirit Sword"
+      ashen_spear: "Ashen Spear"
+      cloud_ring: "Cloud Ring"
+      jade_band: "Jade Band"
+      quiet_moon_ring: "Quiet Moon Ring"
+      old_dragon_pendant: "Old Dragon Pendant"
+      river_jade_pendant: "River Jade Pendant"
+      worn_spirit_charm: "Worn Spirit Charm"
     power_options:
       power: "Power"
 

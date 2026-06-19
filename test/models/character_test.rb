@@ -58,6 +58,14 @@ class CharacterTest < ActiveSupport::TestCase
     assert_equal "Wandering Cultivator", character.name
   end
 
+  test "defaults character gender to male" do
+    character = User.create!(email_address: "default-gender@example.com", password: "password").character
+
+    assert_predicate character, :male?
+    assert_equal "Male", character.gender_name
+    assert_equal "male_profile.png", character.profile_image_name
+  end
+
   test "default qi requirements make first realm take about one day" do
     with_default_qi_requirements do
       total_qi = qi_required_for_realm(1)
