@@ -7,6 +7,7 @@ class CreateInventoryItems < ActiveRecord::Migration[8.1]
       t.string :equipment_kind, null: false
       t.integer :inventory_slot
       t.string :equipment_slot
+      t.text :metadata, null: false, default: "{}"
       t.text :power_options, null: false, default: "[]"
 
       t.timestamps

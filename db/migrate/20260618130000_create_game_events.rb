@@ -7,6 +7,7 @@ class CreateGameEvents < ActiveRecord::Migration[8.1]
       t.string :outcome, null: false
       t.string :title, null: false
       t.text :description, null: false
+      t.text :metadata, null: false, default: "{}"
       t.integer :qi_delta, null: false, default: 0
       t.datetime :happened_at, null: false
 

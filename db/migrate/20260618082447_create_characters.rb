@@ -1,7 +1,9 @@
 class CreateCharacters < ActiveRecord::Migration[8.1]
   def change
     create_table :characters do |t|
-      t.references :user, null: false, foreign_key: true
+      t.references :user, null: false, foreign_key: true, index: false
+      t.string :name, null: false, default: "Wandering Cultivator"
+      t.string :gender, null: false, default: "male"
 
       t.integer :reset, null: false, default: 0
 
@@ -17,5 +19,7 @@ class CreateCharacters < ActiveRecord::Migration[8.1]
 
       t.timestamps
     end
+
+    add_index :characters, :user_id, unique: true
   end
 end

@@ -25,7 +25,7 @@ test:
 production:
   primary:
     <<: *default
-    database: storage/production.sqlite3
+    database: /var/data/production.sqlite3
   cache:
     <<: *default
     database: storage/production_cache.sqlite3
