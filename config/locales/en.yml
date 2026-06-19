@@ -63,9 +63,24 @@ en:
       heading: "Begin Cultivation"
       character_name: "Cultivator name"
       character_name_placeholder: "Jade River"
+      character_gender: "Gender"
       submit: "Enter the Dao"
       navigation_aria: "Signup navigation"
       sign_in_link: "Already cultivating? Sign in"
+
+  registration_completions:
+    already_complete: "Your registration is already complete."
+    create:
+      notice: "Registration complete. You received %{qi} bonus Qi."
+      alert: "Check your email and password, then try again."
+    new:
+      title: "Complete Registration"
+      eyebrow: "Account Seal"
+      heading: "Complete Registration"
+      screen_note: "Set an email and password to secure this character and receive %{qi} bonus Qi."
+      submit: "Complete Registration"
+      navigation_aria: "Registration completion navigation"
+      profile_link: "Return to Profile"
 
   passwords:
     create:
@@ -113,6 +128,7 @@ en:
       banner_alt: "Cultivation landscape"
       screen_note: "Qi gathers while you watch and while you are away. When the bar is full, choose Breakthrough to advance."
       offline_gain: "Absorbed %{qi} Qi while away."
+      complete_registration_notice: "Complete registration to secure your character and receive %{qi} bonus Qi."
       progress_aria: "Cultivation progress"
       qi_progress: "%{current} / %{required}"
       total_qi: "Total Qi: %{qi}"
@@ -156,6 +172,74 @@ en:
       navigation_aria: "Leaderboard navigation"
       return_link: "Return to Cultivation"
 
+  admin:
+    shared:
+      character_option: "%{name} - %{realm}, %{star} Star"
+    dashboard:
+      show:
+        title: "Admin Panel"
+        eyebrow: "Admin"
+        heading: "Admin Panel"
+        screen_note: "Choose one administrative action."
+        navigation_aria: "Admin menu"
+        secondary_navigation_aria: "Admin secondary navigation"
+        create_item_link: "Create Item"
+        adjust_qi_link: "Adjust Qi"
+        return_link: "Return to Cultivation"
+        sign_out_button: "Sign out admin"
+    sessions:
+      required: "Admin access is required."
+      create:
+        notice: "Admin access opened."
+        invalid: "Invalid admin password."
+      destroy:
+        notice: "Admin access closed."
+      new:
+        title: "Admin Sign In"
+        eyebrow: "Admin"
+        heading: "Admin Sign In"
+        password: "Admin password"
+        submit: "Enter Admin Panel"
+        navigation_aria: "Admin sign in navigation"
+        return_link: "Return to Cultivation"
+    items:
+      create:
+        notice: "%{name} was placed in %{character}'s inventory."
+        inventory_full: "%{character}'s inventory is full."
+      new:
+        title: "Admin Panel"
+        eyebrow: "Admin"
+        heading: "Create Inventory Item"
+        screen_note: "Grant one item to a character's free inventory slot."
+        character: "Character"
+        item: "Item"
+        item_option: "%{kind}: %{name}"
+        power: "Power bonus"
+        submit: "Create Item"
+        navigation_aria: "Admin panel navigation"
+        admin_link: "Admin Panel"
+        return_link: "Return to Cultivation"
+    qi_adjustments:
+      create:
+        notice: "%{direction} %{qi} Qi for %{character}. Now %{realm}, %{star} Star."
+        directions:
+          added: "Added"
+          removed: "Removed"
+      new:
+        title: "Adjust Qi"
+        eyebrow: "Admin"
+        heading: "Adjust Character Qi"
+        screen_note: "Add or remove Qi and recalculate Realm and Star immediately."
+        character: "Character"
+        direction: "Direction"
+        add: "Add Qi"
+        remove: "Remove Qi"
+        amount: "Qi amount"
+        submit: "Apply Qi Change"
+        navigation_aria: "Qi adjustment navigation"
+        admin_link: "Admin Panel"
+        return_link: "Return to Cultivation"
+
   characters:
     default_name: "Wandering Cultivator"
     genders:
@@ -171,6 +255,7 @@ en:
       equipment_heading: "Equipment"
       empty_equipment_slot: "Empty"
       navigation_aria: "Profile navigation"
+      complete_registration_link: "Set Email and Password"
       inventory_link: "Inventory"
       leaderboard_link: "Leaderboard"
       return_link: "Return to Cultivation"

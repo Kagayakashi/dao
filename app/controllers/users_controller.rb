@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(user_params)
+    @user = User.new(temporary_user_params)
 
     if @user.save
       start_new_session_for @user
@@ -19,7 +19,15 @@ class UsersController < ApplicationController
 
   private
 
-  def user_params
-    params.require(:user).permit(:email_address, :password, :password_confirmation, :character_name)
+  def temporary_user_params
+    permitted_params = params.require(:user).permit(:character_name, :character_gender)
+    password = SecureRandom.urlsafe_base64(32)
+
+    permitted_params.merge(
+      email_address: "temporary-#{SecureRandom.uuid}@dao.local",
+      password:,
+      password_confirmation: password,
+      temporary: true
+    )
   end
 end

@@ -13,6 +13,14 @@ Rails.application.routes.draw do
       end
     end
     resources :users, only: %i[ new create ]
+    resource :registration_completion, only: %i[ new create ]
+
+    namespace :admin do
+      root "dashboard#show"
+      resource :session, only: %i[ new create destroy ]
+      resources :items, only: %i[ new create ]
+      resource :qi_adjustment, only: %i[ new create ]
+    end
 
     resource :session
     resources :passwords, param: :token

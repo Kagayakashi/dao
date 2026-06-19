@@ -22,12 +22,13 @@
 - JavaScript uses importmap, Turbo, and Stimulus. Stimulus controllers live in `app/javascript/controllers`.
 - Authentication is centralized in `app/controllers/concerns/authentication.rb`; controllers require authentication by default and opt out with `allow_unauthenticated_access`.
 - Routes are locale-scoped for `en` and `ru`. The root route is `cultivation#show`.
-- Main current routes: root cultivation dashboard, `cultivation/panel`, `cultivation/breakthrough`, leaderboard, public character profiles, current-user inventory, inventory item equip/unequip/drop, users, sessions, passwords, cookie policy, and `/up` health check.
+- Main current routes: root cultivation dashboard, `cultivation/panel`, `cultivation/breakthrough`, leaderboard, public character profiles, current-user inventory, inventory item equip/unequip/drop, admin item grants, users, sessions, passwords, cookie policy, and `/up` health check.
 - Keep user-facing strings in both `config/locales/en.yml` and `config/locales/ru.yml`.
 
 ## Domain Model
 
 - `User` is authentication-only and has one `Character`. Registration accepts `character_name` and creates the initial character after user creation.
+- New-player onboarding creates a temporary `User` with generated hidden email/password after the player enters only character name and gender. Temporary users can complete registration later by setting email/password and receiving the configured Qi reward.
 - `Character` is the main game object. Stored database columns are `level`, `sublevel`, and `experience`, but the model aliases them as `realm`, `star`, and `qi`.
 - `Character` also tracks `gender`, `total_experience`, `currency`, `reset`, `last_online`, achievements, random game events, event cooldowns, and inventory items.
 - Character gender is an enum. Existing and new characters currently default to `male`; profile banners use gender-based images from `app/assets/images`.
@@ -72,6 +73,15 @@
 - Inventory has `Character::INVENTORY_SLOTS` slots. A character cannot equip items from another character.
 - The cultivation dashboard should stay focused on progression. Equipment and inventory management belong on the singular current-user `inventory` page.
 - Public character profiles show basic character info, achievements, and equipped items. Only the current user's own profile links to inventory.
+
+## Admin
+
+- Admin access is separate from player authentication and uses `session[:admin_authenticated]`.
+- Admin password verification reads `Rails.application.credentials.dig(:admin, :password_digest)` through `Admin::CredentialPassword`; store a BCrypt digest in encrypted Rails credentials.
+- The current admin panel has separate pages for item grants and Qi adjustments.
+- Admin item grants create one inventory item for any character, placing it in the first free inventory slot.
+- Admin Qi adjustments can add or remove Qi and recalculate Realm/Star immediately; this is intentionally separate from normal manual breakthrough behavior.
+- Admin-created item names must be I18n keys from `inventory_items.item_keys`; do not store display names.
 
 ## Achievements And Leaderboard
 

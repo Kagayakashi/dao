@@ -1,0 +1,30 @@
+<% content_for :title, t("admin.items.new.title") %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel auth-panel">
+    <p class="eyebrow"><%= cultivation_icon(:satchel) %> <%= t("admin.items.new.eyebrow") %></p>
+    <h1><%= t("admin.items.new.heading") %></h1>
+    <p class="screen-note"><%= t("admin.items.new.screen_note") %></p>
+
+    <%= tag.div(flash[:alert], class: "form-alert") if flash[:alert] %>
+    <%= tag.div(flash[:notice], class: "form-notice") if flash[:notice] %>
+
+    <%= form_with scope: :inventory_item, url: admin_items_path, class: "auth-form" do |form| %>
+      <%= form.label :character_id, t("admin.items.new.character") %>
+      <%= form.select :character_id, character_options %>
+
+      <%= form.label :name, t("admin.items.new.item") %>
+      <%= form.select :name, item_name_options %>
+
+      <%= form.label :power, t("admin.items.new.power") %>
+      <%= form.number_field :power, required: true, min: 0, value: 10 %>
+
+      <%= form.submit t("admin.items.new.submit"), class: "ceremonial-button" %>
+    <% end %>
+
+    <nav class="quiet-nav" aria-label="<%= t("admin.items.new.navigation_aria") %>">
+      <%= link_to t("admin.items.new.admin_link"), admin_root_path %>
+      <%= link_to t("admin.items.new.return_link"), root_path %>
+    </nav>
+  </section>
+</main>

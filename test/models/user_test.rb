@@ -14,4 +14,22 @@ class UserTest < ActiveSupport::TestCase
     assert_equal 1, user.character.realm
     assert_equal 1, user.character.star
   end
+
+  test "creates a character with selected gender" do
+    user = User.create!(email_address: "gender@example.com", password: "password", character_name: "Little Alchemist", character_gender: "female")
+
+    assert_predicate user.character, :female?
+  end
+
+  test "complete registration clears temporary flag and grants reward" do
+    user = User.create!(email_address: "temporary@example.test", password: "password", temporary: true, character_name: "Temporary Leaf")
+    user.character.update!(qi: 0, total_experience: 0)
+
+    user.complete_registration!(email_address: "leaf@example.com", password: "new-password", password_confirmation: "new-password")
+
+    assert_not user.temporary?
+    assert_equal "leaf@example.com", user.email_address
+    assert_equal User::COMPLETION_REWARD_QI, user.character.qi
+    assert_equal User::COMPLETION_REWARD_QI, user.character.total_experience
+  end
 end

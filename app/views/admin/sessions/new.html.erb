@@ -1,0 +1,21 @@
+<% content_for :title, t("admin.sessions.new.title") %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel auth-panel">
+    <p class="eyebrow"><%= cultivation_icon(:key) %> <%= t("admin.sessions.new.eyebrow") %></p>
+    <h1><%= t("admin.sessions.new.heading") %></h1>
+
+    <%= tag.div(flash[:alert], class: "form-alert") if flash[:alert] %>
+    <%= tag.div(flash[:notice], class: "form-notice") if flash[:notice] %>
+
+    <%= form_with url: admin_session_path, class: "auth-form" do |form| %>
+      <%= form.label :password, t("admin.sessions.new.password") %>
+      <%= form.password_field :password, required: true, autocomplete: "current-password" %>
+      <%= form.submit t("admin.sessions.new.submit"), class: "ceremonial-button" %>
+    <% end %>
+
+    <nav class="quiet-nav" aria-label="<%= t("admin.sessions.new.navigation_aria") %>">
+      <%= link_to t("admin.sessions.new.return_link"), root_path %>
+    </nav>
+  </section>
+</main>

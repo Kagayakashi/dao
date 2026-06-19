@@ -192,6 +192,40 @@ class CharacterTest < ActiveSupport::TestCase
     assert_equal now, @character.last_online
   end
 
+  test "admin qi adjustment recalculates multiple stars upward" do
+    @character.admin_adjust_qi!(250)
+
+    @character.reload
+    assert_equal 1, @character.realm
+    assert_equal 3, @character.star
+    assert_equal 50, @character.qi
+    assert_equal 250, @character.total_experience
+  end
+
+  test "admin qi adjustment can decrease stars" do
+    @character.update!(realm: 1, star: 3, qi: 50, total_experience: 250)
+
+    @character.admin_adjust_qi!(-160)
+
+    @character.reload
+    assert_equal 1, @character.realm
+    assert_equal 1, @character.star
+    assert_equal 90, @character.qi
+    assert_equal 90, @character.total_experience
+  end
+
+  test "admin qi adjustment clamps below zero" do
+    @character.update!(realm: 1, star: 2, qi: 10, total_experience: 110)
+
+    @character.admin_adjust_qi!(-500)
+
+    @character.reload
+    assert_equal 1, @character.realm
+    assert_equal 1, @character.star
+    assert_equal 0, @character.qi
+    assert_equal 0, @character.total_experience
+  end
+
   private
 
   def with_default_qi_requirements

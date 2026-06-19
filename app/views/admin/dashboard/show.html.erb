@@ -1,0 +1,22 @@
+<% content_for :title, t("admin.dashboard.show.title") %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel auth-panel">
+    <p class="eyebrow"><%= cultivation_icon(:key) %> <%= t("admin.dashboard.show.eyebrow") %></p>
+    <h1><%= t("admin.dashboard.show.heading") %></h1>
+    <p class="screen-note"><%= t("admin.dashboard.show.screen_note") %></p>
+
+    <%= tag.div(flash[:alert], class: "form-alert") if flash[:alert] %>
+    <%= tag.div(flash[:notice], class: "form-notice") if flash[:notice] %>
+
+    <nav class="admin-menu" aria-label="<%= t("admin.dashboard.show.navigation_aria") %>">
+      <%= link_to t("admin.dashboard.show.create_item_link"), new_admin_item_path %>
+      <%= link_to t("admin.dashboard.show.adjust_qi_link"), new_admin_qi_adjustment_path %>
+    </nav>
+
+    <nav class="quiet-nav" aria-label="<%= t("admin.dashboard.show.secondary_navigation_aria") %>">
+      <%= link_to t("admin.dashboard.show.return_link"), root_path %>
+      <%= button_to t("admin.dashboard.show.sign_out_button"), admin_session_path, method: :delete, class: "ceremonial-button" %>
+    </nav>
+  </section>
+</main>

@@ -63,9 +63,24 @@ ru:
       heading: "Начать культивацию"
       character_name: "Имя культиватора"
       character_name_placeholder: "Нефритовая Река"
+      character_gender: "Пол"
       submit: "Войти в Дао"
       navigation_aria: "Навигация регистрации"
       sign_in_link: "Уже культивируете? Войти"
+
+  registration_completions:
+    already_complete: "Ваша регистрация уже завершена."
+    create:
+      notice: "Регистрация завершена. Вы получили %{qi} бонусной Ци."
+      alert: "Проверьте эл. почту и пароль, затем попробуйте снова."
+    new:
+      title: "Завершить регистрацию"
+      eyebrow: "Печать аккаунта"
+      heading: "Завершить регистрацию"
+      screen_note: "Укажите эл. почту и пароль, чтобы защитить персонажа и получить %{qi} бонусной Ци."
+      submit: "Завершить регистрацию"
+      navigation_aria: "Навигация завершения регистрации"
+      profile_link: "Вернуться к профилю"
 
   passwords:
     create:
@@ -113,6 +128,7 @@ ru:
       banner_alt: "Пейзаж культивации"
       screen_note: "Ци собирается, пока вы наблюдаете и пока вы в отлучке. Когда шкала заполнится, выберите Прорыв для продвижения."
       offline_gain: "Поглощено %{qi} Ци за время отсутствия."
+      complete_registration_notice: "Завершите регистрацию, чтобы защитить персонажа и получить %{qi} бонусной Ци."
       progress_aria: "Прогресс культивации"
       qi_progress: "%{current} / %{required}"
       total_qi: "Всего Ци: %{qi}"
@@ -156,6 +172,74 @@ ru:
       navigation_aria: "Навигация рейтинга"
       return_link: "Вернуться к культивации"
 
+  admin:
+    shared:
+      character_option: "%{name} - %{realm}, %{star} звезда"
+    dashboard:
+      show:
+        title: "Админ-панель"
+        eyebrow: "Админ"
+        heading: "Админ-панель"
+        screen_note: "Выберите одно административное действие."
+        navigation_aria: "Меню администратора"
+        secondary_navigation_aria: "Дополнительная навигация администратора"
+        create_item_link: "Создать предмет"
+        adjust_qi_link: "Изменить Ци"
+        return_link: "Вернуться к культивации"
+        sign_out_button: "Выйти из админки"
+    sessions:
+      required: "Требуется доступ администратора."
+      create:
+        notice: "Доступ администратора открыт."
+        invalid: "Неверный пароль администратора."
+      destroy:
+        notice: "Доступ администратора закрыт."
+      new:
+        title: "Вход администратора"
+        eyebrow: "Админ"
+        heading: "Вход администратора"
+        password: "Пароль администратора"
+        submit: "Войти в админ-панель"
+        navigation_aria: "Навигация входа администратора"
+        return_link: "Вернуться к культивации"
+    items:
+      create:
+        notice: "%{name} добавлен в инвентарь %{character}."
+        inventory_full: "Инвентарь %{character} заполнен."
+      new:
+        title: "Админ-панель"
+        eyebrow: "Админ"
+        heading: "Создать предмет инвентаря"
+        screen_note: "Выдайте один предмет в свободную ячейку инвентаря персонажа."
+        character: "Персонаж"
+        item: "Предмет"
+        item_option: "%{kind}: %{name}"
+        power: "Бонус силы"
+        submit: "Создать предмет"
+        navigation_aria: "Навигация админ-панели"
+        admin_link: "Админ-панель"
+        return_link: "Вернуться к культивации"
+    qi_adjustments:
+      create:
+        notice: "%{direction} %{qi} Ци для %{character}. Теперь %{realm}, %{star} звезда."
+        directions:
+          added: "Добавлено"
+          removed: "Удалено"
+      new:
+        title: "Изменить Ци"
+        eyebrow: "Админ"
+        heading: "Изменить Ци персонажа"
+        screen_note: "Добавьте или удалите Ци, чтобы сразу пересчитать сферу и звезду."
+        character: "Персонаж"
+        direction: "Действие"
+        add: "Добавить Ци"
+        remove: "Удалить Ци"
+        amount: "Количество Ци"
+        submit: "Применить изменение Ци"
+        navigation_aria: "Навигация изменения Ци"
+        admin_link: "Админ-панель"
+        return_link: "Вернуться к культивации"
+
   characters:
     default_name: "Странствующий культиватор"
     genders:
@@ -171,6 +255,7 @@ ru:
       equipment_heading: "Снаряжение"
       empty_equipment_slot: "Пусто"
       navigation_aria: "Навигация профиля"
+      complete_registration_link: "Указать эл. почту и пароль"
       inventory_link: "Инвентарь"
       leaderboard_link: "Рейтинг"
       return_link: "Вернуться к культивации"

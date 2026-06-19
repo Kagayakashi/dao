@@ -6,17 +6,18 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "h1", "Begin Cultivation"
+    assert_select "input[name='user[email_address]']", false
+    assert_select "input[name='user[password]']", false
+    assert_select "select[name='user[character_gender]']"
   end
 
-  test "create signs in user and creates named character" do
+  test "create signs in temporary user and creates named character" do
     assert_difference -> { User.count }, 1 do
       assert_difference -> { Character.count }, 1 do
         post users_path(locale: :en), params: {
           user: {
             character_name: "Cloud Root",
-            email_address: "cloud-root@example.com",
-            password: "password",
-            password_confirmation: "password"
+            character_gender: "female"
           }
         }
       end
@@ -24,7 +25,11 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to root_path(locale: :en)
     assert cookies[:session_id]
-    assert_equal "Cloud Root", User.find_by!(email_address: "cloud-root@example.com").character.name
+    user = User.order(:created_at).last
+    assert_predicate user, :temporary?
+    assert_match(/temporary-/, user.email_address)
+    assert_equal "Cloud Root", user.character.name
+    assert_predicate user.character, :female?
   end
 
   test "create renders errors for invalid details" do

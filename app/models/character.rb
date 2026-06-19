@@ -171,7 +171,49 @@ class Character < ApplicationRecord
     gained_qi
   end
 
+  def admin_adjust_qi!(amount)
+    target_qi = [ cumulative_cultivation_qi + amount.to_i, 0 ].max
+
+    assign_cultivation_from_cumulative_qi(target_qi)
+    self.total_experience = [ total_experience + amount.to_i, 0 ].max
+    award_earned_achievements if persisted?
+    save!
+  end
+
   private
+
+  def cumulative_cultivation_qi
+    previous_realms_qi = (1...realm).sum do |realm_number|
+      (1..stars_per_realm).sum { |star_number| qi_required_for(realm_number, star_number) }
+    end
+    previous_stars_qi = (1...star).sum { |star_number| qi_required_for(realm, star_number) }
+
+    previous_realms_qi + previous_stars_qi + qi
+  end
+
+  def assign_cultivation_from_cumulative_qi(target_qi)
+    self.realm = 1
+    self.star = 1
+
+    loop do
+      required_qi = qi_required_for(realm, star)
+      break if target_qi < required_qi
+
+      target_qi -= required_qi
+      self.star += 1
+
+      if star > stars_per_realm
+        self.realm += 1
+        self.star = 1
+      end
+    end
+
+    self.qi = target_qi
+  end
+
+  def qi_required_for(realm_number, star_number)
+    (base_qi_required * (realm_qi_growth**(realm_number - 1)) * (star_qi_growth**(star_number - 1))).ceil
+  end
 
   def set_initial_last_online
     self.last_online ||= Time.current

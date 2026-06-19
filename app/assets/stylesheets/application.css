@@ -395,6 +395,12 @@ body {
   margin-top: 1.25rem;
 }
 
+.admin-menu {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.admin-menu a,
 .quiet-nav a,
 .ceremonial-button,
 .small-button {
@@ -409,6 +415,7 @@ body {
   cursor: pointer;
 }
 
+.admin-menu a:hover,
 .quiet-nav a:hover,
 .ceremonial-button:hover,
 .small-button:hover {

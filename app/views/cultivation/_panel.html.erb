@@ -11,6 +11,10 @@
     <p class="offline-gain"><%= cultivation_icon(:qi) %> <%= t(".offline_gain", qi: number_with_delimiter(offline_qi_gained)) %></p>
   <% end %>
 
+  <% if Current.user.temporary? %>
+    <p class="offline-gain"><%= cultivation_icon(:key) %> <%= t(".complete_registration_notice", qi: number_with_delimiter(User::COMPLETION_REWARD_QI)) %></p>
+  <% end %>
+
   <%= tag.div(flash[:notice], class: "form-notice") if flash[:notice] %>
 
   <% if triggered_event.present? %>

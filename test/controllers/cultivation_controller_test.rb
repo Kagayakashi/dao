@@ -38,6 +38,18 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
     assert_select "#inventory-heading", false
   end
 
+  test "shows complete registration notice for temporary user" do
+    user = users(:one)
+    user.update!(temporary: true)
+    sign_in_as(user)
+
+    get root_path(locale: :en)
+
+    assert_response :success
+    assert_select ".offline-gain", text: /Complete registration/
+    assert_select ".offline-gain", text: /1,000 bonus Qi/
+  end
+
   test "shows earned achievements on dashboard" do
     user = users(:one)
     character = user.character || user.create_character!

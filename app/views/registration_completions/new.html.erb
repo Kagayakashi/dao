@@ -1,0 +1,28 @@
+<% content_for :title, t("registration_completions.new.title") %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel auth-panel">
+    <p class="eyebrow"><%= cultivation_icon(:key) %> <%= t("registration_completions.new.eyebrow") %></p>
+    <h1><%= t("registration_completions.new.heading") %></h1>
+    <p class="screen-note"><%= t("registration_completions.new.screen_note", qi: number_with_delimiter(User::COMPLETION_REWARD_QI)) %></p>
+
+    <%= tag.div(flash[:alert], class: "form-alert") if flash[:alert] %>
+
+    <%= form_with scope: :user, url: registration_completion_path, class: "auth-form" do |form| %>
+      <%= form.label :email_address, t("shared.email") %>
+      <%= form.email_field :email_address, required: true, autocomplete: "username", placeholder: t("shared.email_placeholder") %>
+
+      <%= form.label :password, t("shared.password") %>
+      <%= form.password_field :password, required: true, autocomplete: "new-password", maxlength: 72 %>
+
+      <%= form.label :password_confirmation, t("shared.password_confirmation") %>
+      <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", maxlength: 72 %>
+
+      <%= form.submit t("registration_completions.new.submit"), class: "ceremonial-button" %>
+    <% end %>
+
+    <nav class="quiet-nav" aria-label="<%= t("registration_completions.new.navigation_aria") %>">
+      <%= link_to t("registration_completions.new.profile_link"), character_path(Current.user.character) %>
+    </nav>
+  </section>
+</main>

@@ -36,4 +36,14 @@ class CharactersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "a[href='#{inventory_path(locale: :en)}']", "Inventory"
   end
+
+  test "shows complete registration link on own temporary profile" do
+    users(:one).update!(temporary: true)
+    sign_in_as(users(:one))
+
+    get character_path(users(:one).character, locale: :en)
+
+    assert_response :success
+    assert_select "a[href='#{new_registration_completion_path(locale: :en)}']", "Set Email and Password"
+  end
 end

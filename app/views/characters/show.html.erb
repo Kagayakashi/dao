@@ -57,6 +57,9 @@
 
     <nav class="quiet-nav" aria-label="<%= t("characters.show.navigation_aria") %>">
       <% if @character == Current.user.character %>
+        <% if Current.user.temporary? %>
+          <%= link_to t("characters.show.complete_registration_link"), new_registration_completion_path %>
+        <% end %>
         <%= link_to t("characters.show.inventory_link"), inventory_path %>
       <% end %>
       <%= link_to t("characters.show.leaderboard_link"), leaderboard_path %>
