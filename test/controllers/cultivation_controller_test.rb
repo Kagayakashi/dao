@@ -48,6 +48,7 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select ".offline-gain", text: /Complete registration/
     assert_select ".offline-gain", text: /1,000 bonus Qi/
+    assert_select ".offline-gain a[href='#{new_registration_completion_path(locale: :en)}'][data-turbo-frame='_top']", text: /Complete registration/
   end
 
   test "shows earned achievements on dashboard" do
@@ -60,6 +61,26 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select ".achievements", text: /First Star/
+  end
+
+  test "shows qi delta for recent event history" do
+    user = users(:one)
+    character = user.character || user.create_character!
+    character.game_events.create!(
+      event_key: "mysterious_item",
+      outcome: "positive",
+      title: "cultivation_events.mysterious_item.title",
+      description: "cultivation_events.mysterious_item.positive_description",
+      metadata: { "item_name_key" => "jade_pill" },
+      qi_delta: 3_600,
+      happened_at: Time.current
+    )
+    sign_in_as(user)
+
+    get root_path(locale: :en)
+
+    assert_response :success
+    assert_select ".event-list", text: /\+3,600 Qi/
   end
 
   test "shows refreshable cultivation panel" do

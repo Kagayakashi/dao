@@ -19,6 +19,7 @@ module CultivationEvents
       result = build_result(event_key, config)
       apply_qi_delta(result[:qi_delta])
       event = create_event(event_key, config, result)
+      create_related_stranger_event(result) if event_key == :stranger_cultivator
       set_cooldown(event_key, config)
       set_global_cooldown
       event
@@ -221,6 +222,44 @@ module CultivationEvents
         related_character: result[:related_character],
         happened_at: now
       )
+    end
+
+    def create_related_stranger_event(result)
+      related_character = result[:related_character]
+      return unless related_character
+
+      related_character.game_events.create!(
+        event_key: "stranger_cultivator",
+        outcome: related_stranger_outcome(result.fetch(:outcome)),
+        title: "cultivation_events.stranger_cultivator.title",
+        description: related_stranger_description(result.fetch(:outcome)),
+        metadata: {},
+        qi_delta: 0,
+        related_character: character,
+        happened_at: now
+      )
+    end
+
+    def related_stranger_outcome(outcome)
+      case outcome
+      when "victory"
+        "defeat"
+      when "defeat"
+        "victory"
+      else
+        outcome
+      end
+    end
+
+    def related_stranger_description(outcome)
+      case related_stranger_outcome(outcome)
+      when "victory"
+        "cultivation_events.stranger_cultivator.victory_description"
+      when "defeat"
+        "cultivation_events.stranger_cultivator.defeat_description"
+      else
+        "cultivation_events.stranger_cultivator.peaceful_description"
+      end
     end
 
     def set_cooldown(event_key, config)

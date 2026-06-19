@@ -8,7 +8,8 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", "Begin Cultivation"
     assert_select "input[name='user[email_address]']", false
     assert_select "input[name='user[password]']", false
-    assert_select "select[name='user[character_gender]']"
+    assert_select ".register-gender-choice input[type='radio'][name='user[character_gender]'][value='male']"
+    assert_select ".register-gender-choice input[type='radio'][name='user[character_gender]'][value='female']"
   end
 
   test "create signs in temporary user and creates named character" do

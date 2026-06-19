@@ -7,12 +7,19 @@
 
     <%= tag.div(flash[:alert], class: "form-alert") if flash[:alert] %>
 
-    <%= form_with model: @user, class: "auth-form" do |form| %>
+    <%= form_with model: @user, class: "auth-form register-form" do |form| %>
       <%= form.label :character_name, t(".character_name") %>
       <%= form.text_field :character_name, required: true, maxlength: 40, placeholder: t(".character_name_placeholder") %>
 
-      <%= form.label :character_gender, t(".character_gender") %>
-      <%= form.select :character_gender, Character.genders.keys.map { |gender| [ t("characters.genders.#{gender}"), gender ] } %>
+      <fieldset class="register-gender-choice">
+        <legend><%= t(".character_gender") %></legend>
+        <% Character.genders.keys.each do |gender| %>
+          <%= form.label :character_gender, value: gender, class: "register-gender-option" do %>
+            <%= form.radio_button :character_gender, gender, checked: @user.character_gender == gender || (@user.character_gender.blank? && gender == Character.genders.keys.first) %>
+            <span><%= t("characters.genders.#{gender}") %></span>
+          <% end %>
+        <% end %>
+      </fieldset>
 
       <%= form.submit t(".submit"), class: "ceremonial-button" %>
     <% end %>

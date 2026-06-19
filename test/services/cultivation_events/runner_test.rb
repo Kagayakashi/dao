@@ -102,12 +102,41 @@ class CultivationEvents::RunnerTest < ActiveSupport::TestCase
     assert_equal 1_400, @character.reload.qi
   end
 
+  test "stranger cultivator fight creates a reciprocal log for the related character" do
+    assert_difference -> { @character.game_events.count }, 1 do
+      assert_difference -> { @opponent.game_events.count }, 1 do
+        run_event(:stranger_cultivator, forced_outcome: :fight)
+      end
+    end
+
+    related_event = @opponent.game_events.order(:created_at).last
+
+    assert_equal "stranger_cultivator", related_event.event_key
+    assert_equal "victory", related_event.outcome
+    assert_equal @character, related_event.related_character
+    assert_equal 0, related_event.qi_delta
+    assert_equal "Quiet Flame", @opponent.reload.name
+    assert_equal "You crossed paths with Jade River. A short clash ended in your victory.", related_event.localized_description
+  end
+
   test "stranger cultivator peaceful meeting changes no qi" do
     event = run_event(:stranger_cultivator, forced_outcome: :peaceful)
 
     assert_equal "peaceful", event.outcome
     assert_equal 0, event.qi_delta
     assert_equal 5_000, @character.reload.qi
+  end
+
+  test "stranger cultivator peaceful meeting creates a reciprocal log for the related character" do
+    assert_difference -> { @opponent.game_events.count }, 1 do
+      run_event(:stranger_cultivator, forced_outcome: :peaceful)
+    end
+
+    related_event = @opponent.game_events.order(:created_at).last
+
+    assert_equal "peaceful", related_event.outcome
+    assert_equal @character, related_event.related_character
+    assert_equal "You met Jade River and exchanged quiet words about the Dao.", related_event.localized_description
   end
 
   test "found equipment item creates inventory item" do

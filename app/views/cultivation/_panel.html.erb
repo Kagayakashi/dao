@@ -12,7 +12,11 @@
   <% end %>
 
   <% if Current.user.temporary? %>
-    <p class="offline-gain"><%= cultivation_icon(:key) %> <%= t(".complete_registration_notice", qi: number_with_delimiter(User::COMPLETION_REWARD_QI)) %></p>
+    <p class="offline-gain">
+      <%= link_to new_registration_completion_path, data: { turbo_frame: "_top" } do %>
+        <%= cultivation_icon(:key) %> <%= t(".complete_registration_notice", qi: number_with_delimiter(User::COMPLETION_REWARD_QI)) %>
+      <% end %>
+    </p>
   <% end %>
 
   <%= tag.div(flash[:notice], class: "form-notice") if flash[:notice] %>
@@ -78,6 +82,9 @@
           <li>
             <strong><%= event.localized_title %></strong>
             <span><%= event.localized_description %></span>
+            <% if event.localized_qi_delta.present? %>
+              <span><%= event.localized_qi_delta %></span>
+            <% end %>
           </li>
         <% end %>
       </ul>

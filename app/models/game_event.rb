@@ -17,6 +17,15 @@ class GameEvent < ApplicationRecord
     end
   end
 
+  def localized_qi_delta
+    return if qi_delta.zero?
+
+    qi = ActiveSupport::NumberHelper.number_to_delimited(qi_delta)
+    qi = "+#{qi}" if qi_delta.positive?
+
+    I18n.t("shared.qi_with_value", qi:)
+  end
+
   private
 
   def localized_text(value, **options)

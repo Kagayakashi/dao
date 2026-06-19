@@ -28,10 +28,10 @@ module CultivationEvents
         equipment_kinds: %w[ weapon ring pendant ],
         option_count_chances: {
           1 => 51.0,
-          2 => 12.25,
-          3 => 12.25,
-          4 => 12.25,
-          5 => 12.25
+          2 => 24.99,
+          3 => 9.99,
+          4 => 4.45,
+          5 => 0.99
         },
         power_option_min: 7
       }
