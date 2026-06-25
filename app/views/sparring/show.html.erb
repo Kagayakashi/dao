@@ -30,6 +30,15 @@
         <% if event.localized_qi_delta.present? %>
           <span><%= event.localized_qi_delta %></span>
         <% end %>
+        <% if event.metadata["challenger_win_chance"].present? && event.metadata["opponent_win_chance"].present? %>
+          <span>
+            <%= t(
+              "sparring.matches.result_chances",
+              your_chance: number_to_percentage(event.metadata["challenger_win_chance"].to_f * 100, precision: 0),
+              opponent_chance: number_to_percentage(event.metadata["opponent_win_chance"].to_f * 100, precision: 0)
+            ) %>
+          </span>
+        <% end %>
       </div>
     <% end %>
 
@@ -54,7 +63,6 @@
 
     <nav class="quiet-nav" aria-label="<%= t("sparring.show.navigation_aria") %>">
       <%= link_to t("sparring.show.adventure_link"), adventure_path %>
-      <%= link_to t("sparring.show.return_link"), root_path %>
     </nav>
   </section>
 </main>

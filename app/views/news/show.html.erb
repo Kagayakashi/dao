@@ -1,0 +1,18 @@
+<% content_for :title, @news_post.title %>
+
+<main class="cultivation-page">
+  <article class="cultivation-panel news-panel">
+    <p class="eyebrow"><%= cultivation_icon(:bell) %> <%= t("news.show.eyebrow") %></p>
+    <h1><%= @news_post.title %></h1>
+    <p class="screen-note"><%= l(@news_post.published_at, format: :long) %></p>
+
+    <div class="news-body">
+      <%= @news_post.body %>
+    </div>
+
+    <nav class="quiet-nav" aria-label="<%= t("news.show.navigation_aria") %>">
+      <%= link_to t("news.show.news_link"), news_index_path %>
+      <%= link_to t("news.show.return_link"), adventure_path %>
+    </nav>
+  </article>
+</main>

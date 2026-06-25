@@ -19,7 +19,7 @@ class LeaderboardsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".leaderboard-entry:first-child", text: /Quiet Flame/
     assert_select ".leaderboard-entry:first-child", text: /500 Qi/
     assert_select ".leaderboard-entry:first-child", text: /Power/
-    assert_select ".leaderboard-entry:first-child a[href='#{character_path(users(:two).character, locale: :en)}']", "Quiet Flame"
+    assert_select ".leaderboard-entry:first-child a[href='#{character_path(users(:two).character, locale: :en)}']", text: /Quiet Flame/
     assert_select ".pagination-nav", text: /Page 1 of 1/
   end
 

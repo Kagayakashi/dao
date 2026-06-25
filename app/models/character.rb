@@ -6,6 +6,7 @@ class Character < ApplicationRecord
   has_many :game_events, dependent: :destroy
   has_many :character_event_cooldowns, dependent: :destroy
   has_many :inventory_items, dependent: :destroy
+  has_many :news_reads, dependent: :destroy
 
   alias_attribute :realm, :level
   alias_attribute :star, :sublevel
@@ -27,6 +28,10 @@ class Character < ApplicationRecord
   class_attribute :max_sparring_points, default: 3
   class_attribute :sparring_recovery_duration, default: 1.hour
   class_attribute :sparring_opponent_cooldown, default: 3.hours
+  class_attribute :daily_reward_base_qi, default: 1_000
+  class_attribute :daily_reward_realm_bonus_qi, default: 250
+  class_attribute :daily_reward_star_bonus_qi, default: 50
+  class_attribute :daily_reward_cooldown, default: 1.day
 
   before_validation :set_initial_last_online, on: :create
   before_validation :set_default_name, on: :create
@@ -207,6 +212,29 @@ class Character < ApplicationRecord
 
   def mark_sparring_unavailable!(at: Time.current)
     update!(sparring_available_at: at + sparring_opponent_cooldown)
+  end
+
+  def daily_reward_ready?(at: Time.current)
+    daily_reward_available_at(at:) <= at
+  end
+
+  def daily_reward_qi
+    daily_reward_base_qi + ((realm - 1) * daily_reward_realm_bonus_qi) + ((star - 1) * daily_reward_star_bonus_qi)
+  end
+
+  def daily_reward_available_at(at: Time.current)
+    return at unless daily_reward_claimed_at
+
+    daily_reward_claimed_at + daily_reward_cooldown
+  end
+
+  def claim_daily_reward!(at: Time.current)
+    return false unless daily_reward_ready?(at:)
+
+    gained_qi = gain_qi(daily_reward_qi, multiplier: 1.0)
+    self.daily_reward_claimed_at = at
+    save!
+    gained_qi
   end
 
   def admin_adjust_qi!(amount)

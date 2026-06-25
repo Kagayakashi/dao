@@ -1,0 +1,7 @@
+<footer class="global-footer" aria-label="<%= t("global_footer.navigation_aria") %>">
+  <nav class="global-footer__items">
+    <%= link_to t("global_footer.cultivation_link"), root_path, class: "ceremonial-link" %>
+    <%= link_to t("global_footer.leaderboard_link"), leaderboard_path, class: "ceremonial-link" %>
+    <%= button_to t("global_footer.sign_out_button"), session_path, method: :delete, class: "ceremonial-button" %>
+  </nav>
+</footer>

@@ -31,6 +31,10 @@ module ApplicationHelper
     format("%02d:%02d", seconds / 60, seconds % 60)
   end
 
+  def unread_news?(character)
+    NewsPost.unread_by(character).exists?
+  end
+
   private
 
   def cultivation_icon_paths
@@ -83,6 +87,12 @@ module ApplicationHelper
       clock: [
         icon_path("M12 4a8 8 0 1 1 0 16 8 8 0 0 1 0-16Z"),
         icon_path("M12 8v4l2.5 1.5")
+      ],
+      bell: [
+        icon_path("M6.5 17h11"),
+        icon_path("M9 17a3 3 0 0 0 6 0"),
+        icon_path("M7.5 17c1-1.2 1.5-2.7 1.5-4.5V10a3 3 0 0 1 6 0v2.5c0 1.8.5 3.3 1.5 4.5"),
+        icon_path("M12 5V3.5")
       ]
     }
   end

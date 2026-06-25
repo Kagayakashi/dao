@@ -9,13 +9,15 @@
     <ol class="leaderboard-list">
       <% @characters.each.with_index(@rank_offset + 1) do |character, rank| %>
         <li class="leaderboard-entry">
-          <span class="leaderboard-rank"><%= cultivation_icon(:star) %> <%= rank %></span>
-          <span>
-            <strong><%= link_to character.name, character_path(character) %></strong>
-            <small><%= t(".cultivator_summary", realm: character.realm_name, star: t("shared.star", count: character.star)) %></small>
-          </span>
-          <span class="leaderboard-qi"><%= t("shared.qi_with_value", qi: number_with_delimiter(character.total_experience)) %></span>
-          <span class="leaderboard-power"><%= t("shared.power_with_value", power: number_with_delimiter(character.power)) %></span>
+          <%= link_to character_path(character), class: "leaderboard-entry__link" do %>
+            <span class="leaderboard-rank"><%= cultivation_icon(:star) %> <%= rank %></span>
+            <span>
+              <strong><%= character.name %></strong>
+              <small><%= t(".cultivator_summary", realm: character.realm_name, star: t("shared.star", count: character.star)) %></small>
+            </span>
+            <span class="leaderboard-qi"><%= t("shared.qi_with_value", qi: number_with_delimiter(character.total_experience)) %></span>
+            <span class="leaderboard-power"><%= t("shared.power_with_value", power: number_with_delimiter(character.power)) %></span>
+          <% end %>
         </li>
       <% end %>
     </ol>
@@ -30,8 +32,5 @@
       <% end %>
     </nav>
 
-    <nav class="quiet-nav" aria-label="<%= t(".navigation_aria") %>">
-      <%= link_to t(".return_link"), root_path %>
-    </nav>
   </section>
 </main>

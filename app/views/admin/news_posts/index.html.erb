@@ -1,0 +1,37 @@
+<% content_for :title, t("admin.news_posts.index.title") %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel auth-panel">
+    <p class="eyebrow"><%= cultivation_icon(:bell) %> <%= t("admin.news_posts.index.eyebrow") %></p>
+    <h1><%= t("admin.news_posts.index.heading") %></h1>
+    <p class="screen-note"><%= t("admin.news_posts.index.screen_note") %></p>
+
+    <%= tag.div(flash[:notice], class: "form-notice") if flash[:notice] %>
+
+    <nav class="quiet-nav" aria-label="<%= t("admin.news_posts.index.actions_aria") %>">
+      <%= link_to t("admin.news_posts.index.new_link"), new_admin_news_post_path %>
+    </nav>
+
+    <% if @news_posts.any? %>
+      <ul class="news-list">
+        <% @news_posts.each do |news_post| %>
+          <li class="news-entry">
+            <strong><%= news_post.title %></strong>
+            <span><%= l(news_post.published_at, format: :short) %></span>
+            <span class="news-entry__actions">
+              <%= link_to t("admin.news_posts.index.edit_link"), edit_admin_news_post_path(news_post) %>
+              <%= button_to t("admin.news_posts.index.delete_button"), admin_news_post_path(news_post), method: :delete, class: "link-button" %>
+            </span>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="empty-state"><%= t("admin.news_posts.index.empty") %></p>
+    <% end %>
+
+    <nav class="quiet-nav" aria-label="<%= t("admin.news_posts.index.navigation_aria") %>">
+      <%= link_to t("admin.news_posts.index.admin_link"), admin_root_path %>
+      <%= link_to t("admin.news_posts.index.return_link"), root_path %>
+    </nav>
+  </section>
+</main>

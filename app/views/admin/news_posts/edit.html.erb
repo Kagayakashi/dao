@@ -1,0 +1,11 @@
+<% content_for :title, t("admin.news_posts.edit.title") %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel auth-panel">
+    <p class="eyebrow"><%= cultivation_icon(:bell) %> <%= t("admin.news_posts.edit.eyebrow") %></p>
+    <h1><%= t("admin.news_posts.edit.heading") %></h1>
+    <p class="screen-note"><%= t("admin.news_posts.edit.screen_note") %></p>
+
+    <%= render "form", news_post: @news_post, submit_text: t("admin.news_posts.edit.submit") %>
+  </section>
+</main>

@@ -16,7 +16,11 @@ class CharacterTest < ActiveSupport::TestCase
       star_power_multiplier: Character.star_power_multiplier,
       max_sparring_points: Character.max_sparring_points,
       sparring_recovery_duration: Character.sparring_recovery_duration,
-      sparring_opponent_cooldown: Character.sparring_opponent_cooldown
+      sparring_opponent_cooldown: Character.sparring_opponent_cooldown,
+      daily_reward_base_qi: Character.daily_reward_base_qi,
+      daily_reward_realm_bonus_qi: Character.daily_reward_realm_bonus_qi,
+      daily_reward_star_bonus_qi: Character.daily_reward_star_bonus_qi,
+      daily_reward_cooldown: Character.daily_reward_cooldown
     }
 
     Character.stars_per_realm = 9
@@ -33,6 +37,10 @@ class CharacterTest < ActiveSupport::TestCase
     Character.max_sparring_points = 3
     Character.sparring_recovery_duration = 1.hour
     Character.sparring_opponent_cooldown = 3.hours
+    Character.daily_reward_base_qi = 1_000
+    Character.daily_reward_realm_bonus_qi = 250
+    Character.daily_reward_star_bonus_qi = 50
+    Character.daily_reward_cooldown = 1.day
 
     @character = characters(:one)
     @character.update!(realm: 1, star: 1, qi: 0, total_experience: 0, last_online: Time.current)
@@ -273,6 +281,36 @@ class CharacterTest < ActiveSupport::TestCase
     assert_equal now + 3.hours, @character.reload.sparring_available_at
     assert_not @character.available_for_sparring?(at: now + 2.hours)
     assert @character.available_for_sparring?(at: now + 3.hours)
+  end
+
+  test "claims daily reward when ready" do
+    now = Time.zone.local(2026, 6, 18, 12, 0, 0)
+    @character.update!(realm: 2, star: 3)
+
+    gained_qi = @character.claim_daily_reward!(at: now)
+
+    @character.reload
+    assert_equal 1_350, gained_qi
+    assert_equal 1_350, @character.qi
+    assert_equal 1_350, @character.total_experience
+    assert_equal now, @character.daily_reward_claimed_at
+  end
+
+  test "daily reward scales by realm and star" do
+    @character.update!(realm: 3, star: 4)
+
+    assert_equal 1_650, @character.daily_reward_qi
+  end
+
+  test "does not claim daily reward before cooldown" do
+    now = Time.zone.local(2026, 6, 18, 12, 0, 0)
+    @character.update!(daily_reward_claimed_at: now - 1.hour)
+
+    assert_not @character.claim_daily_reward!(at: now)
+
+    @character.reload
+    assert_equal 0, @character.qi
+    assert_equal now + 23.hours, @character.daily_reward_available_at(at: now)
   end
 
   private

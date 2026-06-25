@@ -11,8 +11,15 @@ en:
     copyright_html: "Made by %{name}."
     cookie_policy: "Cookie Policy"
 
+  global_footer:
+    navigation_aria: "Global actions"
+    cultivation_link: "Home"
+    leaderboard_link: "Leaderboard"
+    sign_out_button: "Sign out"
+
   global_header:
     navigation_aria: "Cultivator status"
+    news: "Crier news"
     character_name: "Character profile"
     realm: "Realm"
     star: "Star"
@@ -148,6 +155,11 @@ en:
       breakthrough_ready: "Your Qi is stable. A breakthrough is ready."
       breakthrough_button: "Breakthrough"
       next_breakthrough: "Next breakthrough in %{qi} Qi."
+      daily_reward_heading: "Daily Reward"
+      daily_reward_amount: "%{qi} Qi"
+      daily_reward_ready: "Your daily reward is ready."
+      daily_reward_link: "Temple of Heaven"
+      daily_reward_next: "Next reward in %{duration}."
       achievements_heading: "Achievements"
       events_heading: "Recent Events"
       navigation_aria: "Cultivation navigation"
@@ -155,6 +167,25 @@ en:
       adventure_link: "Adventure"
       leaderboard_link: "Leaderboard"
       sign_out_button: "Sign out"
+
+  temples:
+    pray:
+      notice:
+        claimed: "Your prayer was answered: %{qi} Qi."
+        not_ready: "The Temple of Heaven is quiet. Return after the next cycle."
+    show:
+      title: "Temple of Heaven"
+      eyebrow: "Daily Prayer"
+      heading: "Temple of Heaven"
+      screen_note: "Pray once per day. The heavens answer more generously as your Realm and Star rise."
+      reward_heading: "Heavenly Reward"
+      reward_amount: "%{qi} Qi"
+      reward_scaling: "Based on Realm %{realm}, Star %{star}."
+      ready: "The incense is still burning. Your prayer is ready."
+      pray_button: "Pray"
+      next_prayer: "Next prayer in %{duration}."
+      navigation_aria: "Temple navigation"
+      return_link: "Return to Cultivation"
 
   adventures:
     show:
@@ -166,8 +197,29 @@ en:
       actions_heading: "City Paths"
       wuxia_sparring_note: "Enter a respectful Wuxia Sparring exchange with another cultivator. The result is decided instantly by current Power."
       wuxia_sparring_link: "Wuxia Sparring"
+      crier_note: "Listen to the city crier for recent announcements."
+      crier_link: "Crier"
       navigation_aria: "Adventure navigation"
       return_link: "Return to Cultivation"
+
+  news:
+    read_all:
+      notice: "All crier notices were marked as read."
+    index:
+      title: "Crier"
+      eyebrow: "City Crier"
+      heading: "Crier"
+      screen_note: "The crier gathers official news and recent announcements. Open a notice to mark it as read."
+      read_all_button: "Read all"
+      unread_badge: "Unread"
+      empty: "The crier has no news today."
+      navigation_aria: "Crier navigation"
+      return_link: "Return to Adventure"
+    show:
+      eyebrow: "Crier Notice"
+      navigation_aria: "News navigation"
+      news_link: "Crier"
+      return_link: "Return to Adventure"
 
   sparring:
     create:
@@ -194,6 +246,7 @@ en:
       title: "Wuxia Sparring"
       victory_description: "You sparred with %{name}. Your steadier aura carried the exchange."
       defeat_description: "You sparred with %{name}. Their steadier aura guided the exchange."
+      result_chances: "Your chance: %{your_chance}. Opponent chance: %{opponent_chance}."
 
   inventories:
     show:
@@ -243,6 +296,7 @@ en:
         secondary_navigation_aria: "Admin secondary navigation"
         create_item_link: "Create Item"
         adjust_qi_link: "Adjust Qi"
+        news_posts_link: "News Posts"
         return_link: "Return to Cultivation"
         sign_out_button: "Sign out admin"
     sessions:
@@ -277,6 +331,45 @@ en:
         navigation_aria: "Admin panel navigation"
         admin_link: "Admin Panel"
         return_link: "Return to Cultivation"
+    news_posts:
+      create:
+        notice: "News post published."
+      update:
+        notice: "News post updated."
+      destroy:
+        notice: "News post deleted."
+      index:
+        title: "News Posts"
+        eyebrow: "Admin"
+        heading: "News Posts"
+        screen_note: "Create and manage crier notices shown to players."
+        actions_aria: "News post actions"
+        new_link: "New News Post"
+        edit_link: "Edit"
+        delete_button: "Delete"
+        empty: "No news posts yet."
+        navigation_aria: "News post navigation"
+        admin_link: "Admin Panel"
+        return_link: "Return to Cultivation"
+      new:
+        title: "New News Post"
+        eyebrow: "Admin"
+        heading: "New News Post"
+        screen_note: "Write a rich crier notice for players."
+        submit: "Publish News"
+      edit:
+        title: "Edit News Post"
+        eyebrow: "Admin"
+        heading: "Edit News Post"
+        screen_note: "Update this crier notice."
+        submit: "Save News"
+      form:
+        title: "Title"
+        published_at: "Published at"
+        body: "Body"
+        navigation_aria: "News post form navigation"
+        news_posts_link: "News Posts"
+        admin_link: "Admin Panel"
     qi_adjustments:
       create:
         notice: "%{direction} %{qi} Qi for %{character}. Now %{realm}, %{star} Star."

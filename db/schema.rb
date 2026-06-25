@@ -10,7 +10,45 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_25_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_25_092001) do
+  create_table "action_text_rich_texts", force: :cascade do |t|
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
+    t.datetime "updated_at", null: false
+    t.index ["record_type", "record_id", "name"], name: "index_action_text_rich_texts_uniqueness", unique: true
+  end
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.string "content_type"
+    t.datetime "created_at", null: false
+    t.string "filename", null: false
+    t.string "key", null: false
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
   create_table "character_achievements", force: :cascade do |t|
     t.integer "character_id", null: false
     t.datetime "created_at", null: false
@@ -34,6 +72,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_000001) do
   create_table "characters", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "currency", default: 0, null: false
+    t.datetime "daily_reward_claimed_at"
     t.bigint "experience", default: 0, null: false
     t.string "gender", default: "male", null: false
     t.datetime "last_online", default: -> { "CURRENT_TIMESTAMP" }
@@ -47,6 +86,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_000001) do
     t.bigint "total_experience", default: 0, null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.index ["daily_reward_claimed_at"], name: "index_characters_on_daily_reward_claimed_at"
     t.index ["sparring_available_at"], name: "index_characters_on_sparring_available_at"
     t.index ["user_id"], name: "index_characters_on_user_id", unique: true
   end
@@ -84,6 +124,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_000001) do
     t.index ["character_id"], name: "index_inventory_items_on_character_id"
   end
 
+  create_table "news_posts", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "published_at", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["published_at"], name: "index_news_posts_on_published_at"
+  end
+
+  create_table "news_reads", force: :cascade do |t|
+    t.integer "character_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "news_post_id", null: false
+    t.datetime "read_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id", "news_post_id"], name: "index_news_reads_on_character_id_and_news_post_id", unique: true
+    t.index ["character_id"], name: "index_news_reads_on_character_id"
+    t.index ["news_post_id"], name: "index_news_reads_on_news_post_id"
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "ip_address"
@@ -102,11 +161,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_000001) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "character_achievements", "characters"
   add_foreign_key "character_event_cooldowns", "characters"
   add_foreign_key "characters", "users"
   add_foreign_key "game_events", "characters"
   add_foreign_key "game_events", "characters", column: "related_character_id"
   add_foreign_key "inventory_items", "characters"
+  add_foreign_key "news_reads", "characters"
+  add_foreign_key "news_reads", "news_posts"
   add_foreign_key "sessions", "users"
 end

@@ -17,6 +17,7 @@ module Admin
       assert_select "h1", "Admin Panel"
       assert_select "a[href='#{new_admin_item_path(locale: :en)}']", "Create Item"
       assert_select "a[href='#{new_admin_qi_adjustment_path(locale: :en)}']", "Adjust Qi"
+      assert_select "a[href='#{admin_news_posts_path(locale: :en)}']", "News Posts"
     end
 
     private

@@ -11,8 +11,15 @@ ru:
     copyright_html: "Сделано: %{name}."
     cookie_policy: "Политика cookies"
 
+  global_footer:
+    navigation_aria: "Общие действия"
+    cultivation_link: "Главная"
+    leaderboard_link: "Рейтинг"
+    sign_out_button: "Выйти"
+
   global_header:
     navigation_aria: "Статус культиватора"
+    news: "Новости глашатая"
     character_name: "Профиль персонажа"
     realm: "Сфера"
     star: "Звезда"
@@ -148,6 +155,11 @@ ru:
       breakthrough_ready: "Ваша Ци стабильна. Прорыв готов."
       breakthrough_button: "Прорыв"
       next_breakthrough: "До следующего прорыва: %{qi} Ци."
+      daily_reward_heading: "Ежедневная награда"
+      daily_reward_amount: "%{qi} Ци"
+      daily_reward_ready: "Ежедневная награда готова."
+      daily_reward_link: "Храм Неба"
+      daily_reward_next: "Следующая награда через %{duration}."
       achievements_heading: "Достижения"
       events_heading: "Недавние события"
       navigation_aria: "Навигация культивации"
@@ -155,6 +167,25 @@ ru:
       adventure_link: "Приключение"
       leaderboard_link: "Рейтинг"
       sign_out_button: "Выйти"
+
+  temples:
+    pray:
+      notice:
+        claimed: "Ваша молитва услышана: %{qi} Ци."
+        not_ready: "Храм Неба тих. Вернитесь после следующего цикла."
+    show:
+      title: "Храм Неба"
+      eyebrow: "Ежедневная молитва"
+      heading: "Храм Неба"
+      screen_note: "Молитесь один раз в день. Небеса отвечают щедрее, когда растут ваша Сфера и Звезда."
+      reward_heading: "Небесная награда"
+      reward_amount: "%{qi} Ци"
+      reward_scaling: "Основано на Сфере %{realm}, Звезде %{star}."
+      ready: "Благовония еще горят. Ваша молитва готова."
+      pray_button: "Молиться"
+      next_prayer: "Следующая молитва через %{duration}."
+      navigation_aria: "Навигация храма"
+      return_link: "Вернуться к культивации"
 
   adventures:
     show:
@@ -166,8 +197,29 @@ ru:
       actions_heading: "Городские пути"
       wuxia_sparring_note: "Вступите в уважительный уся-спарринг с другим культиватором. Исход сразу определяется текущей Силой."
       wuxia_sparring_link: "Уся-спарринг"
+      crier_note: "Послушайте городского глашатая, чтобы узнать последние объявления."
+      crier_link: "Глашатай"
       navigation_aria: "Навигация приключения"
       return_link: "Вернуться к культивации"
+
+  news:
+    read_all:
+      notice: "Все объявления глашатая отмечены как прочитанные."
+    index:
+      title: "Глашатай"
+      eyebrow: "Городской глашатай"
+      heading: "Глашатай"
+      screen_note: "Глашатай собирает официальные новости и свежие объявления. Откройте заметку, чтобы отметить ее прочитанной."
+      read_all_button: "Прочитать все"
+      unread_badge: "Новое"
+      empty: "Сегодня у глашатая нет новостей."
+      navigation_aria: "Навигация глашатая"
+      return_link: "Вернуться к приключению"
+    show:
+      eyebrow: "Объявление глашатая"
+      navigation_aria: "Навигация новости"
+      news_link: "Глашатай"
+      return_link: "Вернуться к приключению"
 
   sparring:
     create:
@@ -184,7 +236,7 @@ ru:
       banner_alt: "Двор для уся-спарринга"
       screen_note: "Из городской толпы выбран ближайший культиватор. Один спарринг мгновенно решит обмен."
       opponent_heading: "Соперник для спарринга"
-      spare_button: "Атаковать"
+      spare_button: "Провести спарринг"
       change_opponent_button: "Сменить культиватора"
       no_opponent: "Пока рядом со двором нет других культиваторов."
       navigation_aria: "Навигация уся-спарринга"
@@ -194,6 +246,7 @@ ru:
       title: "Уся-спарринг"
       victory_description: "Вы провели спарринг с %{name}. Ваша более устойчивая аура направила обмен."
       defeat_description: "Вы провели спарринг с %{name}. Его более устойчивая аура направила обмен."
+      result_chances: "Ваш шанс: %{your_chance}. Шанс соперника: %{opponent_chance}."
 
   inventories:
     show:
@@ -243,6 +296,7 @@ ru:
         secondary_navigation_aria: "Дополнительная навигация администратора"
         create_item_link: "Создать предмет"
         adjust_qi_link: "Изменить Ци"
+        news_posts_link: "Новости"
         return_link: "Вернуться к культивации"
         sign_out_button: "Выйти из админки"
     sessions:
@@ -277,6 +331,45 @@ ru:
         navigation_aria: "Навигация админ-панели"
         admin_link: "Админ-панель"
         return_link: "Вернуться к культивации"
+    news_posts:
+      create:
+        notice: "Новость опубликована."
+      update:
+        notice: "Новость обновлена."
+      destroy:
+        notice: "Новость удалена."
+      index:
+        title: "Новости"
+        eyebrow: "Админ"
+        heading: "Новости"
+        screen_note: "Создавайте и управляйте объявлениями глашатая для игроков."
+        actions_aria: "Действия с новостями"
+        new_link: "Новая новость"
+        edit_link: "Изменить"
+        delete_button: "Удалить"
+        empty: "Новостей пока нет."
+        navigation_aria: "Навигация новостей"
+        admin_link: "Админ-панель"
+        return_link: "Вернуться к культивации"
+      new:
+        title: "Новая новость"
+        eyebrow: "Админ"
+        heading: "Новая новость"
+        screen_note: "Напишите богатое объявление глашатая для игроков."
+        submit: "Опубликовать новость"
+      edit:
+        title: "Изменить новость"
+        eyebrow: "Админ"
+        heading: "Изменить новость"
+        screen_note: "Обновите это объявление глашатая."
+        submit: "Сохранить новость"
+      form:
+        title: "Заголовок"
+        published_at: "Опубликовано"
+        body: "Текст"
+        navigation_aria: "Навигация формы новости"
+        news_posts_link: "Новости"
+        admin_link: "Админ-панель"
     qi_adjustments:
       create:
         notice: "%{direction} %{qi} Ци для %{character}. Теперь %{realm}, %{star} звезда."

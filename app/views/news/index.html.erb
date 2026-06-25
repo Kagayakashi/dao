@@ -1,0 +1,38 @@
+<% content_for :title, t("news.index.title") %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel news-panel">
+    <p class="eyebrow"><%= cultivation_icon(:bell) %> <%= t("news.index.eyebrow") %></p>
+    <h1><%= t("news.index.heading") %></h1>
+    <p class="screen-note"><%= t("news.index.screen_note") %></p>
+
+    <%= tag.div(flash[:notice], class: "form-notice") if flash[:notice] %>
+
+    <% if @news_posts.any? && unread_news?(@character) %>
+      <%= button_to t("news.index.read_all_button"), read_all_news_index_path, class: "ceremonial-button news-read-all-button" %>
+    <% end %>
+
+    <% if @news_posts.any? %>
+      <ul class="news-list">
+        <% @news_posts.each do |news_post| %>
+          <% unread = !@character.news_reads.exists?(news_post:) %>
+          <li class="news-entry <%= "news-entry--unread" if unread %>">
+            <%= link_to news_path(news_post), class: "news-entry__link" do %>
+              <strong><%= news_post.title %></strong>
+              <% if unread %>
+                <span class="news-entry__badge"><%= t("news.index.unread_badge") %></span>
+              <% end %>
+              <span><%= l(news_post.published_at, format: :short) %></span>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="empty-state"><%= t("news.index.empty") %></p>
+    <% end %>
+
+    <nav class="quiet-nav" aria-label="<%= t("news.index.navigation_aria") %>">
+      <%= link_to t("news.index.return_link"), adventure_path %>
+    </nav>
+  </section>
+</main>

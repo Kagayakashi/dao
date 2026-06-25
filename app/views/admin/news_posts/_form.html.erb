@@ -1,0 +1,23 @@
+<% if news_post.errors.any? %>
+  <div class="form-alert">
+    <%= news_post.errors.full_messages.to_sentence %>
+  </div>
+<% end %>
+
+<%= form_with model: [ :admin, news_post ], class: "auth-form" do |form| %>
+  <%= form.label :title, t("admin.news_posts.form.title") %>
+  <%= form.text_field :title, required: true, maxlength: 120 %>
+
+  <%= form.label :published_at, t("admin.news_posts.form.published_at") %>
+  <%= form.datetime_field :published_at, required: true %>
+
+  <%= form.label :body, t("admin.news_posts.form.body") %>
+  <%= form.rich_text_area :body %>
+
+  <%= form.submit submit_text, class: "ceremonial-button" %>
+<% end %>
+
+<nav class="quiet-nav" aria-label="<%= t("admin.news_posts.form.navigation_aria") %>">
+  <%= link_to t("admin.news_posts.form.news_posts_link"), admin_news_posts_path %>
+  <%= link_to t("admin.news_posts.form.admin_link"), admin_root_path %>
+</nav>

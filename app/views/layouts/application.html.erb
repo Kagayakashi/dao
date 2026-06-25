@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" href="/icon.png">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag :app, "actiontext", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
@@ -31,6 +31,8 @@
     <%= render "layouts/global_header", character: @global_header_character if @global_header_character.present? %>
 
     <%= yield %>
+
+    <%= render "layouts/global_footer" if @global_header_character.present? %>
 
     <footer class="site-footer">
       <small>

@@ -13,11 +13,10 @@
     <section class="events" aria-labelledby="adventure-actions-heading">
       <h2 id="adventure-actions-heading"><%= cultivation_icon(:scroll) %> <%= t("adventures.show.actions_heading") %></h2>
       <p class="screen-note"><%= t("adventures.show.wuxia_sparring_note") %></p>
-      <%= link_to t("adventures.show.wuxia_sparring_link"), sparring_path, class: "ceremonial-link" %>
+      <%= link_to t("adventures.show.wuxia_sparring_link"), sparring_path, class: "ceremonial-link adventure-action-link" %>
+      <p class="screen-note"><%= t("adventures.show.crier_note") %></p>
+      <%= link_to t("adventures.show.crier_link"), news_index_path, class: "ceremonial-link adventure-action-link" %>
     </section>
 
-    <nav class="quiet-nav" aria-label="<%= t("adventures.show.navigation_aria") %>">
-      <%= link_to t("adventures.show.return_link"), root_path %>
-    </nav>
   </section>
 </main>

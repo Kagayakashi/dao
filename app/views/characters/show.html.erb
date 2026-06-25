@@ -55,15 +55,13 @@
       </div>
     </section>
 
-    <nav class="quiet-nav" aria-label="<%= t("characters.show.navigation_aria") %>">
-      <% if @character == Current.user.character %>
+    <% if @character == Current.user.character %>
+      <nav class="quiet-nav" aria-label="<%= t("characters.show.navigation_aria") %>">
         <% if Current.user.temporary? %>
           <%= link_to t("characters.show.complete_registration_link"), new_registration_completion_path %>
         <% end %>
         <%= link_to t("characters.show.inventory_link"), inventory_path %>
-      <% end %>
-      <%= link_to t("characters.show.leaderboard_link"), leaderboard_path %>
-      <%= link_to t("characters.show.return_link"), root_path %>
-    </nav>
+      </nav>
+    <% end %>
   </section>
 </main>

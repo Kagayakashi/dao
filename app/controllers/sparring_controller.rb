@@ -79,7 +79,7 @@ class SparringController < ApplicationController
       outcome: result.fetch(:outcome),
       title: "sparring.matches.title",
       description: result.fetch(:description),
-      metadata: {},
+      metadata: result.fetch(:metadata),
       qi_delta: result.fetch(:qi_delta),
       related_character: result.fetch(:related_character),
       happened_at: Time.current
@@ -92,10 +92,17 @@ class SparringController < ApplicationController
       outcome: result.fetch(:reciprocal_outcome),
       title: "sparring.matches.title",
       description: result.fetch(:reciprocal_description),
-      metadata: {},
+      metadata: reciprocal_metadata(result.fetch(:metadata)),
       qi_delta: 0,
       related_character: @character,
       happened_at: Time.current
     )
+  end
+
+  def reciprocal_metadata(metadata)
+    {
+      "challenger_win_chance" => metadata.fetch("opponent_win_chance"),
+      "opponent_win_chance" => metadata.fetch("challenger_win_chance")
+    }
   end
 end

@@ -41,7 +41,12 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
     assert_select ".screen-note", text: /Qi gathers/
     assert_select ".next-breakthrough", text: /Next breakthrough/
     assert_select ".sparring-card", text: %r{2/3}
+    assert_select ".daily-reward-card", text: /1,350 Qi/
+    assert_select ".daily-reward-card a[href='#{temple_path(locale: :en)}']", "Temple of Heaven"
     assert_select ".quiet-nav", text: /Profile/
+    assert_select ".global-footer a[href='#{root_path(locale: :en)}']", "Home"
+    assert_select ".global-footer a[href='#{leaderboard_path(locale: :en)}']", "Leaderboard"
+    assert_select ".global-footer form button", "Sign out"
     assert_select "#equipment-heading", false
     assert_select "#inventory-heading", false
   end
@@ -57,6 +62,17 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
     assert_select ".offline-gain", text: /Complete registration/
     assert_select ".offline-gain", text: /1,000 bonus Qi/
     assert_select ".offline-gain a[href='#{new_registration_completion_path(locale: :en)}'][data-turbo-frame='_top']", text: /Complete registration/
+  end
+
+  test "hides daily reward card on dashboard after prayer" do
+    user = users(:one)
+    user.character.update!(daily_reward_claimed_at: Time.current)
+    sign_in_as(user)
+
+    get root_path(locale: :en)
+
+    assert_response :success
+    assert_select ".daily-reward-card", false
   end
 
   test "does not show earned achievements on dashboard" do
@@ -100,8 +116,6 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "h1", "Jade River"
-    assert_select ".quiet-nav", text: /Leaderboard/
-    assert_select ".quiet-nav", text: /Sign out/
   end
 
   test "shows breakthrough button when enough qi is gathered" do

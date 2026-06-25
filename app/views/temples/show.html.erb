@@ -1,0 +1,25 @@
+<% content_for :title, t("temples.show.title") %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel temple-panel">
+    <p class="eyebrow"><%= cultivation_icon(:spark) %> <%= t("temples.show.eyebrow") %></p>
+    <h1><%= t("temples.show.heading") %></h1>
+    <p class="screen-note"><%= t("temples.show.screen_note") %></p>
+
+    <%= tag.div(flash[:notice], class: "form-notice") if flash[:notice] %>
+
+    <div class="realm-card daily-reward-card">
+      <span class="realm-label"><%= cultivation_icon(:qi) %> <%= t("temples.show.reward_heading") %></span>
+      <strong><%= t("temples.show.reward_amount", qi: number_with_delimiter(@character.daily_reward_qi)) %></strong>
+      <span><%= t("temples.show.reward_scaling", realm: @character.realm, star: @character.star) %></span>
+    </div>
+
+    <% if @character.daily_reward_ready? %>
+      <p class="breakthrough-ready"><%= cultivation_icon(:star) %> <%= t("temples.show.ready") %></p>
+      <%= button_to t("temples.show.pray_button"), pray_temple_path, class: "ceremonial-button breakthrough-button" %>
+    <% else %>
+      <p class="next-breakthrough"><%= t("temples.show.next_prayer", duration: distance_of_time_in_words(Time.current, @character.daily_reward_available_at)) %></p>
+    <% end %>
+
+  </section>
+</main>

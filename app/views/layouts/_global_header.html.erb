@@ -1,5 +1,9 @@
 <header class="global-header" aria-label="<%= t("global_header.navigation_aria") %>">
   <nav class="global-header__items">
+    <%= link_to news_index_path, class: [ "global-header__item", "global-header__item--icon", ("global-header__item--unread" if unread_news?(character)) ].compact.join(" "), title: t("global_header.news"), aria: { label: t("global_header.news") } do %>
+      <%= cultivation_icon(:bell) %>
+    <% end %>
+
     <%= link_to character_path(character), class: "global-header__item", title: t("global_header.character_name"), aria: { label: t("global_header.character_name") } do %>
       <%= cultivation_icon(:scroll) %>
       <span><%= character.name %></span>

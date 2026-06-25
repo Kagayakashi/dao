@@ -3,9 +3,17 @@ Rails.application.routes.draw do
     root "cultivation#show"
     get "cultivation/panel" => "cultivation#panel", as: :cultivation_panel
     post "cultivation/breakthrough" => "cultivation#breakthrough", as: :cultivation_breakthrough
+    resource :temple, only: :show, controller: :temples do
+      post :pray
+    end
     resource :leaderboard, only: :show
     resource :inventory, only: :show
     resource :adventure, only: :show
+    resources :news, only: %i[ index show ] do
+      collection do
+        post :read_all
+      end
+    end
     resource :sparring, only: %i[ show create ], controller: :sparring do
       post :change_opponent
     end
@@ -23,6 +31,7 @@ Rails.application.routes.draw do
       root "dashboard#show"
       resource :session, only: %i[ new create destroy ]
       resources :items, only: %i[ new create ]
+      resources :news_posts, except: :show
       resource :qi_adjustment, only: %i[ new create ]
     end
 

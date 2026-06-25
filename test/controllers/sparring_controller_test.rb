@@ -63,7 +63,16 @@ class SparringControllerTest < ActionDispatch::IntegrationTest
     assert_equal 2, character.sparring_points
     assert_includes [ 0, 3_600 ], character.qi
     assert_operator opponent.reload.sparring_available_at, :>, Time.current + 2.hours
-    assert_includes %w[victory defeat], character.game_events.order(:created_at).last.outcome
+    event = character.game_events.order(:created_at).last
+    assert_includes %w[victory defeat], event.outcome
+    assert_equal 0.6667, event.metadata.fetch("challenger_win_chance")
+    assert_equal 0.3333, event.metadata.fetch("opponent_win_chance")
+
+    get sparring_path(locale: :en, result_event_id: event.id)
+
+    assert_response :success
+    assert_select ".event-notice", text: /Your chance: 67%/
+    assert_select ".event-notice", text: /Opponent chance: 33%/
   end
 
   test "does not show opponent during global sparring cooldown" do

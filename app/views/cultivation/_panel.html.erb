@@ -66,6 +66,15 @@
     <% end %>
   </div>
 
+  <% if character.daily_reward_ready? %>
+    <div class="realm-card daily-reward-card">
+      <span class="realm-label"><%= cultivation_icon(:spark) %> <%= t("cultivation.panel.daily_reward_heading") %></span>
+      <strong><%= t("cultivation.panel.daily_reward_amount", qi: number_with_delimiter(character.daily_reward_qi)) %></strong>
+      <span><%= t("cultivation.panel.daily_reward_ready") %></span>
+      <%= link_to t("cultivation.panel.daily_reward_link"), temple_path, class: "ceremonial-link", data: { turbo_frame: "_top" } %>
+    </div>
+  <% end %>
+
   <% recent_events = character.recent_game_events %>
   <% if recent_events.any? %>
     <section class="events" aria-labelledby="events-heading">
@@ -88,7 +97,5 @@
   <nav class="quiet-nav" aria-label="<%= t(".navigation_aria") %>">
     <%= link_to t(".profile_link"), character_path(character), data: { turbo_frame: "_top" } %>
     <%= link_to t(".adventure_link"), adventure_path, data: { turbo_frame: "_top" } %>
-    <%= link_to t(".leaderboard_link"), leaderboard_path, data: { turbo_frame: "_top" } %>
-    <%= button_to t(".sign_out_button"), session_path, method: :delete, form: { data: { turbo_frame: "_top" } }, class: "ceremonial-button" %>
   </nav>
 </section>
