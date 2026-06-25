@@ -10,6 +10,8 @@
 # Ignore all environment files.
 /.env*
 
+/AGENTS.md
+
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*
