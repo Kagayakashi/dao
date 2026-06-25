@@ -28,8 +28,8 @@ body {
 
 .language-switch {
   position: fixed;
-  top: 0.75rem;
-  right: 0.75rem;
+  top: 0.50rem;
+  right: 0.50rem;
   z-index: 10;
 }
 

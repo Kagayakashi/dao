@@ -506,6 +506,11 @@ ru:
           equipment_slot:
             equipment_slot_mismatch: "не соответствует типу предмета"
 
+  time:
+    formats:
+      short: "%d.%m.%Y %H:%M:%S"
+      long: "%d.%m.%Y %H:%M:%S"
+
   datetime:
     distance_in_words:
       half_a_minute: "полминуты"

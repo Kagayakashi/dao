@@ -9,7 +9,7 @@
   <%= form.text_field :title, required: true, maxlength: 120 %>
 
   <%= form.label :published_at, t("admin.news_posts.form.published_at") %>
-  <%= form.datetime_field :published_at, required: true %>
+  <%= form.datetime_field :published_at, min: "2000-01-01T00:00", step: 60, required: true %>
 
   <%= form.label :body, t("admin.news_posts.form.body") %>
   <%= form.rich_text_area :body %>
