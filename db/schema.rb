@@ -73,6 +73,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_092001) do
     t.datetime "created_at", null: false
     t.bigint "currency", default: 0, null: false
     t.datetime "daily_reward_claimed_at"
+    t.bigint "donation_currency", default: 0, null: false
     t.bigint "experience", default: 0, null: false
     t.string "gender", default: "male", null: false
     t.datetime "last_online", default: -> { "CURRENT_TIMESTAMP" }
@@ -82,12 +83,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_092001) do
     t.datetime "sparring_available_at"
     t.integer "sparring_points", default: 3, null: false
     t.datetime "sparring_recovered_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.integer "spirit_expedition_duration_hours"
+    t.datetime "spirit_expedition_ends_at"
+    t.datetime "spirit_expedition_started_at"
     t.integer "sublevel", default: 1, null: false
     t.bigint "total_experience", default: 0, null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.index ["daily_reward_claimed_at"], name: "index_characters_on_daily_reward_claimed_at"
     t.index ["sparring_available_at"], name: "index_characters_on_sparring_available_at"
+    t.index ["spirit_expedition_ends_at"], name: "index_characters_on_spirit_expedition_ends_at"
     t.index ["user_id"], name: "index_characters_on_user_id", unique: true
   end
 

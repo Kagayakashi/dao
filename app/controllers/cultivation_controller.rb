@@ -5,11 +5,12 @@ class CultivationController < ApplicationController
 
   def panel
     load_cultivation
-    render partial: "panel", locals: { character: @character, offline_qi_gained: @offline_qi_gained, triggered_event: @triggered_event }
+    render partial: "panel", locals: { character: @character, offline_qi_gained: @offline_qi_gained, triggered_event: @triggered_event, completed_spirit_expedition: @completed_spirit_expedition }
   end
 
   def breakthrough
     character = Current.user.character || Current.user.create_character!
+    character.complete_spirit_expedition! if character.spirit_expedition_ends_at.present?
     character.cultivate_offline!
     result = character.breakthrough!
     flash[:notice] = breakthrough_notice(result) if result
@@ -20,9 +21,10 @@ class CultivationController < ApplicationController
 
   def load_cultivation
     @character = Current.user.character || Current.user.create_character!
+    @completed_spirit_expedition = @character.complete_spirit_expedition! if @character.spirit_expedition_ends_at.present?
     @offline_qi_gained = @character.cultivate_offline!
     @character.recover_sparring_points!
-    @triggered_event = CultivationEvents::Runner.new(@character).call
+    @triggered_event = CultivationEvents::Runner.new(@character).call unless @character.spirit_expedition_active?
   end
 
   def breakthrough_notice(result)

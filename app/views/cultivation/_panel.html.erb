@@ -11,6 +11,17 @@
     <p class="offline-gain"><%= cultivation_icon(:qi) %> <%= t(".offline_gain", qi: number_with_delimiter(offline_qi_gained)) %></p>
   <% end %>
 
+  <% if local_assigns[:completed_spirit_expedition].present? %>
+    <p class="offline-gain">
+      <%= cultivation_icon(:coin) %>
+      <%= t(".spirit_expedition_completed", qi: number_with_delimiter(completed_spirit_expedition[:qi]), wen: number_with_delimiter(completed_spirit_expedition[:wen])) %>
+    </p>
+  <% end %>
+
+  <% if character.spirit_expedition_active? %>
+    <p class="offline-gain"><%= cultivation_icon(:clock) %> <%= t(".spirit_expedition_active", duration: distance_of_time_in_words(Time.current, character.spirit_expedition_ends_at)) %></p>
+  <% end %>
+
   <% if Current.user.temporary? %>
     <p class="offline-gain">
       <%= link_to new_registration_completion_path, data: { turbo_frame: "_top" } do %>

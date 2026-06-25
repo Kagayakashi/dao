@@ -1,0 +1,53 @@
+<% content_for :title, t("spirit_expeditions.show.title") %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel adventure-panel">
+    <p class="eyebrow"><%= cultivation_icon(:jade) %> <%= t("spirit_expeditions.show.eyebrow") %></p>
+    <h1><%= t("spirit_expeditions.show.heading") %></h1>
+    <p class="screen-note"><%= t("spirit_expeditions.show.screen_note") %></p>
+
+    <%= tag.div(flash[:notice], class: "form-notice") if flash[:notice] %>
+    <%= tag.div(flash[:alert], class: "form-notice") if flash[:alert] %>
+
+    <% if @completed_spirit_expedition.present? %>
+      <p class="offline-gain">
+        <%= cultivation_icon(:coin) %>
+        <%= t("spirit_expeditions.show.completed", qi: number_with_delimiter(@completed_spirit_expedition[:qi]), wen: number_with_delimiter(@completed_spirit_expedition[:wen])) %>
+      </p>
+    <% end %>
+
+    <% if @character.spirit_expedition_active? %>
+      <div class="realm-card">
+        <span class="realm-label"><%= cultivation_icon(:clock) %> <%= t("spirit_expeditions.show.active_heading") %></span>
+        <strong><%= t("spirit_expeditions.show.active_duration", hours: @character.spirit_expedition_duration_hours) %></strong>
+        <span><%= t("spirit_expeditions.show.active_remaining", duration: distance_of_time_in_words(Time.current, @character.spirit_expedition_ends_at)) %></span>
+      </div>
+    <% else %>
+      <section class="events" aria-labelledby="spirit-expedition-options-heading">
+        <h2 id="spirit-expedition-options-heading"><%= cultivation_icon(:scroll) %> <%= t("spirit_expeditions.show.options_heading") %></h2>
+
+        <div class="activity-options">
+          <% @character.spirit_expedition_durations.each do |hours| %>
+            <% multiplier = hours == 1 ? 1.0 : @character.spirit_expedition_extended_reward_multiplier %>
+            <% min_wen = (@character.spirit_expedition_wen_reward_range.min * hours * multiplier).floor %>
+            <% max_wen = (@character.spirit_expedition_wen_reward_range.max * hours * multiplier).floor %>
+
+            <div class="realm-card activity-option-card">
+              <span class="realm-label"><%= t("spirit_expeditions.show.duration", hours:) %></span>
+              <strong><%= t("spirit_expeditions.show.qi_reward", qi: number_with_delimiter(@character.spirit_expedition_estimated_qi_reward(hours))) %></strong>
+              <span><%= t("spirit_expeditions.show.wen_reward", min: number_with_delimiter(min_wen), max: number_with_delimiter(max_wen)) %></span>
+              <% if hours > 1 %>
+                <span><%= t("spirit_expeditions.show.reduced_reward_note") %></span>
+              <% end %>
+              <%= button_to t("spirit_expeditions.show.start_button"), spirit_expedition_path, params: { hours: }, class: "ceremonial-button" %>
+            </div>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+
+    <nav class="quiet-nav" aria-label="<%= t("spirit_expeditions.show.navigation_aria") %>">
+      <%= link_to t("spirit_expeditions.show.return_link"), adventure_path %>
+    </nav>
+  </section>
+</main>

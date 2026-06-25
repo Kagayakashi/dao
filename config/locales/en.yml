@@ -24,6 +24,8 @@ en:
     realm: "Realm"
     star: "Star"
     power: "Power and inventory"
+    currency: "Wen"
+    donation_currency: "Liang"
     sparring_focus: "Sparring Focus"
     sparring_timer: "Sparring Focus recovery timer"
 
@@ -148,6 +150,8 @@ en:
       banner_alt: "Cultivation landscape"
       screen_note: "Qi gathers while you watch and while you are away. When the bar is full, choose Breakthrough to advance."
       offline_gain: "Absorbed %{qi} Qi while away."
+      spirit_expedition_active: "Spirit Expedition is underway. Passive Qi and personal events pause for %{duration}."
+      spirit_expedition_completed: "Spirit Expedition complete: %{qi} Qi and %{wen} Wen."
       complete_registration_notice: "Complete registration to secure your character and receive %{qi} bonus Qi."
       progress_aria: "Cultivation progress"
       qi_progress: "%{current} / %{required}"
@@ -197,10 +201,36 @@ en:
       actions_heading: "City Paths"
       wuxia_sparring_note: "Enter a respectful Wuxia Sparring exchange with another cultivator. The result is decided instantly by current Power."
       wuxia_sparring_link: "Wuxia Sparring"
+      spirit_expedition_note: "Leave the city for a timed Spirit Expedition. Longer trips are calmer, but less efficient than returning every hour."
+      spirit_expedition_link: "Spirit Expedition"
       crier_note: "Listen to the city crier for recent announcements."
       crier_link: "Crier"
       navigation_aria: "Adventure navigation"
       return_link: "Return to Cultivation"
+
+  spirit_expeditions:
+    create:
+      notice:
+        started: "Spirit Expedition started for %{hours}h."
+      alert:
+        unavailable: "Choose an available duration, or wait until the current expedition ends."
+    show:
+      title: "Spirit Expedition"
+      eyebrow: "Outer Path"
+      heading: "Spirit Expedition"
+      screen_note: "Choose how long your cultivator will travel. While away, personal passive Qi and personal random events pause, but other cultivators may still involve you."
+      completed: "Returned with %{qi} Qi and %{wen} Wen."
+      active_heading: "Expedition underway"
+      active_duration: "%{hours}h journey"
+      active_remaining: "Returns in %{duration}."
+      options_heading: "Choose Duration"
+      duration: "%{hours}h"
+      qi_reward: "%{qi} Qi"
+      wen_reward: "%{min}-%{max} Wen"
+      reduced_reward_note: "Extended expedition rewards are reduced to 25%."
+      start_button: "Begin"
+      navigation_aria: "Spirit expedition navigation"
+      return_link: "Return to Adventure"
 
   news:
     read_all:

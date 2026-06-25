@@ -67,6 +67,16 @@ module ApplicationHelper
         icon_path("M9 8a3 3 0 0 1 6 0"),
         icon_path("M9 12h6")
       ],
+      coin: [
+        icon_path("M12 5a7 3 0 1 1 0 6 7 3 0 0 1 0-6Z"),
+        icon_path("M5 8v5c0 1.7 3.1 3 7 3s7-1.3 7-3V8"),
+        icon_path("M5 13v3c0 1.7 3.1 3 7 3s7-1.3 7-3v-3")
+      ],
+      jade: [
+        icon_path("M12 3 19 8.5 16.4 18H7.6L5 8.5 12 3Z"),
+        icon_path("M5 8.5h14M9 8.5l3 9.5 3-9.5"),
+        icon_path("M9 8.5 12 3l3 5.5")
+      ],
       sword: [
         icon_path("M14 4h6v6L9 21l-6-6L14 4Z"),
         icon_path("m14 4 6 6M7 17l3-3M5 13l6 6")

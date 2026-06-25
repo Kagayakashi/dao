@@ -20,7 +20,10 @@ class CharacterTest < ActiveSupport::TestCase
       daily_reward_base_qi: Character.daily_reward_base_qi,
       daily_reward_realm_bonus_qi: Character.daily_reward_realm_bonus_qi,
       daily_reward_star_bonus_qi: Character.daily_reward_star_bonus_qi,
-      daily_reward_cooldown: Character.daily_reward_cooldown
+      daily_reward_cooldown: Character.daily_reward_cooldown,
+      spirit_expedition_durations: Character.spirit_expedition_durations,
+      spirit_expedition_extended_reward_multiplier: Character.spirit_expedition_extended_reward_multiplier,
+      spirit_expedition_wen_reward_range: Character.spirit_expedition_wen_reward_range
     }
 
     Character.stars_per_realm = 9
@@ -41,9 +44,12 @@ class CharacterTest < ActiveSupport::TestCase
     Character.daily_reward_realm_bonus_qi = 250
     Character.daily_reward_star_bonus_qi = 50
     Character.daily_reward_cooldown = 1.day
+    Character.spirit_expedition_durations = [ 1, 4, 12, 24 ]
+    Character.spirit_expedition_extended_reward_multiplier = 0.25
+    Character.spirit_expedition_wen_reward_range = 50..100
 
     @character = characters(:one)
-    @character.update!(realm: 1, star: 1, qi: 0, total_experience: 0, last_online: Time.current)
+    @character.update!(realm: 1, star: 1, qi: 0, total_experience: 0, last_online: Time.current, currency: 0, spirit_expedition_started_at: nil, spirit_expedition_ends_at: nil, spirit_expedition_duration_hours: nil)
   end
 
   teardown do
@@ -311,6 +317,53 @@ class CharacterTest < ActiveSupport::TestCase
     @character.reload
     assert_equal 0, @character.qi
     assert_equal now + 23.hours, @character.daily_reward_available_at(at: now)
+  end
+
+  test "starts spirit expedition with an allowed duration" do
+    now = Time.zone.local(2026, 6, 18, 12, 0, 0)
+
+    assert @character.start_spirit_expedition!(hours: 4, at: now)
+
+    @character.reload
+    assert_equal now, @character.spirit_expedition_started_at
+    assert_equal now + 4.hours, @character.spirit_expedition_ends_at
+    assert_equal 4, @character.spirit_expedition_duration_hours
+  end
+
+  test "does not gain passive qi during active spirit expedition" do
+    now = Time.zone.local(2026, 6, 18, 12, 0, 0)
+    @character.start_spirit_expedition!(hours: 4, at: now)
+
+    gained_qi = @character.cultivate_offline!(at: now + 2.hours)
+
+    assert_equal 0, gained_qi
+    assert_equal 0, @character.reload.qi
+  end
+
+  test "completes one hour spirit expedition without reward reduction" do
+    now = Time.zone.local(2026, 6, 18, 12, 0, 0)
+    @character.start_spirit_expedition!(hours: 1, at: now)
+
+    result = @character.complete_spirit_expedition!(at: now + 1.hour, wen_per_hour: 80)
+
+    @character.reload
+    assert_equal({ qi: 7_200, wen: 80 }, result)
+    assert_equal 7_200, @character.qi
+    assert_equal 7_200, @character.total_experience
+    assert_equal 80, @character.currency
+    assert_nil @character.spirit_expedition_ends_at
+  end
+
+  test "reduces extended spirit expedition rewards to twenty five percent" do
+    now = Time.zone.local(2026, 6, 18, 12, 0, 0)
+    @character.start_spirit_expedition!(hours: 4, at: now)
+
+    result = @character.complete_spirit_expedition!(at: now + 4.hours, wen_per_hour: 80)
+
+    @character.reload
+    assert_equal({ qi: 7_200, wen: 80 }, result)
+    assert_equal 7_200, @character.qi
+    assert_equal 80, @character.currency
   end
 
   private

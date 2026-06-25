@@ -18,7 +18,7 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
   test "shows character cultivation dashboard" do
     user = users(:one)
     character = user.character || user.create_character!
-    character.update!(realm: 2, star: 3, qi: 40, total_experience: 240, last_online: Time.current, sparring_points: 2, sparring_recovered_at: 30.minutes.ago)
+    character.update!(realm: 2, star: 3, qi: 40, total_experience: 240, currency: 12, donation_currency: 5, last_online: Time.current, sparring_points: 2, sparring_recovered_at: 30.minutes.ago)
     sign_in_as(user)
 
     get root_path(locale: :en)
@@ -31,6 +31,8 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
     assert_select ".global-header a[href='#{character_path(character, locale: :en)}']", text: /2/
     assert_select ".global-header a[href='#{character_path(character, locale: :en)}']", text: /3/
     assert_select ".global-header a[href='#{inventory_path(locale: :en)}']", text: /#{character.power}/
+    assert_select ".global-header a[href='#{inventory_path(locale: :en)}'][title='Wen']", text: /12/
+    assert_select ".global-header a[href='#{inventory_path(locale: :en)}'][title='Liang']", text: /5/
     assert_select ".global-header a[href='#{sparring_path(locale: :en)}']", text: %r{2/3}
     assert_select ".global-header a[href='#{sparring_path(locale: :en)}']", text: /\d{2}:\d{2}/
     assert_select "h1", "Jade River"
@@ -73,6 +75,21 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select ".daily-reward-card", false
+  end
+
+  test "pauses passive cultivation while spirit expedition is active" do
+    user = users(:one)
+    character = user.character
+    now = Time.current
+    character.update!(qi: 0, total_experience: 0, last_online: now)
+    character.start_spirit_expedition!(hours: 4, at: now)
+    sign_in_as(user)
+
+    get root_path(locale: :en)
+
+    assert_response :success
+    assert_equal 0, character.reload.qi
+    assert_select ".offline-gain", text: /Spirit Expedition is underway/
   end
 
   test "does not show earned achievements on dashboard" do

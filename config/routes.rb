@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     resource :leaderboard, only: :show
     resource :inventory, only: :show
     resource :adventure, only: :show
+    resource :spirit_expedition, only: %i[ show create ]
     resources :news, only: %i[ index show ] do
       collection do
         post :read_all

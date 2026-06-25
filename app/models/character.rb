@@ -32,6 +32,9 @@ class Character < ApplicationRecord
   class_attribute :daily_reward_realm_bonus_qi, default: 250
   class_attribute :daily_reward_star_bonus_qi, default: 50
   class_attribute :daily_reward_cooldown, default: 1.day
+  class_attribute :spirit_expedition_durations, default: [ 1, 4, 12, 24 ]
+  class_attribute :spirit_expedition_extended_reward_multiplier, default: 0.25
+  class_attribute :spirit_expedition_wen_reward_range, default: 50..100
 
   before_validation :set_initial_last_online, on: :create
   before_validation :set_default_name, on: :create
@@ -39,9 +42,10 @@ class Character < ApplicationRecord
 
   validates :name, presence: true, length: { maximum: 40 }
   validates :level, :sublevel, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
-  validates :experience, :total_experience, :currency, :reset,
+  validates :experience, :total_experience, :currency, :donation_currency, :reset,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :sparring_points, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: ->(character) { character.max_sparring_points } }
+  validates :spirit_expedition_duration_hours, inclusion: { in: ->(character) { character.spirit_expedition_durations } }, allow_nil: true
   validates :last_online, presence: true
   validates :sparring_recovered_at, presence: true
 
@@ -177,11 +181,63 @@ class Character < ApplicationRecord
   end
 
   def cultivate_offline!(at: Time.current)
+    return 0 if spirit_expedition_active?(at:)
+
     gained_qi = offline_qi_available(at:)
     gain_qi(gained_qi, multiplier: 1.0)
     self.last_online = at
     save!
     gained_qi
+  end
+
+  def spirit_expedition_active?(at: Time.current)
+    spirit_expedition_ends_at.present? && spirit_expedition_ends_at > at
+  end
+
+  def spirit_expedition_reward_multiplier
+    return 1.0 if spirit_expedition_duration_hours.to_i <= 1
+
+    spirit_expedition_extended_reward_multiplier
+  end
+
+  def spirit_expedition_estimated_qi_reward(hours)
+    multiplier = hours.to_i <= 1 ? 1.0 : spirit_expedition_extended_reward_multiplier
+
+    (base_qi_per_second * hours.to_i.hours.to_i * multiplier).floor
+  end
+
+  def start_spirit_expedition!(hours:, at: Time.current)
+    hours = hours.to_i
+    return false unless spirit_expedition_durations.include?(hours)
+    return false if spirit_expedition_active?(at:)
+
+    cultivate_offline!(at:)
+    update!(
+      spirit_expedition_started_at: at,
+      spirit_expedition_ends_at: at + hours.hours,
+      spirit_expedition_duration_hours: hours,
+      last_online: at
+    )
+  end
+
+  def complete_spirit_expedition!(at: Time.current, wen_per_hour: nil)
+    return false unless spirit_expedition_ends_at.present?
+    return false if spirit_expedition_active?(at:)
+
+    hours = spirit_expedition_duration_hours
+    multiplier = spirit_expedition_reward_multiplier
+    gained_qi = spirit_expedition_estimated_qi_reward(hours)
+    gained_wen = ((wen_per_hour || rand(spirit_expedition_wen_reward_range)) * hours * multiplier).floor
+
+    gain_qi(gained_qi, multiplier: 1.0)
+    self.currency += gained_wen
+    self.last_online = spirit_expedition_ends_at
+    self.spirit_expedition_started_at = nil
+    self.spirit_expedition_ends_at = nil
+    self.spirit_expedition_duration_hours = nil
+    save!
+
+    { qi: gained_qi, wen: gained_wen }
   end
 
   def recover_sparring_points!(at: Time.current)
