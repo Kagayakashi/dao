@@ -24,15 +24,23 @@ class Character < ApplicationRecord
   class_attribute :base_power, default: 100
   class_attribute :realm_power_multiplier, default: 2.0
   class_attribute :star_power_multiplier, default: 0.12
+  class_attribute :max_sparring_points, default: 3
+  class_attribute :sparring_recovery_duration, default: 1.hour
+  class_attribute :sparring_opponent_cooldown, default: 3.hours
 
   before_validation :set_initial_last_online, on: :create
   before_validation :set_default_name, on: :create
+  before_validation :set_initial_sparring_recovered_at, on: :create
 
   validates :name, presence: true, length: { maximum: 40 }
   validates :level, :sublevel, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
   validates :experience, :total_experience, :currency, :reset,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :sparring_points, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: ->(character) { character.max_sparring_points } }
   validates :last_online, presence: true
+  validates :sparring_recovered_at, presence: true
+
+  scope :available_for_sparring, ->(at = Time.current) { where(sparring_available_at: nil).or(where(sparring_available_at: ..at)) }
 
   def qi_required_for_next_star
     (base_qi_required * (realm_qi_growth**(realm - 1)) * (star_qi_growth**(star - 1))).ceil
@@ -171,6 +179,36 @@ class Character < ApplicationRecord
     gained_qi
   end
 
+  def recover_sparring_points!(at: Time.current)
+    recover_sparring_points(at:)
+    save! if changed?
+    sparring_points
+  end
+
+  def spend_sparring_point!(at: Time.current)
+    recover_sparring_points(at:)
+    return false if sparring_points.zero?
+
+    self.sparring_recovered_at = at if sparring_points == max_sparring_points
+    self.sparring_points -= 1
+    save!
+  end
+
+  def sparring_recovery_due_at(at: Time.current)
+    recover_sparring_points(at:)
+    return if sparring_points >= max_sparring_points
+
+    sparring_recovered_at + sparring_recovery_duration
+  end
+
+  def available_for_sparring?(at: Time.current)
+    sparring_available_at.blank? || sparring_available_at <= at
+  end
+
+  def mark_sparring_unavailable!(at: Time.current)
+    update!(sparring_available_at: at + sparring_opponent_cooldown)
+  end
+
   def admin_adjust_qi!(amount)
     target_qi = [ cumulative_cultivation_qi + amount.to_i, 0 ].max
 
@@ -217,6 +255,22 @@ class Character < ApplicationRecord
 
   def set_initial_last_online
     self.last_online ||= Time.current
+  end
+
+  def set_initial_sparring_recovered_at
+    self.sparring_recovered_at ||= Time.current
+  end
+
+  def recover_sparring_points(at: Time.current)
+    self.sparring_recovered_at ||= at
+    return if sparring_points >= max_sparring_points
+
+    elapsed_recoveries = ((at - sparring_recovered_at) / sparring_recovery_duration.to_i).floor
+    return if elapsed_recoveries <= 0
+
+    recovered_points = [ elapsed_recoveries, max_sparring_points - sparring_points ].min
+    self.sparring_points += recovered_points
+    self.sparring_recovered_at = sparring_points >= max_sparring_points ? at : sparring_recovered_at + (recovered_points * sparring_recovery_duration)
   end
 
   def set_default_name

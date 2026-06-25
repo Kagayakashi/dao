@@ -20,6 +20,7 @@ module CultivationEvents
       apply_qi_delta(result[:qi_delta])
       event = create_event(event_key, config, result)
       create_related_stranger_event(result) if event_key == :stranger_cultivator
+      set_related_sparring_cooldown(result) if event_key == :stranger_cultivator
       set_cooldown(event_key, config)
       set_global_cooldown
       event
@@ -87,7 +88,7 @@ module CultivationEvents
 
     def stranger_cultivator_result(config)
       outcome = forced_outcome || [ :peaceful, :fight ].sample(random: rng)
-      opponent = Character.where.not(id: character.id).order("RANDOM()").first
+      opponent = Character.available_for_sparring(now).where.not(id: character.id).order("RANDOM()").first
 
       return peaceful_stranger_result(config, opponent) if outcome == :peaceful || opponent.nil?
 
@@ -107,16 +108,15 @@ module CultivationEvents
     end
 
     def fight_result(config, opponent)
-      won = character.power >= opponent.power
-      qi_delta = qi_for_hours(won ? config.fetch(:victory_qi_hours) : config.fetch(:defeat_qi_hours))
+      result = Sparring::Match.new(
+        challenger: character,
+        opponent:,
+        victory_qi_hours: config.fetch(:victory_qi_hours),
+        defeat_qi_hours: config.fetch(:defeat_qi_hours),
+        rng:
+      ).call
 
-      {
-        outcome: won ? "victory" : "defeat",
-        qi_delta:,
-        related_character: opponent,
-        description: fight_description_key(won),
-        metadata: {}
-      }
+      result.merge(description: stranger_fight_description(result.fetch(:outcome)))
     end
 
     def found_equipment_item_result(config)
@@ -186,8 +186,8 @@ module CultivationEvents
       { "item_name_key" => item.fetch(:name).to_s }
     end
 
-    def fight_description_key(won)
-      return "cultivation_events.stranger_cultivator.victory_description" if won
+    def stranger_fight_description(outcome)
+      return "cultivation_events.stranger_cultivator.victory_description" if outcome == "victory"
 
       "cultivation_events.stranger_cultivator.defeat_description"
     end
@@ -238,6 +238,12 @@ module CultivationEvents
         related_character: character,
         happened_at: now
       )
+    end
+
+    def set_related_sparring_cooldown(result)
+      return unless %w[victory defeat].include?(result.fetch(:outcome))
+
+      result.fetch(:related_character)&.mark_sparring_unavailable!(at: now)
     end
 
     def related_stranger_outcome(outcome)

@@ -1,0 +1,33 @@
+<header class="global-header" aria-label="<%= t("global_header.navigation_aria") %>">
+  <nav class="global-header__items">
+    <%= link_to character_path(character), class: "global-header__item", title: t("global_header.character_name"), aria: { label: t("global_header.character_name") } do %>
+      <%= cultivation_icon(:scroll) %>
+      <span><%= character.name %></span>
+    <% end %>
+
+    <%= link_to character_path(character), class: "global-header__item", title: t("global_header.realm"), aria: { label: t("global_header.realm") } do %>
+      <%= cultivation_icon(:mountain) %>
+      <span><%= character.realm %></span>
+    <% end %>
+
+    <%= link_to character_path(character), class: "global-header__item", title: t("global_header.star"), aria: { label: t("global_header.star") } do %>
+      <%= cultivation_icon(:star) %>
+      <span><%= character.star %></span>
+    <% end %>
+
+    <%= link_to inventory_path, class: "global-header__item", title: t("global_header.power"), aria: { label: t("global_header.power") } do %>
+      <%= cultivation_icon(:satchel) %>
+      <span><%= number_with_delimiter(character.power) %></span>
+    <% end %>
+
+    <%= link_to sparring_path, class: "global-header__item", title: t("global_header.sparring_focus"), aria: { label: t("global_header.sparring_focus") } do %>
+      <%= cultivation_icon(:sword) %>
+      <span><%= t("shared.sparring_points_count", current: character.sparring_points, max: character.max_sparring_points) %></span>
+    <% end %>
+
+    <%= link_to sparring_path, class: "global-header__item", title: t("global_header.sparring_timer"), aria: { label: t("global_header.sparring_timer") } do %>
+      <%= cultivation_icon(:clock) %>
+      <span><%= sparring_recovery_countdown(character) %></span>
+    <% end %>
+  </nav>
+</header>

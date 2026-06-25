@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   include Authentication
   before_action :redirect_to_default_locale
+  before_action :load_global_header_character
   around_action :switch_locale
 
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
@@ -26,5 +27,12 @@ class ApplicationController < ActionController::Base
     return unless request.get? && request.format.html?
 
     redirect_to url_for(request.path_parameters.merge(request.query_parameters).merge(locale: I18n.default_locale, only_path: true))
+  end
+
+  def load_global_header_character
+    return unless authenticated?
+
+    @global_header_character = Current.user.character
+    @global_header_character&.recover_sparring_points!
   end
 end

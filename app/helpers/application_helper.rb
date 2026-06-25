@@ -23,6 +23,14 @@ module ApplicationHelper
     end
   end
 
+  def sparring_recovery_countdown(character)
+    due_at = character.sparring_recovery_due_at
+    return "00:00" unless due_at
+
+    seconds = [ (due_at - Time.current).ceil, 0 ].max
+    format("%02d:%02d", seconds / 60, seconds % 60)
+  end
+
   private
 
   def cultivation_icon_paths
@@ -71,6 +79,10 @@ module ApplicationHelper
       spark: [
         icon_path("M12 3v5M12 16v5M3 12h5M16 12h5"),
         icon_path("M7.8 7.8 5.5 5.5M16.2 16.2l2.3 2.3M16.2 7.8l2.3-2.3M7.8 16.2l-2.3 2.3")
+      ],
+      clock: [
+        icon_path("M12 4a8 8 0 1 1 0 16 8 8 0 0 1 0-16Z"),
+        icon_path("M12 8v4l2.5 1.5")
       ]
     }
   end

@@ -21,6 +21,7 @@ class CultivationController < ApplicationController
   def load_cultivation
     @character = Current.user.character || Current.user.create_character!
     @offline_qi_gained = @character.cultivate_offline!
+    @character.recover_sparring_points!
     @triggered_event = CultivationEvents::Runner.new(@character).call
   end
 

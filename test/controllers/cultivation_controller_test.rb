@@ -18,7 +18,7 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
   test "shows character cultivation dashboard" do
     user = users(:one)
     character = user.character || user.create_character!
-    character.update!(realm: 2, star: 3, qi: 40, total_experience: 240, last_online: Time.current)
+    character.update!(realm: 2, star: 3, qi: 40, total_experience: 240, last_online: Time.current, sparring_points: 2, sparring_recovered_at: 30.minutes.ago)
     sign_in_as(user)
 
     get root_path(locale: :en)
@@ -26,6 +26,13 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "turbo-frame#cultivation_panel[data-controller='auto-refresh']"
     assert_select ".main-banner img[alt='Cultivation landscape'][src*='main']"
+    assert_select ".global-header"
+    assert_select ".global-header a[href='#{character_path(character, locale: :en)}']", text: /Jade River/
+    assert_select ".global-header a[href='#{character_path(character, locale: :en)}']", text: /2/
+    assert_select ".global-header a[href='#{character_path(character, locale: :en)}']", text: /3/
+    assert_select ".global-header a[href='#{inventory_path(locale: :en)}']", text: /#{character.power}/
+    assert_select ".global-header a[href='#{sparring_path(locale: :en)}']", text: %r{2/3}
+    assert_select ".global-header a[href='#{sparring_path(locale: :en)}']", text: /\d{2}:\d{2}/
     assert_select "h1", "Jade River"
     assert_select ".realm-card", text: /Dou Practitioner/
     assert_select ".realm-card", text: /3 Star/
@@ -33,6 +40,7 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
     assert_select ".qi-progress__text", text: /Qi/
     assert_select ".screen-note", text: /Qi gathers/
     assert_select ".next-breakthrough", text: /Next breakthrough/
+    assert_select ".sparring-card", text: %r{2/3}
     assert_select ".quiet-nav", text: /Profile/
     assert_select "#equipment-heading", false
     assert_select "#inventory-heading", false
@@ -51,7 +59,7 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
     assert_select ".offline-gain a[href='#{new_registration_completion_path(locale: :en)}'][data-turbo-frame='_top']", text: /Complete registration/
   end
 
-  test "shows earned achievements on dashboard" do
+  test "does not show earned achievements on dashboard" do
     user = users(:one)
     character = user.character || user.create_character!
     character.character_achievements.create!(key: "first_star", earned_at: Time.current)
@@ -60,7 +68,8 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
     get root_path(locale: :en)
 
     assert_response :success
-    assert_select ".achievements", text: /First Star/
+    assert_select ".achievements", false
+    assert_no_match(/First Star/, response.body)
   end
 
   test "shows qi delta for recent event history" do

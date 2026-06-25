@@ -56,21 +56,15 @@
     <p class="next-breakthrough"><%= t(".next_breakthrough", qi: number_with_delimiter(character.qi_until_next_star)) %></p>
   <% end %>
 
-  <% achievements = character.earned_achievement_details %>
-  <% if achievements.any? %>
-    <section class="achievements" aria-labelledby="achievements-heading">
-      <h2 id="achievements-heading"><%= cultivation_icon(:trophy) %> <%= t(".achievements_heading") %></h2>
-
-      <ul class="achievement-list">
-        <% achievements.each do |achievement| %>
-          <li>
-            <strong><%= achievement[:name] %></strong>
-            <span><%= achievement[:description] %></span>
-          </li>
-        <% end %>
-      </ul>
-    </section>
-  <% end %>
+  <div class="realm-card sparring-card">
+    <span class="realm-label"><%= cultivation_icon(:sword) %> <%= t("shared.sparring_points") %></span>
+    <strong><%= t("shared.sparring_points_count", current: character.sparring_points, max: character.max_sparring_points) %></strong>
+    <% if (due_at = character.sparring_recovery_due_at) %>
+      <span><%= t("shared.sparring_recovery", duration: distance_of_time_in_words(Time.current, due_at)) %></span>
+    <% else %>
+      <span><%= t("shared.sparring_recovery_full") %></span>
+    <% end %>
+  </div>
 
   <% recent_events = character.recent_game_events %>
   <% if recent_events.any? %>
@@ -93,6 +87,7 @@
 
   <nav class="quiet-nav" aria-label="<%= t(".navigation_aria") %>">
     <%= link_to t(".profile_link"), character_path(character), data: { turbo_frame: "_top" } %>
+    <%= link_to t(".adventure_link"), adventure_path, data: { turbo_frame: "_top" } %>
     <%= link_to t(".leaderboard_link"), leaderboard_path, data: { turbo_frame: "_top" } %>
     <%= button_to t(".sign_out_button"), session_path, method: :delete, form: { data: { turbo_frame: "_top" } }, class: "ceremonial-button" %>
   </nav>

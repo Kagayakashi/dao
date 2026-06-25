@@ -1,0 +1,23 @@
+<% content_for :title, t("adventures.show.title") %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel adventure-panel">
+    <div class="main-banner">
+      <%= image_tag "city.png", alt: t("adventures.show.banner_alt"), class: "main-banner__image" %>
+    </div>
+
+    <p class="eyebrow"><%= cultivation_icon(:lantern) %> <%= t("adventures.show.eyebrow") %></p>
+    <h1><%= t("adventures.show.heading") %></h1>
+    <p class="screen-note"><%= t("adventures.show.screen_note") %></p>
+
+    <section class="events" aria-labelledby="adventure-actions-heading">
+      <h2 id="adventure-actions-heading"><%= cultivation_icon(:scroll) %> <%= t("adventures.show.actions_heading") %></h2>
+      <p class="screen-note"><%= t("adventures.show.wuxia_sparring_note") %></p>
+      <%= link_to t("adventures.show.wuxia_sparring_link"), sparring_path, class: "ceremonial-link" %>
+    </section>
+
+    <nav class="quiet-nav" aria-label="<%= t("adventures.show.navigation_aria") %>">
+      <%= link_to t("adventures.show.return_link"), root_path %>
+    </nav>
+  </section>
+</main>

@@ -1,0 +1,60 @@
+<% content_for :title, t("sparring.show.title") %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel sparring-panel">
+    <div class="main-banner">
+      <%= image_tag "sparring.png", alt: t("sparring.show.banner_alt"), class: "main-banner__image" %>
+    </div>
+
+    <p class="eyebrow"><%= cultivation_icon(:sword) %> <%= t("sparring.show.eyebrow") %></p>
+    <h1><%= t("sparring.show.heading") %></h1>
+    <p class="screen-note"><%= t("sparring.show.screen_note") %></p>
+
+    <%= tag.div(flash[:alert], class: "form-notice") if flash[:alert] %>
+    <%= tag.div(flash[:notice], class: "form-notice") if flash[:notice] %>
+
+    <div class="realm-card sparring-card">
+      <span class="realm-label"><%= cultivation_icon(:sword) %> <%= t("shared.sparring_points") %></span>
+      <strong><%= t("shared.sparring_points_count", current: @character.sparring_points, max: @character.max_sparring_points) %></strong>
+      <% if (due_at = @character.sparring_recovery_due_at) %>
+        <span><%= t("shared.sparring_recovery", duration: distance_of_time_in_words(Time.current, due_at)) %></span>
+      <% else %>
+        <span><%= t("shared.sparring_recovery_full") %></span>
+      <% end %>
+    </div>
+
+    <% if params[:result_event_id].present? && (event = @character.game_events.find_by(id: params[:result_event_id])) %>
+      <div class="event-notice">
+        <strong><%= cultivation_icon(:spark) %> <%= event.localized_title %></strong>
+        <span><%= event.localized_description %></span>
+        <% if event.localized_qi_delta.present? %>
+          <span><%= event.localized_qi_delta %></span>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if @opponent.present? %>
+      <section class="events" aria-labelledby="sparring-opponent-heading">
+        <h2 id="sparring-opponent-heading"><%= cultivation_icon(:mountain) %> <%= t("sparring.show.opponent_heading") %></h2>
+        <div class="realm-card">
+          <span class="realm-label"><%= @opponent.name %></span>
+          <strong><%= @opponent.realm_name %></strong>
+          <span><%= t("shared.star", count: @opponent.star) %></span>
+          <span><%= t("shared.power_with_value", power: number_with_delimiter(@opponent.power)) %></span>
+        </div>
+
+        <div class="sparring-actions">
+          <%= button_to t("sparring.show.spare_button"), sparring_path, class: "ceremonial-button", disabled: @character.sparring_points.zero? %>
+          <%= button_to t("sparring.show.change_opponent_button"), change_opponent_sparring_path, class: "ceremonial-button", disabled: @character.sparring_points.zero? %>
+        </div>
+      </section>
+    <% else %>
+      <p class="empty-state"><%= t("sparring.show.no_opponent") %></p>
+    <% end %>
+
+    <nav class="quiet-nav" aria-label="<%= t("sparring.show.navigation_aria") %>">
+      <%= link_to t("sparring.show.adventure_link"), adventure_path %>
+      <%= link_to t("sparring.show.return_link"), root_path %>
+    </nav>
+  </section>
+</main>

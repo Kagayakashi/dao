@@ -5,6 +5,10 @@ Rails.application.routes.draw do
     post "cultivation/breakthrough" => "cultivation#breakthrough", as: :cultivation_breakthrough
     resource :leaderboard, only: :show
     resource :inventory, only: :show
+    resource :adventure, only: :show
+    resource :sparring, only: %i[ show create ], controller: :sparring do
+      post :change_opponent
+    end
     resources :characters, only: :show
     resources :inventory_items, only: :destroy do
       member do

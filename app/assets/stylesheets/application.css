@@ -48,6 +48,73 @@ body {
   box-shadow: 0 0 0.6rem rgb(212 175 55 / 35%);
 }
 
+.global-header {
+  position: sticky;
+  top: 0;
+  z-index: 9;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.55rem 5.5rem 0.55rem 0.75rem;
+  background: rgb(44 24 16 / 92%);
+  border-bottom: 1px solid rgb(212 175 55 / 55%);
+  box-shadow: 0 0.45rem 1rem rgb(0 0 0 / 18%);
+}
+
+.global-header__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.global-header__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 1.65rem;
+  max-width: 9rem;
+  box-sizing: border-box;
+  padding: 0.25rem 0.45rem;
+  color: var(--warm-beige);
+  background: rgb(245 230 200 / 9%);
+  border: 1px solid rgb(212 175 55 / 38%);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.global-header__item:hover {
+  border-color: var(--ancient-gold);
+  box-shadow: 0 0 0.45rem rgb(212 175 55 / 24%);
+}
+
+.global-header__item span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.global-header__item .thematic-icon {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.ceremonial-link {
+  display: inline-block;
+  padding: 0.65rem 0.9rem;
+  color: var(--warm-beige);
+  background: var(--dark-brown);
+  border: 1px solid var(--ancient-gold);
+  border-radius: 0.25rem;
+  text-decoration: none;
+}
+
+.ceremonial-link:hover {
+  box-shadow: 0 0 0.6rem rgb(212 175 55 / 35%);
+}
+
 .site-footer {
   padding: 0 1rem 1rem;
   color: rgb(245 230 200 / 72%);
@@ -189,9 +256,8 @@ body {
 .main-banner__image {
   display: block;
   width: 100%;
-  height: 10rem;
+  height: 13rem;
   object-fit: cover;
-  object-position: center;
 }
 
 .profile-banner {
@@ -225,6 +291,16 @@ body {
   background: rgb(44 24 16 / 8%);
   border: 1px solid rgb(44 24 16 / 18%);
   border-radius: 0.25rem;
+}
+
+.sparring-card {
+  margin-top: 0.75rem;
+}
+
+.sparring-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .realm-card strong,
@@ -581,5 +657,16 @@ body {
 .leaderboard-qi,
 .leaderboard-power {
   grid-column: 2;
+  font-size: 0.9rem;
+}
+
+.pagination-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  color: var(--soft-gray);
   font-size: 0.9rem;
 }

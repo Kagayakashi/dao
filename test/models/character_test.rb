@@ -13,7 +13,10 @@ class CharacterTest < ActiveSupport::TestCase
       breakthrough_overflow_loss_range: Character.breakthrough_overflow_loss_range,
       base_power: Character.base_power,
       realm_power_multiplier: Character.realm_power_multiplier,
-      star_power_multiplier: Character.star_power_multiplier
+      star_power_multiplier: Character.star_power_multiplier,
+      max_sparring_points: Character.max_sparring_points,
+      sparring_recovery_duration: Character.sparring_recovery_duration,
+      sparring_opponent_cooldown: Character.sparring_opponent_cooldown
     }
 
     Character.stars_per_realm = 9
@@ -27,6 +30,9 @@ class CharacterTest < ActiveSupport::TestCase
     Character.base_power = 100
     Character.realm_power_multiplier = 2.0
     Character.star_power_multiplier = 0.12
+    Character.max_sparring_points = 3
+    Character.sparring_recovery_duration = 1.hour
+    Character.sparring_opponent_cooldown = 3.hours
 
     @character = characters(:one)
     @character.update!(realm: 1, star: 1, qi: 0, total_experience: 0, last_online: Time.current)
@@ -224,6 +230,49 @@ class CharacterTest < ActiveSupport::TestCase
     assert_equal 1, @character.star
     assert_equal 0, @character.qi
     assert_equal 0, @character.total_experience
+  end
+
+  test "spends one sparring point" do
+    now = Time.zone.local(2026, 6, 18, 12, 0, 0)
+    @character.update!(sparring_points: 3, sparring_recovered_at: 2.hours.ago)
+
+    assert @character.spend_sparring_point!(at: now)
+
+    @character.reload
+    assert_equal 2, @character.sparring_points
+    assert_equal now, @character.sparring_recovered_at
+  end
+
+  test "recovers one sparring point each hour up to the limit" do
+    recovered_at = Time.zone.local(2026, 6, 18, 10, 0, 0)
+    @character.update!(sparring_points: 1, sparring_recovered_at: recovered_at)
+
+    @character.recover_sparring_points!(at: recovered_at + 90.minutes)
+
+    @character.reload
+    assert_equal 2, @character.sparring_points
+    assert_equal recovered_at + 1.hour, @character.sparring_recovered_at
+
+    @character.recover_sparring_points!(at: recovered_at + 3.hours)
+
+    assert_equal 3, @character.reload.sparring_points
+  end
+
+  test "reports next sparring recovery time while below limit" do
+    recovered_at = Time.zone.local(2026, 6, 18, 10, 0, 0)
+    @character.update!(sparring_points: 2, sparring_recovered_at: recovered_at)
+
+    assert_equal recovered_at + 1.hour, @character.sparring_recovery_due_at(at: recovered_at + 30.minutes)
+  end
+
+  test "marks character unavailable for sparring cooldown" do
+    now = Time.zone.local(2026, 6, 18, 12, 0, 0)
+
+    @character.mark_sparring_unavailable!(at: now)
+
+    assert_equal now + 3.hours, @character.reload.sparring_available_at
+    assert_not @character.available_for_sparring?(at: now + 2.hours)
+    assert @character.available_for_sparring?(at: now + 3.hours)
   end
 
   private

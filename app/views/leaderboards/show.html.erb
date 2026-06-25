@@ -4,9 +4,10 @@
   <section class="cultivation-panel">
     <p class="eyebrow"><%= cultivation_icon(:trophy) %> <%= t(".eyebrow") %></p>
     <h1><%= t(".heading") %></h1>
+    <p class="screen-note"><%= t(".screen_note", count: @total_count) %></p>
 
     <ol class="leaderboard-list">
-      <% @characters.each.with_index(1) do |character, rank| %>
+      <% @characters.each.with_index(@rank_offset + 1) do |character, rank| %>
         <li class="leaderboard-entry">
           <span class="leaderboard-rank"><%= cultivation_icon(:star) %> <%= rank %></span>
           <span>
@@ -18,6 +19,16 @@
         </li>
       <% end %>
     </ol>
+
+    <nav class="pagination-nav" aria-label="<%= t(".pagination_aria") %>">
+      <% if @page > 1 %>
+        <%= link_to t(".previous_page"), leaderboard_path(page: @page - 1), class: "ceremonial-link" %>
+      <% end %>
+      <span><%= t(".page_status", page: @page, total_pages: @total_pages) %></span>
+      <% if @page < @total_pages %>
+        <%= link_to t(".next_page"), leaderboard_path(page: @page + 1), class: "ceremonial-link" %>
+      <% end %>
+    </nav>
 
     <nav class="quiet-nav" aria-label="<%= t(".navigation_aria") %>">
       <%= link_to t(".return_link"), root_path %>

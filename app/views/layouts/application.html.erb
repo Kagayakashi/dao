@@ -28,6 +28,8 @@
       <%= link_to t("language_switch.label"), language_switch_path, class: "language-switch__button", aria: { label: t("language_switch.aria_label") } %>
     </nav>
 
+    <%= render "layouts/global_header", character: @global_header_character if @global_header_character.present? %>
+
     <%= yield %>
 
     <footer class="site-footer">

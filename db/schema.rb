@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_19_010000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_25_000001) do
   create_table "character_achievements", force: :cascade do |t|
     t.integer "character_id", null: false
     t.datetime "created_at", null: false
@@ -40,10 +40,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_19_010000) do
     t.integer "level", default: 1, null: false
     t.string "name", default: "Wandering Cultivator", null: false
     t.integer "reset", default: 0, null: false
+    t.datetime "sparring_available_at"
+    t.integer "sparring_points", default: 3, null: false
+    t.datetime "sparring_recovered_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.integer "sublevel", default: 1, null: false
     t.bigint "total_experience", default: 0, null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.index ["sparring_available_at"], name: "index_characters_on_sparring_available_at"
     t.index ["user_id"], name: "index_characters_on_user_id", unique: true
   end
 

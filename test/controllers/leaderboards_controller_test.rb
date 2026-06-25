@@ -20,5 +20,36 @@ class LeaderboardsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".leaderboard-entry:first-child", text: /500 Qi/
     assert_select ".leaderboard-entry:first-child", text: /Power/
     assert_select ".leaderboard-entry:first-child a[href='#{character_path(users(:two).character, locale: :en)}']", "Quiet Flame"
+    assert_select ".pagination-nav", text: /Page 1 of 1/
+  end
+
+  test "paginates characters without loading every row" do
+    create_leaderboard_characters(22)
+    sign_in_as(users(:one))
+
+    get leaderboard_path(locale: :en, page: 2)
+
+    assert_response :success
+    assert_select ".leaderboard-entry", 4
+    assert_select ".leaderboard-entry:first-child .leaderboard-rank", text: /21/
+    assert_select ".pagination-nav", text: /Page 2 of 2/
+    assert_select ".pagination-nav a[href='#{leaderboard_path(locale: :en, page: 1)}']", text: "Previous"
+    assert_select ".pagination-nav a", text: /Next/, count: 0
+  end
+
+  private
+
+  def create_leaderboard_characters(count)
+    users(:one).character.update!(total_experience: count + 2)
+    users(:two).character.update!(total_experience: count + 1)
+
+    count.times do |index|
+      user = User.create!(
+        email_address: "leaderboard-#{index}@example.com",
+        password: "password",
+        character_name: "Leaderboard #{index}"
+      )
+      user.character.update!(total_experience: count - index)
+    end
   end
 end

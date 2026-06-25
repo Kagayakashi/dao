@@ -11,6 +11,15 @@ ru:
     copyright_html: "Сделано: %{name}."
     cookie_policy: "Политика cookies"
 
+  global_header:
+    navigation_aria: "Статус культиватора"
+    character_name: "Профиль персонажа"
+    realm: "Сфера"
+    star: "Звезда"
+    power: "Сила и инвентарь"
+    sparring_focus: "Сосредоточение для спарринга"
+    sparring_timer: "Таймер восстановления спарринга"
+
   pages:
     cookie_policy:
       title: "Политика cookies"
@@ -37,6 +46,10 @@ ru:
     qi_with_value: "%{qi} Ци"
     rate_limit: "Попробуйте позже."
     realm: "Сфера"
+    sparring_points: "Сосредоточение для спарринга"
+    sparring_points_count: "%{current}/%{max}"
+    sparring_recovery: "Следующее сосредоточение вернется через %{duration}."
+    sparring_recovery_full: "Сосредоточение полностью восстановлено."
     star:
       one: "%{count} звезда"
       other: "%{count} звезды"
@@ -139,8 +152,48 @@ ru:
       events_heading: "Недавние события"
       navigation_aria: "Навигация культивации"
       profile_link: "Профиль"
+      adventure_link: "Приключение"
       leaderboard_link: "Рейтинг"
       sign_out_button: "Выйти"
+
+  adventures:
+    show:
+      title: "Приключение"
+      eyebrow: "Городские врата"
+      heading: "Приключение"
+      banner_alt: "Город культиваторов"
+      screen_note: "Город спокоен, но в чайных домах и внутренних дворах ходят слухи о странствующих культиваторах. Пока выберите один тихий путь."
+      actions_heading: "Городские пути"
+      wuxia_sparring_note: "Вступите в уважительный уся-спарринг с другим культиватором. Исход сразу определяется текущей Силой."
+      wuxia_sparring_link: "Уся-спарринг"
+      navigation_aria: "Навигация приключения"
+      return_link: "Вернуться к культивации"
+
+  sparring:
+    create:
+      no_opponent: "Этот культиватор уже покинул двор."
+      no_points: "Сосредоточение для спарринга закончилось. Отдохните перед новым обменом."
+      opponent_resting: "Этот культиватор отдыхает после недавнего обмена."
+    change_opponent:
+      notice: "Другой культиватор вошел во двор."
+      no_opponent: "Рядом нет другого культиватора, который мог бы его заменить."
+    show:
+      title: "Уся-спарринг"
+      eyebrow: "Тихий двор"
+      heading: "Уся-спарринг"
+      banner_alt: "Двор для уся-спарринга"
+      screen_note: "Из городской толпы выбран ближайший культиватор. Один спарринг мгновенно решит обмен."
+      opponent_heading: "Соперник для спарринга"
+      spare_button: "Пощадить"
+      change_opponent_button: "Сменить культиватора"
+      no_opponent: "Пока рядом со двором нет других культиваторов."
+      navigation_aria: "Навигация уся-спарринга"
+      adventure_link: "Приключение"
+      return_link: "Вернуться к культивации"
+    matches:
+      title: "Уся-спарринг"
+      victory_description: "Вы провели спарринг с %{name}. Ваша более устойчивая аура направила обмен."
+      defeat_description: "Вы провели спарринг с %{name}. Его более устойчивая аура направила обмен."
 
   inventories:
     show:
@@ -168,7 +221,12 @@ ru:
       title: "Рейтинг"
       eyebrow: "Небесный рейтинг"
       heading: "Рейтинг"
+      screen_note: "%{count} культиваторов ранжированы по общей Ци, Сфере и Звезде."
       cultivator_summary: "%{realm}, %{star}"
+      pagination_aria: "Навигация страниц рейтинга"
+      page_status: "Страница %{page} из %{total_pages}"
+      previous_page: "Назад"
+      next_page: "Вперед"
       navigation_aria: "Навигация рейтинга"
       return_link: "Вернуться к культивации"
 
