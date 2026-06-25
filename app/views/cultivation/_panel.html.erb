@@ -14,7 +14,7 @@
   <% if local_assigns[:completed_spirit_expedition].present? %>
     <p class="offline-gain">
       <%= cultivation_icon(:coin) %>
-      <%= t(".spirit_expedition_completed", qi: number_with_delimiter(completed_spirit_expedition[:qi]), wen: number_with_delimiter(completed_spirit_expedition[:wen])) %>
+      <%= t(".spirit_expedition_completed", qi: number_with_delimiter(completed_spirit_expedition[:qi]), wen: number_with_delimiter(completed_spirit_expedition[:wen]), donation_currency: number_with_delimiter(completed_spirit_expedition[:donation_currency])) %>
     </p>
   <% end %>
 

@@ -31,8 +31,8 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
     assert_select ".global-header a[href='#{character_path(character, locale: :en)}']", text: /2/
     assert_select ".global-header a[href='#{character_path(character, locale: :en)}']", text: /3/
     assert_select ".global-header a[href='#{inventory_path(locale: :en)}']", text: /#{character.power}/
-    assert_select ".global-header a[href='#{inventory_path(locale: :en)}'][title='Wen']", text: /12/
-    assert_select ".global-header a[href='#{inventory_path(locale: :en)}'][title='Liang']", text: /5/
+    assert_select ".global-header a[href='#{spirit_expedition_path(locale: :en)}'][title='Wen']", text: /12/
+    assert_select ".global-header a[href='#{spirit_expedition_path(locale: :en)}'][title='Liang']", text: /5/
     assert_select ".global-header a[href='#{sparring_path(locale: :en)}']", text: %r{2/3}
     assert_select ".global-header a[href='#{sparring_path(locale: :en)}']", text: /\d{2}:\d{2}/
     assert_select "h1", "Jade River"

@@ -23,7 +23,8 @@ class CharacterTest < ActiveSupport::TestCase
       daily_reward_cooldown: Character.daily_reward_cooldown,
       spirit_expedition_durations: Character.spirit_expedition_durations,
       spirit_expedition_extended_reward_multiplier: Character.spirit_expedition_extended_reward_multiplier,
-      spirit_expedition_wen_reward_range: Character.spirit_expedition_wen_reward_range
+      spirit_expedition_wen_reward_range: Character.spirit_expedition_wen_reward_range,
+      spirit_expedition_donation_currency_chance: Character.spirit_expedition_donation_currency_chance
     }
 
     Character.stars_per_realm = 9
@@ -47,9 +48,10 @@ class CharacterTest < ActiveSupport::TestCase
     Character.spirit_expedition_durations = [ 1, 4, 12, 24 ]
     Character.spirit_expedition_extended_reward_multiplier = 0.25
     Character.spirit_expedition_wen_reward_range = 50..100
+    Character.spirit_expedition_donation_currency_chance = 0.05
 
     @character = characters(:one)
-    @character.update!(realm: 1, star: 1, qi: 0, total_experience: 0, last_online: Time.current, currency: 0, spirit_expedition_started_at: nil, spirit_expedition_ends_at: nil, spirit_expedition_duration_hours: nil)
+    @character.update!(realm: 1, star: 1, qi: 0, total_experience: 0, last_online: Time.current, currency: 0, donation_currency: 0, spirit_expedition_started_at: nil, spirit_expedition_ends_at: nil, spirit_expedition_duration_hours: nil)
   end
 
   teardown do
@@ -344,26 +346,39 @@ class CharacterTest < ActiveSupport::TestCase
     now = Time.zone.local(2026, 6, 18, 12, 0, 0)
     @character.start_spirit_expedition!(hours: 1, at: now)
 
-    result = @character.complete_spirit_expedition!(at: now + 1.hour, wen_per_hour: 80)
+    result = @character.complete_spirit_expedition!(at: now + 1.hour, wen_per_hour: 80, donation_currency_roll: 0.99)
 
     @character.reload
-    assert_equal({ qi: 7_200, wen: 80 }, result)
+    assert_equal({ qi: 7_200, wen: 80, donation_currency: 0 }, result)
     assert_equal 7_200, @character.qi
     assert_equal 7_200, @character.total_experience
     assert_equal 80, @character.currency
+    assert_equal 0, @character.donation_currency
     assert_nil @character.spirit_expedition_ends_at
+  end
+
+  test "one hour spirit expedition can reward donation currency" do
+    now = Time.zone.local(2026, 6, 18, 12, 0, 0)
+    @character.start_spirit_expedition!(hours: 1, at: now)
+
+    result = @character.complete_spirit_expedition!(at: now + 1.hour, wen_per_hour: 80, donation_currency_roll: 0.04)
+
+    @character.reload
+    assert_equal({ qi: 7_200, wen: 80, donation_currency: 1 }, result)
+    assert_equal 1, @character.donation_currency
   end
 
   test "reduces extended spirit expedition rewards to twenty five percent" do
     now = Time.zone.local(2026, 6, 18, 12, 0, 0)
     @character.start_spirit_expedition!(hours: 4, at: now)
 
-    result = @character.complete_spirit_expedition!(at: now + 4.hours, wen_per_hour: 80)
+    result = @character.complete_spirit_expedition!(at: now + 4.hours, wen_per_hour: 80, donation_currency_roll: 0.0)
 
     @character.reload
-    assert_equal({ qi: 7_200, wen: 80 }, result)
+    assert_equal({ qi: 7_200, wen: 80, donation_currency: 0 }, result)
     assert_equal 7_200, @character.qi
     assert_equal 80, @character.currency
+    assert_equal 0, @character.donation_currency
   end
 
   private

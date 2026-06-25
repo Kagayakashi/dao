@@ -35,6 +35,7 @@ class Character < ApplicationRecord
   class_attribute :spirit_expedition_durations, default: [ 1, 4, 12, 24 ]
   class_attribute :spirit_expedition_extended_reward_multiplier, default: 0.25
   class_attribute :spirit_expedition_wen_reward_range, default: 50..100
+  class_attribute :spirit_expedition_donation_currency_chance, default: 0.05
 
   before_validation :set_initial_last_online, on: :create
   before_validation :set_default_name, on: :create
@@ -220,7 +221,7 @@ class Character < ApplicationRecord
     )
   end
 
-  def complete_spirit_expedition!(at: Time.current, wen_per_hour: nil)
+  def complete_spirit_expedition!(at: Time.current, wen_per_hour: nil, donation_currency_roll: nil)
     return false unless spirit_expedition_ends_at.present?
     return false if spirit_expedition_active?(at:)
 
@@ -228,16 +229,19 @@ class Character < ApplicationRecord
     multiplier = spirit_expedition_reward_multiplier
     gained_qi = spirit_expedition_estimated_qi_reward(hours)
     gained_wen = ((wen_per_hour || rand(spirit_expedition_wen_reward_range)) * hours * multiplier).floor
+    donation_currency_roll ||= rand
+    gained_donation_currency = hours.to_i == 1 && donation_currency_roll < spirit_expedition_donation_currency_chance ? 1 : 0
 
     gain_qi(gained_qi, multiplier: 1.0)
     self.currency += gained_wen
+    self.donation_currency += gained_donation_currency
     self.last_online = spirit_expedition_ends_at
     self.spirit_expedition_started_at = nil
     self.spirit_expedition_ends_at = nil
     self.spirit_expedition_duration_hours = nil
     save!
 
-    { qi: gained_qi, wen: gained_wen }
+    { qi: gained_qi, wen: gained_wen, donation_currency: gained_donation_currency }
   end
 
   def recover_sparring_points!(at: Time.current)

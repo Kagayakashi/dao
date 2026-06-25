@@ -24,12 +24,12 @@
       <span><%= number_with_delimiter(character.power) %></span>
     <% end %>
 
-    <%= link_to inventory_path, class: "global-header__item", title: t("global_header.currency"), aria: { label: t("global_header.currency") } do %>
+    <%= link_to spirit_expedition_path, class: "global-header__item", title: t("global_header.currency"), aria: { label: t("global_header.currency") } do %>
       <%= cultivation_icon(:coin) %>
       <span><%= number_with_delimiter(character.currency) %></span>
     <% end %>
 
-    <%= link_to inventory_path, class: "global-header__item", title: t("global_header.donation_currency"), aria: { label: t("global_header.donation_currency") } do %>
+    <%= link_to spirit_expedition_path, class: "global-header__item", title: t("global_header.donation_currency"), aria: { label: t("global_header.donation_currency") } do %>
       <%= cultivation_icon(:jade) %>
       <span><%= number_with_delimiter(character.donation_currency) %></span>
     <% end %>

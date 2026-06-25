@@ -12,7 +12,7 @@
     <% if @completed_spirit_expedition.present? %>
       <p class="offline-gain">
         <%= cultivation_icon(:coin) %>
-        <%= t("spirit_expeditions.show.completed", qi: number_with_delimiter(@completed_spirit_expedition[:qi]), wen: number_with_delimiter(@completed_spirit_expedition[:wen])) %>
+        <%= t("spirit_expeditions.show.completed", qi: number_with_delimiter(@completed_spirit_expedition[:qi]), wen: number_with_delimiter(@completed_spirit_expedition[:wen]), donation_currency: number_with_delimiter(@completed_spirit_expedition[:donation_currency])) %>
       </p>
     <% end %>
 
@@ -36,6 +36,9 @@
               <span class="realm-label"><%= t("spirit_expeditions.show.duration", hours:) %></span>
               <strong><%= t("spirit_expeditions.show.qi_reward", qi: number_with_delimiter(@character.spirit_expedition_estimated_qi_reward(hours))) %></strong>
               <span><%= t("spirit_expeditions.show.wen_reward", min: number_with_delimiter(min_wen), max: number_with_delimiter(max_wen)) %></span>
+              <% if hours == 1 %>
+                <span><%= t("spirit_expeditions.show.donation_currency_chance") %></span>
+              <% end %>
               <% if hours > 1 %>
                 <span><%= t("spirit_expeditions.show.reduced_reward_note") %></span>
               <% end %>
