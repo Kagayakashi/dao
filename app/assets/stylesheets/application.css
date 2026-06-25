@@ -281,7 +281,11 @@ body {
   line-height: 1.5;
 }
 
-.main-banner {
+.main-banner,
+.profile-banner {
+  display: flex;
+  justify-content: center;
+  min-height: 4rem;
   margin: -0.4rem -0.4rem 1rem;
   border: 1px solid rgb(44 24 16 / 22%);
   border-radius: 0.25rem;
@@ -291,26 +295,14 @@ body {
 .main-banner__image {
   display: block;
   width: 100%;
-  height: 13rem;
+  height: 100%;
   object-fit: cover;
-}
-
-.profile-banner {
-  display: flex;
-  justify-content: center;
-  min-height: 9rem;
-  margin: -0.4rem -0.4rem 1rem;
-  background:
-    linear-gradient(135deg, rgb(44 24 16 / 70%), rgb(212 175 55 / 22%)),
-    repeating-linear-gradient(45deg, rgb(245 230 200 / 16%) 0 0.35rem, transparent 0.35rem 0.7rem);
-  border: 1px solid rgb(44 24 16 / 22%);
-  border-radius: 0.25rem;
-  overflow: hidden;
+  object-position: center 20%;
 }
 
 .profile-banner__image {
   width: 100%;
-  height: 12rem;
+  height: 100%;
   object-fit: cover;
   object-position: center 20%;
 }
