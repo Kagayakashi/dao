@@ -1,5 +1,5 @@
 class LeaderboardsController < ApplicationController
-  PER_PAGE = 20
+  PER_PAGE = 10
 
   def show
     @page = [ params[:page].to_i, 1 ].max
