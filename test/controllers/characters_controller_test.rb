@@ -37,12 +37,35 @@ class CharactersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "shows attack button on other player's profile" do
+    users(:one).character.update!(sparring_points: 3)
     sign_in_as(users(:one))
 
     get character_path(users(:two).character, locale: :en)
 
     assert_response :success
-    assert_select "form[action*='opponent_id'] button", "Attack"
+    assert_select ".profile-actions form[action*='opponent_id'] button", "Attack"
+    assert_select ".profile-actions form[action*='opponent_id'] button[disabled]", count: 0
+  end
+
+  test "disables attack button on profile without sparring focus" do
+    users(:one).character.update!(sparring_points: 0, sparring_recovered_at: Time.current)
+    sign_in_as(users(:one))
+
+    get character_path(users(:two).character, locale: :en)
+
+    assert_response :success
+    assert_select ".profile-actions form[action*='opponent_id'] button[disabled]", "Attack"
+  end
+
+  test "disables attack button on profile with low health" do
+    character = users(:one).character
+    character.update!(sparring_points: 3, current_health: character.health * 25 / 100, health_recovered_at: Time.current)
+    sign_in_as(users(:one))
+
+    get character_path(users(:two).character, locale: :en)
+
+    assert_response :success
+    assert_select ".profile-actions form[action*='opponent_id'] button[disabled]", "Attack"
   end
 
   test "does not show attack button on own profile" do
