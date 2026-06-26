@@ -29,7 +29,7 @@ class GameEvent < ApplicationRecord
   private
 
   def localized_text(value, **options)
-    return value unless value.start_with?("cultivation_events.", "sparring.")
+    return value unless value.start_with?("cultivation_events.", "sparring.", "artifact_refinements.", "spirit_expeditions.")
 
     I18n.t(value, **options.symbolize_keys, default: value)
   end

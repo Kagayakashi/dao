@@ -9,8 +9,8 @@ class SparringControllerTest < ActionDispatch::IntegrationTest
     get sparring_path(locale: :en)
 
     assert_response :success
-    assert_select ".main-banner img[alt='Wuxia sparring courtyard'][src*='sparring']"
-    assert_select "h1", "Wuxia Sparring"
+    assert_select ".main-banner img[alt='Sparring courtyard'][src*='sparring']"
+    assert_select "h1", "Sparring"
     assert_select ".sparring-card", text: %r{3/3}
     assert_select "#sparring-opponent-heading", text: /Sparring Opponent/
     assert_select "form button", "Spare"
@@ -100,6 +100,8 @@ class SparringControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to sparring_path(locale: :en)
+    follow_redirect!
+    assert_select ".form-notice", text: /Rest before attacking again/
   end
 
   test "changing opponent without sparring focus does not spend or change" do
@@ -116,7 +118,7 @@ class SparringControllerTest < ActionDispatch::IntegrationTest
     follow_redirect!
 
     assert_equal 0, character.reload.sparring_points
-    assert_select ".form-notice", text: /sparring focus is empty/
+    assert_select ".form-notice", text: /Rest before changing partners/
     assert_includes response.body, first_opponent_name
   end
 

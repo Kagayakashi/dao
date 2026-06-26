@@ -53,8 +53,8 @@
         </div>
 
         <div class="sparring-actions">
-          <%= button_to t("sparring.show.spare_button"), sparring_path, class: "ceremonial-button", disabled: @character.sparring_points.zero? %>
-          <%= button_to t("sparring.show.change_opponent_button"), change_opponent_sparring_path, class: "ceremonial-button", disabled: @character.sparring_points.zero? %>
+          <%= button_to t("sparring.show.spare_button"), sparring_path, class: "ceremonial-button" %>
+          <%= button_to t("sparring.show.change_opponent_button"), change_opponent_sparring_path, class: "ceremonial-button" %>
         </div>
       </section>
     <% else %>

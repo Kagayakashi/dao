@@ -166,11 +166,25 @@ en:
       daily_reward_next: "Next reward in %{duration}."
       achievements_heading: "Achievements"
       events_heading: "Recent Events"
+      events_link: "More events"
       navigation_aria: "Cultivation navigation"
       profile_link: "Profile"
       adventure_link: "Adventure"
       leaderboard_link: "Leaderboard"
       sign_out_button: "Sign out"
+
+  events:
+    index:
+      title: "Event Log"
+      eyebrow: "Cultivation Journal"
+      heading: "Event Log"
+      screen_note: "Review recent cultivation events, sparring exchanges, and other moments from your path."
+      empty: "No events have been recorded yet."
+      pagination_aria: "Event log pages"
+      previous_page: "Previous"
+      next_page: "Next"
+      navigation_aria: "Event log navigation"
+      return_link: "Return to Cultivation"
 
   temples:
     pray:
@@ -189,6 +203,7 @@ en:
       pray_button: "Pray"
       next_prayer: "Next prayer in %{duration}."
       navigation_aria: "Temple navigation"
+      adventure_link: "Adventure"
       return_link: "Return to Cultivation"
 
   adventures:
@@ -199,16 +214,50 @@ en:
       banner_alt: "Cultivation city"
       screen_note: "The city is quiet, but its tea houses and courtyards carry rumors of wandering cultivators. Choose one calm path for now."
       actions_heading: "City Paths"
-      wuxia_sparring_note: "Enter a respectful Wuxia Sparring exchange with another cultivator. The result is decided instantly by current Power."
-      wuxia_sparring_link: "Wuxia Sparring"
+      temple_note: "Visit the Temple of Heaven to claim your daily Qi reward."
+      sparring_note: "Enter a respectful Sparring exchange with another cultivator. The result is decided instantly by current Power."
+      sparring_link: "Sparring"
       spirit_expedition_note: "Leave the city for a timed Spirit Expedition. Longer trips are calmer, but less efficient than returning every hour."
       spirit_expedition_link: "Spirit Expedition"
+      artifact_refinement_note: "Visit the Artifact Refinement Hall to reroll the power within your equipment."
+      artifact_refinement_link: "Artifact Refinement Hall"
       crier_note: "Listen to the city crier for recent announcements."
       crier_link: "Crier"
       navigation_aria: "Adventure navigation"
       return_link: "Return to Cultivation"
 
+  artifact_refinements:
+    events:
+      title: "Artifact Refinement"
+      description: "%{item_name} was refined from %{old_power} Power to %{new_power} Power."
+    reroll:
+      notice:
+        complete: "%{item} was refined with new power."
+      alert:
+        item_missing: "That artifact is no longer in your possession."
+        payment_missing: "Bring 300 Wen or 1 Liang before asking for refinement."
+    show:
+      title: "Artifact Refinement Hall"
+      eyebrow: "Refinement Hall"
+      heading: "Artifact Refinement Hall"
+      screen_note: "Refine any carried or equipped treasure. The old power is erased and new power is drawn from the same fate as found equipment."
+      cost_heading: "Refinement Cost"
+      cost: "%{wen} Wen or %{liang} Liang"
+      currency_balance: "You carry %{wen} Wen and %{liang} Liang."
+      items_heading: "Artifacts"
+      equipped_location: "Equipped: %{slot}"
+      inventory_location: "Inventory Slot %{slot}"
+      reroll_wen_button: "Refine for 300 Wen"
+      reroll_liang_button: "Refine for 1 Liang"
+      empty: "You have no equipment to refine yet."
+      navigation_aria: "Artifact refinement navigation"
+      inventory_link: "Inventory"
+      adventure_link: "Adventure"
+
   spirit_expeditions:
+    events:
+      title: "Spirit Expedition"
+      description: "Returned from a %{hours}h Spirit Expedition with %{wen} Wen."
     create:
       notice:
         started: "Spirit Expedition started for %{hours}h."
@@ -218,7 +267,7 @@ en:
       title: "Spirit Expedition"
       eyebrow: "Outer Path"
       heading: "Spirit Expedition"
-      screen_note: "Choose how long your cultivator will travel. While away, personal passive Qi and personal random events pause, but other cultivators may still involve you."
+      screen_note: "Choose how long your cultivator will travel. While away, personal passive Qi and personal random events pause, but other cultivators may still involve you. Short expeditions have a low chance to return with 1 Liang."
       completed: "Returned with %{qi} Qi, %{wen} Wen, and %{donation_currency} Liang."
       active_heading: "Expedition underway"
       active_duration: "%{hours}h journey"
@@ -255,26 +304,27 @@ en:
   sparring:
     create:
       no_opponent: "That cultivator has already left the courtyard."
-      no_points: "Your sparring focus is empty. Rest before another exchange."
+      no_points: "Your sparring focus is empty. Rest before attacking again."
       opponent_resting: "That cultivator is resting after a recent exchange."
     change_opponent:
       notice: "Another cultivator stepped into the courtyard."
+      no_points: "Your sparring focus is empty. Rest before changing partners."
       no_opponent: "No other cultivator is close enough to replace this one."
     show:
-      title: "Wuxia Sparring"
+      title: "Sparring"
       eyebrow: "Quiet Courtyard"
-      heading: "Wuxia Sparring"
-      banner_alt: "Wuxia sparring courtyard"
+      heading: "Sparring"
+      banner_alt: "Sparring courtyard"
       screen_note: "A nearby cultivator is chosen from the city crowd. Spar once to resolve the exchange instantly."
       opponent_heading: "Sparring Opponent"
       spare_button: "Spare"
       change_opponent_button: "Change Cultivator"
       no_opponent: "No other cultivator is near the courtyard yet."
-      navigation_aria: "Wuxia sparring navigation"
+      navigation_aria: "Sparring navigation"
       adventure_link: "Adventure"
       return_link: "Return to Cultivation"
     matches:
-      title: "Wuxia Sparring"
+      title: "Sparring"
       victory_description: "You sparred with %{name}. Your steadier aura carried the exchange."
       defeat_description: "You sparred with %{name}. Their steadier aura guided the exchange."
       result_chances: "Your chance: %{your_chance}. Opponent chance: %{opponent_chance}."

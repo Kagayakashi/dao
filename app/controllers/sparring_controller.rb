@@ -34,7 +34,7 @@ class SparringController < ApplicationController
     return redirect_to sparring_path, alert: t("sparring.change_opponent.no_opponent"), status: :see_other unless new_opponent
 
     unless @character.spend_sparring_point!
-      return redirect_to sparring_path, alert: t("sparring.create.no_points"), status: :see_other
+      return redirect_to sparring_path, alert: t("sparring.change_opponent.no_points"), status: :see_other
     end
 
     session[:sparring_opponent_id] = new_opponent.id

@@ -102,6 +102,9 @@
           </li>
         <% end %>
       </ul>
+      <div class="section-action">
+        <%= link_to t(".events_link"), events_path, class: "ceremonial-link", data: { turbo_frame: "_top" } %>
+      </div>
     </section>
   <% end %>
 

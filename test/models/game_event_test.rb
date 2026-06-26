@@ -111,6 +111,36 @@ class GameEventTest < ActiveSupport::TestCase
     end
   end
 
+  test "localizes refinement event metadata" do
+    event = characters(:one).game_events.create!(
+      event_key: "artifact_refinement",
+      outcome: "neutral",
+      title: "artifact_refinements.events.title",
+      description: "artifact_refinements.events.description",
+      metadata: { "inventory_item_name_key" => "iron_dao_blade", "old_power" => 10, "new_power" => 25 },
+      qi_delta: 0,
+      happened_at: Time.current
+    )
+
+    assert_equal "Artifact Refinement", event.localized_title
+    assert_equal "Iron Dao Blade was refined from 10 Power to 25 Power.", event.localized_description
+  end
+
+  test "localizes spirit expedition event metadata" do
+    event = characters(:one).game_events.create!(
+      event_key: "spirit_expedition",
+      outcome: "positive",
+      title: "spirit_expeditions.events.title",
+      description: "spirit_expeditions.events.description",
+      metadata: { "hours" => 4, "wen" => 80 },
+      qi_delta: 0,
+      happened_at: Time.current
+    )
+
+    assert_equal "Spirit Expedition", event.localized_title
+    assert_equal "Returned from a 4h Spirit Expedition with 80 Wen.", event.localized_description
+  end
+
   test "uses related character name without storing it in metadata" do
     event = characters(:one).game_events.create!(
       event_key: "stranger_cultivator",

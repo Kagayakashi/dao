@@ -1,0 +1,38 @@
+<% content_for :title, t("events.index.title") %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel events-panel">
+    <p class="eyebrow"><%= cultivation_icon(:spark) %> <%= t("events.index.eyebrow") %></p>
+    <h1><%= t("events.index.heading") %></h1>
+    <p class="screen-note"><%= t("events.index.screen_note") %></p>
+
+    <% if @events.any? %>
+      <ul class="event-list">
+        <% @events.each do |event| %>
+          <li>
+            <strong><%= event.localized_title %></strong>
+            <span><%= event.localized_description %></span>
+            <% if event.localized_qi_delta.present? %>
+              <span><%= event.localized_qi_delta %></span>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+
+      <nav class="quiet-nav" aria-label="<%= t("events.index.pagination_aria") %>">
+        <% if @page > 1 %>
+          <%= link_to t("events.index.previous_page"), events_path(page: @page - 1) %>
+        <% end %>
+        <% if @has_next_page %>
+          <%= link_to t("events.index.next_page"), events_path(page: @page + 1) %>
+        <% end %>
+      </nav>
+    <% else %>
+      <p class="empty-state"><%= t("events.index.empty") %></p>
+    <% end %>
+
+    <nav class="quiet-nav" aria-label="<%= t("events.index.navigation_aria") %>">
+      <%= link_to t("events.index.return_link"), root_path %>
+    </nav>
+  </section>
+</main>

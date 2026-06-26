@@ -123,6 +123,7 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select ".event-list", text: /\+3,600 Qi/
+    assert_select ".section-action a[href='#{events_path(locale: :en)}']", "More events"
   end
 
   test "shows refreshable cultivation panel" do

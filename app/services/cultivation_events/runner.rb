@@ -139,30 +139,12 @@ module CultivationEvents
       item = character.create_inventory_item!(
         name: item_name_key,
         equipment_kind:,
-        power_options: power_options(config),
+        power_options: InventoryItems::PowerRoll.new(character, config:, rng:).call,
         metadata: {}
       )
       return false unless item
 
       { metadata: { "inventory_item_name_key" => item_name_key } }
-    end
-
-    def power_options(config)
-      Array.new(random_option_count(config)) do
-        { "key" => "power", "value" => rng.rand(config.fetch(:power_option_min)..[ character.power, config.fetch(:power_option_min) ].max) }
-      end
-    end
-
-    def random_option_count(config)
-      roll = rng.rand * 100
-      total = 0
-
-      config.fetch(:option_count_chances).each do |count, chance|
-        total += chance
-        return count if roll < total
-      end
-
-      1
     end
 
     def inventory_full_result

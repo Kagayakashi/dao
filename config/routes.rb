@@ -8,6 +8,10 @@ Rails.application.routes.draw do
     end
     resource :leaderboard, only: :show
     resource :inventory, only: :show
+    resources :events, only: :index
+    resource :artifact_refinement, only: :show do
+      post :reroll
+    end
     resource :adventure, only: :show
     resource :spirit_expedition, only: %i[ show create ]
     resources :news, only: %i[ index show ] do

@@ -355,6 +355,10 @@ class CharacterTest < ActiveSupport::TestCase
     assert_equal 80, @character.currency
     assert_equal 0, @character.donation_currency
     assert_nil @character.spirit_expedition_ends_at
+    event = @character.game_events.order(:created_at).last
+    assert_equal "spirit_expedition", event.event_key
+    assert_equal 1, event.metadata.fetch("hours")
+    assert_equal 80, event.metadata.fetch("wen")
   end
 
   test "one hour spirit expedition can reward donation currency" do

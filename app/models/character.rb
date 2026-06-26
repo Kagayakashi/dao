@@ -240,8 +240,21 @@ class Character < ApplicationRecord
     self.spirit_expedition_ends_at = nil
     self.spirit_expedition_duration_hours = nil
     save!
+    create_spirit_expedition_event!(hours:, wen: gained_wen)
 
     { qi: gained_qi, wen: gained_wen, donation_currency: gained_donation_currency }
+  end
+
+  def create_spirit_expedition_event!(hours:, wen:)
+    game_events.create!(
+      event_key: "spirit_expedition",
+      outcome: "positive",
+      title: "spirit_expeditions.events.title",
+      description: "spirit_expeditions.events.description",
+      metadata: { "hours" => hours, "wen" => wen },
+      qi_delta: 0,
+      happened_at: Time.current
+    )
   end
 
   def recover_sparring_points!(at: Time.current)
