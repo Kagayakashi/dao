@@ -21,10 +21,10 @@
 
       <nav class="pagination-nav" aria-label="<%= t("events.index.pagination_aria") %>">
         <% if @page > 1 %>
-          <%= link_to t("events.index.previous_page"), events_path(page: @page - 1) %>
+          <%= link_to t("events.index.previous_page"), events_path(page: @page - 1), class: "ceremonial-link" %>
         <% end %>
         <% if @has_next_page %>
-          <%= link_to t("events.index.next_page"), events_path(page: @page + 1) %>
+          <%= link_to t("events.index.next_page"), events_path(page: @page + 1), class: "ceremonial-link" %>
         <% end %>
       </nav>
     <% else %>
