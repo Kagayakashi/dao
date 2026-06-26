@@ -13,6 +13,7 @@ class User < ApplicationRecord
 
   validates :email_address, presence: true, uniqueness: true
   validates :character_name, presence: true, if: :temporary?, on: :create
+  validate :character_name_is_unique, if: -> { character_name.present? }, on: :create
 
   def complete_registration!(email_address:, password:, password_confirmation:)
     transaction do
@@ -31,5 +32,9 @@ class User < ApplicationRecord
 
   def create_initial_character
     create_character!(name: character_name.presence, gender: character_gender.presence || :male)
+  end
+
+  def character_name_is_unique
+    errors.add(:character_name, :taken) if Character.exists?(name: character_name)
   end
 end

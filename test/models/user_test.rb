@@ -16,7 +16,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "creates a character with selected gender" do
-    user = User.create!(email_address: "gender@example.com", password: "password", character_name: "Little Alchemist", character_gender: "female")
+    user = User.create!(email_address: "gender@example.com", password: "password", character_name: "Moon Alchemist", character_gender: "female")
 
     assert_predicate user.character, :female?
   end
@@ -31,5 +31,14 @@ class UserTest < ActiveSupport::TestCase
     assert_equal "leaf@example.com", user.email_address
     assert_equal User::COMPLETION_REWARD_QI, user.character.qi
     assert_equal User::COMPLETION_REWARD_QI, user.character.total_experience
+  end
+
+  test "does not create a character with a duplicate name" do
+    User.create!(email_address: "first-name@example.com", password: "password", character_name: "Still Reed")
+
+    user = User.new(email_address: "second-name@example.com", password: "password", character_name: "Still Reed")
+
+    assert_not user.valid?
+    assert_includes user.errors[:character_name], "has already been taken"
   end
 end

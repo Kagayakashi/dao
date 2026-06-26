@@ -80,10 +80,25 @@ class CharacterTest < ActiveSupport::TestCase
     assert_not @character.valid?
   end
 
+  test "requires a unique character name" do
+    character = Character.new(user: users(:two), name: @character.name)
+
+    assert_not character.valid?
+    assert_includes character.errors[:name], "has already been taken"
+  end
+
   test "uses a default character name" do
     character = User.create!(email_address: "default-name@example.com", password: "password").character
 
     assert_equal "Wandering Cultivator", character.name
+  end
+
+  test "generates a unique default character name when the default is taken" do
+    User.create!(email_address: "default-name@example.com", password: "password")
+
+    character = User.create!(email_address: "second-default-name@example.com", password: "password").character
+
+    assert_match(/\AWandering Cultivator [A-Za-z0-9]{6}\z/, character.name)
   end
 
   test "defaults character gender to male" do

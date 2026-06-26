@@ -45,7 +45,7 @@ class Character < ApplicationRecord
   before_validation :set_initial_sparring_recovered_at, on: :create
   before_validation :set_initial_health_recovered_at
 
-  validates :name, presence: true, length: { maximum: 40 }
+  validates :name, presence: true, length: { maximum: 40 }, uniqueness: true
   validates :level, :sublevel, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
   validates :experience, :total_experience, :currency, :donation_currency, :reset,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -476,7 +476,17 @@ class Character < ApplicationRecord
   end
 
   def set_default_name
-    self.name = name.presence || I18n.t("characters.default_name")
+    return if name.present?
+
+    default_name = I18n.t("characters.default_name")
+    self.name = if self.class.exists?(name: default_name)
+      loop do
+        generated_name = "#{default_name} #{SecureRandom.alphanumeric(6)}"
+        break generated_name unless self.class.exists?(name: generated_name)
+      end
+    else
+      default_name
+    end
   end
 
   def breakthrough_overflow_loss(loss_percent)

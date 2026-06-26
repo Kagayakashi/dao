@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_26_004000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_26_005000) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -93,6 +93,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_26_004000) do
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.index ["daily_reward_claimed_at"], name: "index_characters_on_daily_reward_claimed_at"
+    t.index ["name"], name: "index_characters_on_name", unique: true
     t.index ["sparring_available_at"], name: "index_characters_on_sparring_available_at"
     t.index ["spirit_expedition_ends_at"], name: "index_characters_on_spirit_expedition_ends_at"
     t.index ["user_id"], name: "index_characters_on_user_id", unique: true
