@@ -14,7 +14,6 @@
       <span><%= t("characters.show.gender", gender: @character.gender_name) %></span>
       <span><%= t("characters.show.gear_score", gear_score: number_with_delimiter(@character.gear_score)) %></span>
       <span><%= t("shared.qi_with_value", qi: number_with_delimiter(@character.total_experience)) %></span>
-      <span><%= t("characters.show.current_health", current: number_with_delimiter(@character.current_health), max: number_with_delimiter(@character.health)) %></span>
     </div>
 
     <section class="combat-stats" aria-labelledby="profile-combat-stats-heading">
