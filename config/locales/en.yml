@@ -23,7 +23,7 @@ en:
     character_info: "Character profile"
     name_and_realm: "%{name} | R%{realm} S%{star}"
     health: "Health"
-    health_value: "HP %{current} / %{max}"
+    health_value: "%{current} / %{max}"
     gear_score: "GearScore and inventory"
     currency: "Wen"
     donation_currency: "Liang"
