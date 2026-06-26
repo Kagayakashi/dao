@@ -5,6 +5,8 @@ class TemplesController < ApplicationController
   end
 
   def pray
+    return redirect_to temple_path, alert: t("temples.pray.notice.expedition_active"), status: :see_other if @character.spirit_expedition_active?
+
     gained_qi = @character.claim_daily_reward!
 
     flash[:notice] = if gained_qi

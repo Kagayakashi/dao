@@ -10,6 +10,7 @@
 
     <%= tag.div(flash[:alert], class: "form-alert") if flash[:alert] %>
     <%= tag.div(flash[:notice], class: "form-notice") if flash[:notice] %>
+    <%= tag.div(t("sparring.show.expedition_locked"), class: "form-alert") if @character.spirit_expedition_active? %>
 
     <div class="realm-card sparring-card">
       <span class="realm-label"><%= cultivation_icon(:sword) %> <%= t("shared.sparring_points") %></span>
@@ -44,15 +45,15 @@
       <section class="events" aria-labelledby="sparring-opponent-heading">
         <h2 id="sparring-opponent-heading"><%= cultivation_icon(:mountain) %> <%= t("sparring.show.opponent_heading") %></h2>
         <div class="realm-card">
-          <span class="realm-label"><%= @opponent.name %></span>
-          <strong><%= @opponent.realm_name %></strong>
-          <span><%= t("shared.star", count: @opponent.star) %></span>
-          <span><%= t("shared.power_with_value", power: number_with_delimiter(@opponent.power)) %></span>
+          <strong class="opponent-name"><%= @opponent.name %></strong>
+          <span><%= @opponent.realm_name %>, <%= t("shared.star", count: @opponent.star) %></span>
+          <strong class="opponent-power"><%= t("shared.power_with_value", power: number_with_delimiter(@opponent.power)) %></strong>
+          <span><%= t("sparring.show.win_chance", chance: number_to_percentage(@win_chance * 100, precision: 0)) %></span>
         </div>
 
         <div class="sparring-actions">
-          <%= button_to t("sparring.show.spare_button"), sparring_path, class: "ceremonial-button" %>
-          <%= button_to t("sparring.show.change_opponent_button"), change_opponent_sparring_path, class: "ceremonial-button" %>
+          <%= button_to t("sparring.show.spare_button"), sparring_path, class: "ceremonial-button", disabled: @character.spirit_expedition_active? %>
+          <%= button_to t("sparring.show.change_opponent_button"), change_opponent_sparring_path, class: "ceremonial-button", disabled: @character.spirit_expedition_active? %>
         </div>
       </section>
     <% else %>

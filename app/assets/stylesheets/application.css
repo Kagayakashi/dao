@@ -347,6 +347,19 @@ body {
   font-size: 1.45rem;
 }
 
+.realm-card .opponent-name,
+.realm-card .opponent-power {
+  color: var(--dark-brown);
+}
+
+.realm-card .opponent-name {
+  font-size: 1.35rem;
+}
+
+.realm-card .opponent-power {
+  font-size: 1.15rem;
+}
+
 .realm-label,
 .total-qi,
 .next-breakthrough,
@@ -518,6 +531,12 @@ body {
 .small-button {
   padding: 0.45rem 0.55rem;
   font-size: 0.85rem;
+}
+
+.ceremonial-button:disabled,
+.small-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .auth-form {

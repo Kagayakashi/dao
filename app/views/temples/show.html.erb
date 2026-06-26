@@ -6,7 +6,9 @@
     <h1><%= t("temples.show.heading") %></h1>
     <p class="screen-note"><%= t("temples.show.screen_note") %></p>
 
+    <%= tag.div(flash[:alert], class: "form-alert") if flash[:alert] %>
     <%= tag.div(flash[:notice], class: "form-notice") if flash[:notice] %>
+    <%= tag.div(t("temples.show.expedition_locked"), class: "form-alert") if @character.spirit_expedition_active? %>
 
     <div class="realm-card daily-reward-card">
       <span class="realm-label"><%= cultivation_icon(:qi) %> <%= t("temples.show.reward_heading") %></span>
@@ -16,7 +18,7 @@
 
     <% if @character.daily_reward_ready? %>
       <p class="breakthrough-ready"><%= cultivation_icon(:star) %> <%= t("temples.show.ready") %></p>
-      <%= button_to t("temples.show.pray_button"), pray_temple_path, class: "ceremonial-button breakthrough-button" %>
+      <%= button_to t("temples.show.pray_button"), pray_temple_path, class: "ceremonial-button breakthrough-button", disabled: @character.spirit_expedition_active? %>
     <% else %>
       <p class="next-breakthrough"><%= t("temples.show.next_prayer", duration: distance_of_time_in_words(Time.current, @character.daily_reward_available_at)) %></p>
     <% end %>

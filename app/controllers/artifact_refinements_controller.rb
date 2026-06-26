@@ -6,6 +6,8 @@ class ArtifactRefinementsController < ApplicationController
 
   def reroll
     load_character
+    return redirect_to artifact_refinement_path, alert: t("artifact_refinements.reroll.alert.expedition_active"), status: :see_other if @character.spirit_expedition_active?
+
     result = ArtifactRefinements::Reroll.new(@character, item_id: params[:item_id], payment: params[:payment]).call
 
     if result.success?

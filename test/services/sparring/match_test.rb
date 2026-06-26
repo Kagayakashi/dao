@@ -32,6 +32,13 @@ class Sparring::MatchTest < ActiveSupport::TestCase
     assert_equal "sparring.matches.defeat_description", result[:description]
   end
 
+  test "calculates public win chance from power" do
+    @challenger.update!(realm: 2, star: 1)
+    @opponent.update!(realm: 1, star: 1)
+
+    assert_equal 0.6667, Sparring::Match.win_chance(challenger: @challenger, opponent: @opponent).round(4)
+  end
+
   private
 
   def fixed_rng(value)

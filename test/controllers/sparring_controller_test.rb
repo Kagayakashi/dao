@@ -13,8 +13,35 @@ class SparringControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", "Sparring"
     assert_select ".sparring-card", text: %r{3/3}
     assert_select "#sparring-opponent-heading", text: /Sparring Opponent/
+    assert_select ".opponent-name"
+    assert_select ".opponent-power", text: /Power/
+    assert_select ".realm-card", text: /Your chance to win:/
     assert_select "form button", "Attack"
     assert_select "form button", "Change Cultivator"
+  end
+
+  test "blocks sparring actions during spirit expedition" do
+    user = users(:one)
+    character = user.character
+    opponent = users(:two).character
+    character.update!(sparring_points: 3)
+    character.start_spirit_expedition!(hours: 4)
+    sign_in_as(user)
+
+    get sparring_path(locale: :en)
+
+    assert_response :success
+    assert_select ".form-alert", text: /Sparring is unavailable/
+    assert_select "form button[disabled]", "Attack"
+    assert_select "form button[disabled]", "Change Cultivator"
+
+    assert_no_difference -> { character.game_events.count } do
+      post sparring_path(locale: :en), params: { opponent_id: opponent.id }
+    end
+    follow_redirect!
+
+    assert_equal 3, character.reload.sparring_points
+    assert_select ".form-alert", text: /Return before attacking/
   end
 
   test "keeps same opponent when page is reopened" do

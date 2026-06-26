@@ -78,4 +78,28 @@ class ArtifactRefinementsControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ { "key" => "power", "value" => 12 } ], item.reload.power_options
     assert_select ".form-alert", text: /Bring 300 Wen/
   end
+
+  test "blocks refinement during spirit expedition" do
+    user = users(:one)
+    character = user.character
+    item = character.create_inventory_item!(name: "iron_dao_blade", equipment_kind: "weapon", power_options: [ { "key" => "power", "value" => 12 } ])
+    character.update!(currency: 300)
+    character.start_spirit_expedition!(hours: 4)
+    sign_in_as(user)
+
+    get artifact_refinement_path(locale: :en)
+
+    assert_response :success
+    assert_select ".form-alert", text: /Artifact refinement is unavailable/
+    assert_select "form button[disabled]", "Refine for 300 Wen"
+
+    assert_no_difference -> { character.game_events.count } do
+      post reroll_artifact_refinement_path(locale: :en), params: { item_id: item.id, payment: "wen" }
+    end
+    follow_redirect!
+
+    assert_equal 300, character.reload.currency
+    assert_equal [ { "key" => "power", "value" => 12 } ], item.reload.power_options
+    assert_select ".form-alert", text: /Return before refining artifacts/
+  end
 end

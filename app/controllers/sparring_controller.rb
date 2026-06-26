@@ -3,9 +3,12 @@ class SparringController < ApplicationController
 
   def show
     @opponent = current_opponent
+    @win_chance = Sparring::Match.win_chance(challenger: @character, opponent: @opponent) if @opponent
   end
 
   def create
+    return redirect_to sparring_path, alert: t("sparring.create.expedition_active"), status: :see_other if @character.spirit_expedition_active?
+
     opponent = current_opponent
     return redirect_to sparring_path, alert: t("sparring.create.no_opponent"), status: :see_other unless opponent
     return redirect_to sparring_path, alert: t("sparring.create.opponent_resting"), status: :see_other unless opponent.available_for_sparring?
@@ -30,6 +33,8 @@ class SparringController < ApplicationController
   end
 
   def change_opponent
+    return redirect_to sparring_path, alert: t("sparring.change_opponent.expedition_active"), status: :see_other if @character.spirit_expedition_active?
+
     new_opponent = random_opponent
     return redirect_to sparring_path, alert: t("sparring.change_opponent.no_opponent"), status: :see_other unless new_opponent
 

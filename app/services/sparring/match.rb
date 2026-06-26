@@ -1,5 +1,12 @@
 module Sparring
   class Match
+    def self.win_chance(challenger:, opponent:)
+      total_power = challenger.power + opponent.power
+      return 0.5 if total_power <= 0
+
+      challenger.power.to_f / total_power
+    end
+
     def initialize(challenger:, opponent:, victory_qi_hours:, defeat_qi_hours:, rng: Random.new)
       @challenger = challenger
       @opponent = opponent
@@ -31,10 +38,7 @@ module Sparring
     attr_reader :challenger, :opponent, :victory_qi_hours, :defeat_qi_hours, :rng
 
     def challenger_win_chance
-      total_power = challenger.power + opponent.power
-      return 0.5 if total_power <= 0
-
-      challenger.power.to_f / total_power
+      self.class.win_chance(challenger:, opponent:)
     end
 
     def description_key(won)

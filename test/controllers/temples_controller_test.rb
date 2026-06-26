@@ -50,4 +50,27 @@ class TemplesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to temple_path(locale: :en)
     assert_equal 0, character.reload.qi
   end
+
+  test "blocks daily prayer during spirit expedition" do
+    user = users(:one)
+    character = user.character
+    now = Time.current
+    character.update!(qi: 0, total_experience: 0, daily_reward_claimed_at: nil, last_online: now)
+    character.start_spirit_expedition!(hours: 4, at: now)
+    sign_in_as(user)
+
+    get temple_path(locale: :en)
+
+    assert_response :success
+    assert_select ".form-alert", text: /Daily prayer is unavailable/
+    assert_select "form button[disabled]", "Pray"
+
+    travel_to(now + 1.hour) do
+      post pray_temple_path(locale: :en)
+    end
+
+    assert_redirected_to temple_path(locale: :en)
+    assert_equal 0, character.reload.qi
+    assert_nil character.daily_reward_claimed_at
+  end
 end
