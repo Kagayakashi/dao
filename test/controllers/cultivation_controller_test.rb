@@ -30,7 +30,7 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
     assert_select ".global-header a[href='#{character_path(character, locale: :en)}']", text: /Jade River/
     assert_select ".global-header a[href='#{character_path(character, locale: :en)}']", text: /2/
     assert_select ".global-header a[href='#{character_path(character, locale: :en)}']", text: /3/
-    assert_select ".global-header a[href='#{inventory_path(locale: :en)}']", text: /#{character.power}/
+    assert_select ".global-header a[href='#{inventory_path(locale: :en)}']", text: /#{character.gear_score}/
     assert_select ".global-header a[href='#{spirit_expedition_path(locale: :en)}'][title='Wen']", text: /12/
     assert_select ".global-header a[href='#{spirit_expedition_path(locale: :en)}'][title='Liang']", text: /5/
     assert_select ".global-header a[href='#{sparring_path(locale: :en)}']", text: %r{2/3}
@@ -38,7 +38,7 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", "Jade River"
     assert_select ".realm-card", text: /Dou Practitioner/
     assert_select ".realm-card", text: /3 Star/
-    assert_select ".realm-card", text: /Power/
+    assert_select ".realm-card", text: /GearScore/
     assert_select ".qi-progress__text", text: /Qi/
     assert_select ".screen-note", text: /Qi gathers/
     assert_select ".next-breakthrough", text: /Next breakthrough/

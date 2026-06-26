@@ -1,11 +1,10 @@
 module Sparring
   class Match
-    def self.win_chance(challenger:, opponent:)
-      total_power = challenger.power + opponent.power
-      return 0.5 if total_power <= 0
-
-      challenger.power.to_f / total_power
-    end
+    MAX_ATTACKS_PER_CHARACTER = 5
+    MINIMUM_HEALTH = 1
+    MINIMUM_HIT_CHANCE = 5
+    MAXIMUM_HIT_CHANCE = 95
+    CRITICAL_MULTIPLIER = 1.5
 
     def initialize(challenger:, opponent:, victory_qi_hours:, defeat_qi_hours:, rng: Random.new)
       @challenger = challenger
@@ -13,32 +12,127 @@ module Sparring
       @victory_qi_hours = victory_qi_hours
       @defeat_qi_hours = defeat_qi_hours
       @rng = rng
+      @damage_done = { challenger => 0, opponent => 0 }
+      @combat_log = []
+      @health_remaining = {
+        challenger => challenger.current_health_points,
+        opponent => opponent.current_health_points
+      }
     end
 
     def call
-      chance = challenger_win_chance
-      won = rng.rand < chance
+      challenger.recover_health!
+      opponent.recover_health!
+      refresh_health_remaining!
+      winner = resolve_winner
+      challenger_won = winner == challenger
+      persist_health!
 
       {
-        outcome: won ? "victory" : "defeat",
-        reciprocal_outcome: won ? "defeat" : "victory",
-        qi_delta: qi_for_hours(won ? victory_qi_hours : defeat_qi_hours),
+        outcome: challenger_won ? "victory" : "defeat",
+        reciprocal_outcome: challenger_won ? "defeat" : "victory",
+        qi_delta: qi_for_hours(challenger_won ? victory_qi_hours : defeat_qi_hours),
         related_character: opponent,
-        description: description_key(won),
-        reciprocal_description: description_key(!won),
-        metadata: {
-          "challenger_win_chance" => chance.round(4),
-          "opponent_win_chance" => (1.0 - chance).round(4)
-        }
+        description: description_key(challenger_won),
+        reciprocal_description: description_key(!challenger_won),
+        metadata: metadata_for(challenger, opponent),
+        reciprocal_metadata: metadata_for(opponent, challenger)
       }
     end
 
     private
 
-    attr_reader :challenger, :opponent, :victory_qi_hours, :defeat_qi_hours, :rng
+    attr_reader :challenger, :opponent, :victory_qi_hours, :defeat_qi_hours, :rng, :damage_done, :combat_log, :health_remaining
 
-    def challenger_win_chance
-      self.class.win_chance(challenger:, opponent:)
+    def resolve_winner
+      MAX_ATTACKS_PER_CHARACTER.times do
+        attack(challenger, opponent)
+        return challenger if defeated?(opponent)
+
+        attack(opponent, challenger)
+        return opponent if defeated?(challenger)
+      end
+
+      return challenger if damage_done.fetch(challenger) >= damage_done.fetch(opponent)
+
+      opponent
+    end
+
+    def refresh_health_remaining!
+      health_remaining[challenger] = challenger.current_health_points
+      health_remaining[opponent] = opponent.current_health_points
+    end
+
+    def attack(attacker, defender)
+      unless hit?(attacker, defender)
+        combat_log << combat_log_entry(attacker, "miss", 0)
+        return
+      end
+
+      critical = critical_hit?(attacker)
+      damage = attack_damage(attacker, defender, critical:)
+      damage_done[attacker] += damage
+      health_remaining[defender] = [ health_remaining.fetch(defender) - damage, MINIMUM_HEALTH ].max
+      combat_log << combat_log_entry(attacker, critical ? "critical" : "hit", damage)
+    end
+
+    def hit?(attacker, defender)
+      rng.rand < (hit_chance(attacker, defender) / 100.0)
+    end
+
+    def attack_damage(attacker, defender, critical:)
+      damage = [ attacker.damage - defender.defense, attacker.damage * 0.1, 1 ].max
+      damage *= CRITICAL_MULTIPLIER if critical
+      damage.round
+    end
+
+    def critical_hit?(attacker)
+      rng.rand < (attacker.critical_rate / 100.0)
+    end
+
+    def hit_chance(attacker, defender)
+      (attacker.accuracy - defender.evasion).clamp(MINIMUM_HIT_CHANCE, MAXIMUM_HIT_CHANCE)
+    end
+
+    def defeated?(character)
+      health_remaining.fetch(character) <= MINIMUM_HEALTH
+    end
+
+    def persist_health!
+      challenger.update!(current_health: health_remaining.fetch(challenger))
+      opponent.update!(current_health: health_remaining.fetch(opponent))
+    end
+
+    def metadata_for(owner, rival)
+      {
+        "damage_done" => damage_done.fetch(owner),
+        "damage_taken" => damage_done.fetch(rival),
+        "health_remaining" => health_remaining.fetch(owner),
+        "opponent_health_remaining" => health_remaining.fetch(rival),
+        "combat_log" => combat_log_for(owner, rival)
+      }
+    end
+
+    def combat_log_entry(attacker, result, damage)
+      {
+        "actor" => attacker == challenger ? "challenger" : "opponent",
+        "result" => result,
+        "damage" => damage
+      }
+    end
+
+    def combat_log_for(owner, rival)
+      combat_log.map do |entry|
+        entry.merge("actor" => combat_log_actor(entry.fetch("actor"), owner, rival))
+      end
+    end
+
+    def combat_log_actor(actor, owner, rival)
+      actor_character = actor == "challenger" ? challenger : opponent
+      return "you" if actor_character == owner
+      return "opponent" if actor_character == rival
+
+      "opponent"
     end
 
     def description_key(won)

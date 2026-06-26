@@ -22,6 +22,14 @@ class CharactersControllerTest < ActionDispatch::IntegrationTest
     assert_select ".realm-card", text: /Dou Qi Stage/
     assert_select ".realm-card", text: /1 Star/
     assert_select ".realm-card", text: /Gender: Male/
+    assert_select ".realm-card", text: /GearScore/
+    assert_select "#profile-combat-stats-heading", "Combat Stats"
+    assert_select ".combat-stat-list", text: /Damage/
+    assert_select ".combat-stat-list", text: /Health/
+    assert_select ".combat-stat-list", text: /Defense/
+    assert_select ".combat-stat-list", text: /Evasion/
+    assert_select ".combat-stat-list", text: /Accuracy/
+    assert_select ".combat-stat-list", text: /Critical Rate/
     assert_select ".achievements", text: /First Star/
     assert_select "#profile-equipment-heading", "Equipment"
     assert_select ".inventory-card", text: /Iron Dao Blade/

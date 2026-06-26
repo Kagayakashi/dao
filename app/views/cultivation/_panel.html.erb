@@ -44,7 +44,7 @@
     <span class="realm-label"><%= cultivation_icon(:mountain) %> <%= t("shared.realm") %></span>
     <strong><%= character.realm_name %></strong>
     <span><%= t("shared.star", count: character.star) %></span>
-    <span><%= t("shared.power_with_value", power: number_with_delimiter(character.power)) %></span>
+    <span><%= t("shared.gear_score_with_value", gear_score: number_with_delimiter(character.gear_score)) %></span>
   </div>
 
   <div class="qi-progress" aria-label="<%= t(".progress_aria") %>">

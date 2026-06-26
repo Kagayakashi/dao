@@ -14,6 +14,9 @@ class CharacterTest < ActiveSupport::TestCase
       base_power: Character.base_power,
       realm_power_multiplier: Character.realm_power_multiplier,
       star_power_multiplier: Character.star_power_multiplier,
+      combat_stat_config: Character.combat_stat_config,
+      health_recovery_interval: Character.health_recovery_interval,
+      health_recovery_percent: Character.health_recovery_percent,
       max_sparring_points: Character.max_sparring_points,
       sparring_recovery_duration: Character.sparring_recovery_duration,
       sparring_opponent_cooldown: Character.sparring_opponent_cooldown,
@@ -39,6 +42,9 @@ class CharacterTest < ActiveSupport::TestCase
     Character.base_power = 100
     Character.realm_power_multiplier = 2.0
     Character.star_power_multiplier = 0.12
+    Character.combat_stat_config = CombatStats::CharacterStats::DEFAULT_CONFIG
+    Character.health_recovery_interval = 10.minutes
+    Character.health_recovery_percent = 5
     Character.max_sparring_points = 3
     Character.sparring_recovery_duration = 1.hour
     Character.sparring_opponent_cooldown = 3.hours
@@ -53,7 +59,7 @@ class CharacterTest < ActiveSupport::TestCase
     Character.spirit_expedition_instant_completion_cost = 1
 
     @character = characters(:one)
-    @character.update!(realm: 1, star: 1, qi: 0, total_experience: 0, last_online: Time.current, currency: 0, donation_currency: 0, spirit_expedition_started_at: nil, spirit_expedition_ends_at: nil, spirit_expedition_duration_hours: nil)
+    @character.update!(realm: 1, star: 1, qi: 0, total_experience: 0, last_online: Time.current, currency: 0, donation_currency: 0, current_health: nil, health_recovered_at: Time.current, spirit_expedition_started_at: nil, spirit_expedition_ends_at: nil, spirit_expedition_duration_hours: nil)
   end
 
   teardown do
@@ -151,6 +157,103 @@ class CharacterTest < ActiveSupport::TestCase
 
     @character.update!(realm: 3, star: 2)
     assert_equal 448, @character.power
+  end
+
+  test "calculates combat stats from realm and star" do
+    @character.update!(realm: 1, star: 1)
+
+    assert_equal({ damage: 100, health: 975, defense: 35, evasion: 20, accuracy: 100, critical_rate: 5 }, @character.combat_stats)
+
+    @character.update!(realm: 2, star: 5)
+
+    assert_equal 296, @character.damage
+    assert_equal 2_886, @character.health
+    assert_equal 104, @character.defense
+    assert_equal 46, @character.evasion
+    assert_equal 126, @character.accuracy
+    assert_equal 5, @character.critical_rate
+  end
+
+  test "keeps equal level no item survivability stable across realms" do
+    [ [ 1, 1 ], [ 2, 5 ], [ 6, 1 ] ].each do |realm, star|
+      @character.update!(realm:, star:)
+
+      effective_damage = @character.damage - @character.defense
+
+      assert_equal 15, @character.health / effective_damage
+    end
+  end
+
+  test "keeps equal level no item hit chance stable across realms" do
+    [ [ 1, 1 ], [ 2, 5 ], [ 6, 1 ] ].each do |realm, star|
+      @character.update!(realm:, star:)
+
+      assert_equal 80, @character.accuracy - @character.evasion
+    end
+  end
+
+  test "adds equipped item stats to combat stats and gear score" do
+    @character.inventory_items.destroy_all
+    @character.update!(realm: 1, star: 1)
+    item = @character.create_inventory_item!(
+      name: "iron_dao_blade",
+      equipment_kind: "weapon",
+      power_options: [ { "key" => "power", "value" => 10 }, { "key" => "accuracy", "value" => 2.5 } ]
+    )
+
+    @character.equip_item!(item)
+
+    assert_equal 110, @character.damage
+    assert_equal 102.5, @character.accuracy
+    assert_equal 13, @character.gear_score
+  end
+
+  test "recovers five percent health every ten minutes" do
+    now = Time.zone.local(2026, 6, 18, 12, 0, 0)
+    @character.update!(current_health: 100, health_recovered_at: now - 20.minutes)
+
+    @character.recover_health!(at: now)
+
+    assert_equal 197, @character.current_health
+    assert_equal now, @character.health_recovered_at
+  end
+
+  test "damage cannot reduce current health below one" do
+    @character.update!(current_health: 10)
+
+    @character.take_damage!(100)
+
+    assert_equal 1, @character.current_health
+  end
+
+  test "realm five full evasion accessories evade around sixty nine percent against equal weapon accuracy" do
+    attacker = users(:two).character
+    defender = @character
+    [ attacker, defender ].each do |character|
+      character.inventory_items.destroy_all
+      character.update!(realm: 5, star: 1)
+    end
+
+    equip_item_with_options(attacker, "iron_dao_blade", "weapon", [ { "key" => "power", "value" => 0 }, { "key" => "accuracy", "value" => realm_five_item_max(:accuracy) } ])
+    %w[ cloud_ring jade_band old_dragon_pendant ].each do |name|
+      equipment_kind = name.include?("pendant") ? "pendant" : "ring"
+      equip_item_with_options(defender, name, equipment_kind, [ { "key" => "evasion", "value" => realm_five_item_max(:evasion) } ])
+    end
+
+    evade_chance = 100 - (attacker.accuracy - defender.evasion)
+
+    assert_in_delta 69, evade_chance, 1.5
+  end
+
+  test "realm five full critical accessories reach around twenty seven percent critical rate" do
+    @character.inventory_items.destroy_all
+    @character.update!(realm: 5, star: 1)
+    %w[ cloud_ring jade_band old_dragon_pendant ].each do |name|
+      equipment_kind = name.include?("pendant") ? "pendant" : "ring"
+      equip_item_with_options(@character, name, equipment_kind, [ { "key" => "critical_rate", "value" => realm_five_item_max(:critical_rate) } ])
+    end
+
+    assert_in_delta 27, @character.critical_rate, 0.5
   end
 
   test "stores qi without automatic breakthrough" do
@@ -455,5 +558,16 @@ class CharacterTest < ActiveSupport::TestCase
       @character.star = star
       @character.qi_required_for_next_star
     end
+  end
+
+  def equip_item_with_options(character, name, equipment_kind, power_options)
+    item = character.create_inventory_item!(name:, equipment_kind:, power_options:)
+    character.equip_item!(item)
+  end
+
+  def realm_five_item_max(stat_key)
+    character = Character.new(level: 5, sublevel: 1)
+
+    InventoryItems::StatRoll.new(character, stat_key:).range.end
   end
 end

@@ -13,9 +13,10 @@ class SparringControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", "Sparring"
     assert_select ".sparring-card", text: %r{3/3}
     assert_select "#sparring-opponent-heading", text: /Sparring Opponent/
-    assert_select ".opponent-name"
-    assert_select ".opponent-power", text: /Power/
-    assert_select ".realm-card", text: /Your chance to win:/
+    assert_select ".sparring-matchup"
+    assert_select ".sparring-stat-table th", text: /DMG/
+    assert_select ".sparring-stat-table th", text: /ACC/
+    assert_select ".sparring-stat-table", text: /GearScore/, count: 0
     assert_select "form button", "Attack"
     assert_select "form button", "Change Cultivator"
   end
@@ -92,14 +93,27 @@ class SparringControllerTest < ActionDispatch::IntegrationTest
     assert_operator opponent.reload.sparring_available_at, :>, Time.current + 2.hours
     event = character.game_events.order(:created_at).last
     assert_includes %w[victory defeat], event.outcome
-    assert_equal 0.6667, event.metadata.fetch("challenger_win_chance")
-    assert_equal 0.3333, event.metadata.fetch("opponent_win_chance")
+    assert event.metadata.key?("damage_done")
+    assert event.metadata.key?("health_remaining")
 
     get sparring_path(locale: :en, result_event_id: event.id)
 
     assert_response :success
-    assert_select ".event-notice", text: /Your chance: 67%/
-    assert_select ".event-notice", text: /Opponent chance: 33%/
+    assert_select ".event-notice", text: /Your chance:/, count: 0
+  end
+
+  test "sparring regenerates opponent health before combat" do
+    user = users(:one)
+    character = user.character
+    opponent = users(:two).character
+    character.update!(sparring_points: 3, sparring_recovered_at: Time.current)
+    recovered_from = 1.hour.ago
+    opponent.update!(current_health: 1, health_recovered_at: recovered_from)
+    sign_in_as(user)
+
+    post sparring_path(locale: :en), params: { opponent_id: opponent.id }
+
+    assert_operator opponent.reload.health_recovered_at, :>, recovered_from
   end
 
   test "does not show opponent during global sparring cooldown" do

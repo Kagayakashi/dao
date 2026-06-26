@@ -139,7 +139,7 @@ module CultivationEvents
       item = character.create_inventory_item!(
         name: item_name_key,
         equipment_kind:,
-        power_options: InventoryItems::PowerRoll.new(character, config:, rng:).call,
+        power_options: InventoryItems::PowerRoll.new(character, equipment_kind:, config:, rng:).call,
         metadata: {}
       )
       return false unless item

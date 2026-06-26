@@ -8,14 +8,14 @@ module ArtifactRefinements
       character.update!(currency: Reroll::WEN_COST, donation_currency: 0)
 
       assert_difference -> { character.game_events.count }, 1 do
-        result = Reroll.new(character, item_id: item.id, payment: "wen", rng: FixedRng.new(option_roll: 0.0, values: [ 25 ])).call
+        result = Reroll.new(character, item_id: item.id, payment: "wen", rng: FixedRng.new(values: [ 25, 3 ])).call
 
         assert_predicate result, :success?
         assert_equal item, result.item
       end
 
       assert_equal 0, character.reload.currency
-      assert_equal [ { "key" => "power", "value" => 25 } ], item.reload.power_options
+      assert_equal [ { "key" => "power", "value" => 25 }, { "key" => "accuracy", "value" => 3 } ], item.reload.power_options
 
       event = character.game_events.order(:created_at).last
       assert_equal "artifact_refinement", event.event_key
@@ -29,11 +29,11 @@ module ArtifactRefinements
       item = character.create_inventory_item!(name: "cloud_ring", equipment_kind: "ring", power_options: [ { "key" => "power", "value" => 12 } ])
       character.update!(currency: 0, donation_currency: Reroll::LIANG_COST)
 
-      result = Reroll.new(character, item_id: item.id, payment: "liang", rng: FixedRng.new(option_roll: 0.0, values: [ 30 ])).call
+      result = Reroll.new(character, item_id: item.id, payment: "liang", rng: Random.new(1)).call
 
       assert_predicate result, :success?
       assert_equal 0, character.reload.donation_currency
-      assert_equal [ { "key" => "power", "value" => 30 } ], item.reload.power_options
+      assert_equal 2, item.reload.power_options.size
     end
 
     test "fails without enough currency" do
@@ -42,7 +42,7 @@ module ArtifactRefinements
       character.update!(currency: Reroll::WEN_COST - 1, donation_currency: 0)
 
       assert_no_difference -> { character.game_events.count } do
-        result = Reroll.new(character, item_id: item.id, payment: "wen", rng: FixedRng.new(option_roll: 0.0, values: [ 30 ])).call
+        result = Reroll.new(character, item_id: item.id, payment: "wen", rng: FixedRng.new(values: [ 30, 3 ])).call
 
         assert_not result.success?
         assert_equal :payment_missing, result.error
@@ -63,14 +63,11 @@ module ArtifactRefinements
     end
 
     class FixedRng
-      def initialize(option_roll:, values:)
-        @option_roll = option_roll
+      def initialize(values:)
         @values = values
       end
 
-      def rand(argument = nil)
-        return @option_roll unless argument
-
+      def rand(_argument)
         @values.shift
       end
     end

@@ -18,8 +18,8 @@ module ArtifactRefinements
       return failure(:payment_missing) unless can_pay?
 
       old_power = item.inventory_power
-      power_options = InventoryItems::PowerRoll.new(character, rng:).call
-      new_power = power_options.sum { |option| option.fetch("value", 0).to_i }
+      power_options = InventoryItems::PowerRoll.new(character, equipment_kind: item.equipment_kind, rng:).call
+      new_power = inventory_power(power_options)
 
       ActiveRecord::Base.transaction do
         pay!
@@ -72,6 +72,12 @@ module ArtifactRefinements
         qi_delta: 0,
         happened_at: Time.current
       )
+    end
+
+    def inventory_power(power_options)
+      power_options.sum do |option|
+        option["key"] == "power" ? option.fetch("value", 0).to_i : 0
+      end
     end
   end
 end

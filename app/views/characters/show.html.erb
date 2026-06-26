@@ -12,9 +12,23 @@
       <strong><%= @character.realm_name %></strong>
       <span><%= t("shared.star", count: @character.star) %></span>
       <span><%= t("characters.show.gender", gender: @character.gender_name) %></span>
-      <span><%= t("shared.power_with_value", power: number_with_delimiter(@character.power)) %></span>
+      <span><%= t("characters.show.gear_score", gear_score: number_with_delimiter(@character.gear_score)) %></span>
       <span><%= t("shared.qi_with_value", qi: number_with_delimiter(@character.total_experience)) %></span>
+      <span><%= t("characters.show.current_health", current: number_with_delimiter(@character.current_health), max: number_with_delimiter(@character.health)) %></span>
     </div>
+
+    <section class="combat-stats" aria-labelledby="profile-combat-stats-heading">
+      <h2 id="profile-combat-stats-heading"><%= cultivation_icon(:sword) %> <%= t("characters.show.combat_stats_heading") %></h2>
+
+      <dl class="combat-stat-list">
+        <% @character.combat_stats.each do |key, value| %>
+          <div>
+            <dt><%= t("characters.stats.#{key}") %></dt>
+            <dd><%= number_with_delimiter(value) %></dd>
+          </div>
+        <% end %>
+      </dl>
+    </section>
 
     <% achievements = @character.earned_achievement_details %>
     <section class="achievements" aria-labelledby="profile-achievements-heading">
@@ -44,7 +58,7 @@
             <span class="inventory-slot"><%= t("inventory_items.slots.#{slot}") %></span>
             <% if item %>
               <strong><%= item.localized_name %></strong>
-              <span><%= t("shared.power_bonus", power: number_with_delimiter(item.inventory_power)) %></span>
+              <%= render "inventory_items/stat_options", item: %>
             <% else %>
               <span><%= t("characters.show.empty_equipment_slot") %></span>
             <% end %>

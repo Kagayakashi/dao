@@ -25,6 +25,9 @@ class Character < ApplicationRecord
   class_attribute :base_power, default: 100
   class_attribute :realm_power_multiplier, default: 2.0
   class_attribute :star_power_multiplier, default: 0.12
+  class_attribute :combat_stat_config, default: CombatStats::CharacterStats::DEFAULT_CONFIG
+  class_attribute :health_recovery_interval, default: 10.minutes
+  class_attribute :health_recovery_percent, default: 5
   class_attribute :max_sparring_points, default: 3
   class_attribute :sparring_recovery_duration, default: 1.hour
   class_attribute :sparring_opponent_cooldown, default: 3.hours
@@ -41,15 +44,18 @@ class Character < ApplicationRecord
   before_validation :set_initial_last_online, on: :create
   before_validation :set_default_name, on: :create
   before_validation :set_initial_sparring_recovered_at, on: :create
+  before_validation :set_initial_health_recovered_at
 
   validates :name, presence: true, length: { maximum: 40 }
   validates :level, :sublevel, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
   validates :experience, :total_experience, :currency, :donation_currency, :reset,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :current_health, numericality: { only_integer: true, greater_than_or_equal_to: 1 }, allow_nil: true
   validates :sparring_points, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: ->(character) { character.max_sparring_points } }
   validates :spirit_expedition_duration_hours, inclusion: { in: ->(character) { character.spirit_expedition_durations } }, allow_nil: true
   validates :last_online, presence: true
   validates :sparring_recovered_at, presence: true
+  validates :health_recovered_at, presence: true
 
   scope :available_for_sparring, ->(at = Time.current) { where(sparring_available_at: nil).or(where(sparring_available_at: ..at)) }
 
@@ -89,6 +95,64 @@ class Character < ApplicationRecord
 
   def equipment_power
     inventory_items.equipped.sum(&:inventory_power)
+  end
+
+  def equipment_stat_bonus(stat_key)
+    inventory_items.equipped.sum { |item| item.stat_value(stat_key) }
+  end
+
+  def gear_score
+    inventory_items.equipped.sum(&:gear_score)
+  end
+
+  def damage
+    combat_stat_profile.damage
+  end
+
+  def health
+    combat_stat_profile.health
+  end
+
+  def defense
+    combat_stat_profile.defense
+  end
+
+  def evasion
+    combat_stat_profile.evasion
+  end
+
+  def accuracy
+    combat_stat_profile.accuracy
+  end
+
+  def critical_rate
+    combat_stat_profile.critical_rate
+  end
+
+  def current_health_points
+    [ current_health.presence || health, health ].min
+  end
+
+  def recover_health!(at: Time.current)
+    self.health_recovered_at ||= at
+    return if current_health_points >= health
+
+    elapsed_recoveries = ((at - health_recovered_at) / health_recovery_interval.to_i).floor
+    return if elapsed_recoveries <= 0
+
+    recovered_health = (health * (health_recovery_percent / 100.0) * elapsed_recoveries).floor
+    self.current_health = [ current_health_points + recovered_health, health ].min
+    self.health_recovered_at = current_health >= health ? at : health_recovered_at + (elapsed_recoveries * health_recovery_interval)
+    save! if changed?
+  end
+
+  def take_damage!(amount)
+    self.current_health = [ current_health_points - amount.to_i, 1 ].max
+    save!
+  end
+
+  def combat_stats
+    combat_stat_profile.to_h
   end
 
   def recent_game_events(limit = 3)
@@ -344,6 +408,10 @@ class Character < ApplicationRecord
 
   private
 
+  def combat_stat_profile
+    CombatStats::CharacterStats.new(self)
+  end
+
   def cumulative_cultivation_qi
     previous_realms_qi = (1...realm).sum do |realm_number|
       (1..stars_per_realm).sum { |star_number| qi_required_for(realm_number, star_number) }
@@ -383,6 +451,10 @@ class Character < ApplicationRecord
 
   def set_initial_sparring_recovered_at
     self.sparring_recovered_at ||= Time.current
+  end
+
+  def set_initial_health_recovered_at
+    self.health_recovered_at ||= Time.current
   end
 
   def recover_sparring_points(at: Time.current)

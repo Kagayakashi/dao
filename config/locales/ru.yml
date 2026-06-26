@@ -24,6 +24,7 @@ ru:
     realm: "Сфера"
     star: "Звезда"
     power: "Сила и инвентарь"
+    gear_score: "Рейтинг снаряжения и инвентарь"
     currency: "Вэнь"
     donation_currency: "Лян"
     sparring_focus: "Сосредоточение для спарринга"
@@ -51,6 +52,7 @@ ru:
     password_confirmation: "Подтвердите пароль"
     power_bonus: "Сила +%{power}"
     power_with_value: "Сила %{power}"
+    gear_score_with_value: "Рейтинг снаряжения %{gear_score}"
     qi: "Ци"
     qi_with_value: "%{qi} Ци"
     rate_limit: "Попробуйте позже."
@@ -329,7 +331,8 @@ ru:
       banner_alt: "Двор для спарринга"
       screen_note: "Из городской толпы выбран ближайший культиватор. Один спарринг мгновенно решит обмен."
       opponent_heading: "Соперник для спарринга"
-      win_chance: "Ваш шанс победить: %{chance}"
+      versus: "против"
+      stats_table_caption: "Сравнение характеристик спарринга"
       expedition_locked: "Спарринг недоступен, пока культиватор в духовной экспедиции."
       spare_button: "Провести спарринг"
       change_opponent_button: "Сменить культиватора"
@@ -341,7 +344,20 @@ ru:
       title: "Спарринг"
       victory_description: "Вы провели спарринг с %{name}. Ваша более устойчивая аура направила обмен."
       defeat_description: "Вы провели спарринг с %{name}. Его более устойчивая аура направила обмен."
-      result_chances: "Ваш шанс: %{your_chance}. Шанс соперника: %{opponent_chance}."
+    stats_short:
+      damage: "УРО"
+      defense: "ЗАЩ"
+      evasion: "УКЛ"
+      accuracy: "ТЧН"
+      critical_rate: "КРТ"
+      gear_score: "СНР"
+    combat_log:
+      actors:
+        you: "Вы"
+        opponent: "Соперник"
+      hit: "%{actor} попали и нанесли %{damage} урона."
+      critical: "%{actor} нанесли критический удар: %{damage} урона."
+      miss: "%{actor} промахнулись."
 
   inventories:
     show:
@@ -359,7 +375,7 @@ ru:
       drop_button: "Выбросить"
       empty_slot: "Пусто"
       inventory_slot: "Ячейка %{slot}"
-      inventory_item_summary: "%{kind}, Сила +%{power}"
+      inventory_item_summary: "%{kind}"
       navigation_aria: "Навигация инвентаря"
       profile_link: "Открыть профиль"
       return_link: "Вернуться к культивации"
@@ -501,6 +517,8 @@ ru:
       eyebrow: "Профиль культиватора"
       profile_image_alt: "Изображение профиля культиватора: %{gender}"
       gender: "Пол: %{gender}"
+      gear_score: "Рейтинг снаряжения %{gear_score}"
+      combat_stats_heading: "Боевые характеристики"
       achievements_heading: "Достижения"
       no_achievements: "Достижений пока нет."
       equipment_heading: "Снаряжение"
@@ -510,6 +528,13 @@ ru:
       inventory_link: "Инвентарь"
       leaderboard_link: "Рейтинг"
       return_link: "Вернуться к культивации"
+    stats:
+      damage: "Урон"
+      health: "Здоровье"
+      defense: "Защита"
+      evasion: "Уклонение"
+      accuracy: "Точность"
+      critical_rate: "Шанс крита"
     realms:
       fallback: "Сфера %{realm}"
       "1": "Стадия Доу Ци"
@@ -591,6 +616,12 @@ ru:
       worn_spirit_charm: "Потертый духовный оберег"
     power_options:
       power: "Сила"
+      health: "Здоровье"
+      defense: "Защита"
+      evasion: "Уклонение"
+      accuracy: "Точность"
+      critical_rate: "Шанс крита"
+    stat_bonus: "%{name} +%{value}"
 
   pwa:
     manifest:

@@ -25,7 +25,19 @@ class InventoryItem < ApplicationRecord
   end
 
   def inventory_power
-    power_options.sum { |option| option.fetch("value", 0).to_i }
+    power_options.sum do |option|
+      option["key"] == "power" ? option.fetch("value", 0).to_i : 0
+    end
+  end
+
+  def stat_value(stat_key)
+    power_options.sum do |option|
+      option["key"] == stat_key.to_s ? option.fetch("value", 0).to_f : 0
+    end
+  end
+
+  def gear_score
+    power_options.sum { |option| option.fetch("value", 0).to_f }.round
   end
 
   def localized_name

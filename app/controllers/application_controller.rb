@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   include Authentication
   before_action :redirect_to_default_locale
   before_action :load_global_header_character
+  before_action :recover_character_health
   around_action :switch_locale
 
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
@@ -38,5 +39,11 @@ class ApplicationController < ActionController::Base
 
     @global_header_character = Current.user.character
     @global_header_character&.recover_sparring_points!
+  end
+
+  def recover_character_health
+    return unless authenticated?
+
+    current_character.recover_health!
   end
 end

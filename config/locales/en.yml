@@ -24,6 +24,7 @@ en:
     realm: "Realm"
     star: "Star"
     power: "Power and inventory"
+    gear_score: "GearScore and inventory"
     currency: "Wen"
     donation_currency: "Liang"
     sparring_focus: "Sparring Focus"
@@ -51,6 +52,7 @@ en:
     password_confirmation: "Confirm password"
     power_bonus: "Power +%{power}"
     power_with_value: "Power %{power}"
+    gear_score_with_value: "GearScore %{gear_score}"
     qi: "Qi"
     qi_with_value: "%{qi} Qi"
     rate_limit: "Try again later."
@@ -329,7 +331,8 @@ en:
       banner_alt: "Sparring courtyard"
       screen_note: "A nearby cultivator is chosen from the city crowd. Spar once to resolve the exchange instantly."
       opponent_heading: "Sparring Opponent"
-      win_chance: "Your chance to win: %{chance}"
+      versus: "vs"
+      stats_table_caption: "Sparring stat comparison"
       expedition_locked: "Sparring is unavailable while your cultivator is on a Spirit Expedition."
       spare_button: "Attack"
       change_opponent_button: "Change Cultivator"
@@ -341,7 +344,20 @@ en:
       title: "Sparring"
       victory_description: "You sparred with %{name}. Your steadier aura carried the exchange."
       defeat_description: "You sparred with %{name}. Their steadier aura guided the exchange."
-      result_chances: "Your chance: %{your_chance}. Opponent chance: %{opponent_chance}."
+    stats_short:
+      damage: "DMG"
+      defense: "DEF"
+      evasion: "EVA"
+      accuracy: "ACC"
+      critical_rate: "CRT"
+      gear_score: "GRS"
+    combat_log:
+      actors:
+        you: "You"
+        opponent: "Opponent"
+      hit: "%{actor} hit for %{damage} damage."
+      critical: "%{actor} landed a critical hit for %{damage} damage."
+      miss: "%{actor} missed."
 
   inventories:
     show:
@@ -359,7 +375,7 @@ en:
       drop_button: "Drop"
       empty_slot: "Empty"
       inventory_slot: "Slot %{slot}"
-      inventory_item_summary: "%{kind}, Power +%{power}"
+      inventory_item_summary: "%{kind}"
       navigation_aria: "Inventory navigation"
       profile_link: "View Profile"
       return_link: "Return to Cultivation"
@@ -501,6 +517,9 @@ en:
       eyebrow: "Cultivator Profile"
       profile_image_alt: "%{gender} cultivator profile image"
       gender: "Gender: %{gender}"
+      gear_score: "Gear Score: %{gear_score}"
+      current_health: "Health: %{current} / %{max}"
+      combat_stats_heading: "Combat Stats"
       achievements_heading: "Achievements"
       no_achievements: "No achievements yet."
       equipment_heading: "Equipment"
@@ -510,6 +529,13 @@ en:
       inventory_link: "Inventory"
       leaderboard_link: "Leaderboard"
       return_link: "Return to Cultivation"
+    stats:
+      damage: "Damage"
+      health: "Health"
+      defense: "Defense"
+      evasion: "Evasion"
+      accuracy: "Accuracy"
+      critical_rate: "Critical Rate"
     realms:
       fallback: "Realm %{realm}"
       "1": "Dou Qi Stage"
@@ -591,6 +617,12 @@ en:
       worn_spirit_charm: "Worn Spirit Charm"
     power_options:
       power: "Power"
+      health: "Health"
+      defense: "Defense"
+      evasion: "Evasion"
+      accuracy: "Accuracy"
+      critical_rate: "Critical Rate"
+    stat_bonus: "%{name} +%{value}"
 
   pwa:
     manifest:

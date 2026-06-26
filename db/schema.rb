@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_25_092001) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_26_001000) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -72,10 +72,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_092001) do
   create_table "characters", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "currency", default: 0, null: false
+    t.integer "current_health"
     t.datetime "daily_reward_claimed_at"
     t.bigint "donation_currency", default: 0, null: false
     t.bigint "experience", default: 0, null: false
     t.string "gender", default: "male", null: false
+    t.datetime "health_recovered_at"
     t.datetime "last_online", default: -> { "CURRENT_TIMESTAMP" }
     t.integer "level", default: 1, null: false
     t.string "name", default: "Wandering Cultivator", null: false

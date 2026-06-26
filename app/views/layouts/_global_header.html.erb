@@ -19,9 +19,9 @@
       <span><%= character.star %></span>
     <% end %>
 
-    <%= link_to inventory_path, class: "global-header__item", title: t("global_header.power"), aria: { label: t("global_header.power") } do %>
+    <%= link_to inventory_path, class: "global-header__item", title: t("global_header.gear_score"), aria: { label: t("global_header.gear_score") } do %>
       <%= cultivation_icon(:satchel) %>
-      <span><%= number_with_delimiter(character.power) %></span>
+      <span><%= number_with_delimiter(character.gear_score) %></span>
     <% end %>
 
     <%= link_to spirit_expedition_path, class: "global-header__item", title: t("global_header.currency"), aria: { label: t("global_header.currency") } do %>

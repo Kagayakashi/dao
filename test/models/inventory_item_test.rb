@@ -7,7 +7,7 @@ class InventoryItemTest < ActiveSupport::TestCase
   end
 
   test "creates item in first free inventory slot" do
-    item = @character.create_inventory_item!(name: "cloud_ring", equipment_kind: "ring", power_options: [ { "key" => "power", "value" => 20 } ])
+    item = @character.create_inventory_item!(name: "cloud_ring", equipment_kind: "ring", power_options: [ { "key" => "power", "value" => 20 }, { "key" => "health", "value" => 15 } ])
 
     assert_equal 1, item.inventory_slot
     assert_nil item.equipment_slot
@@ -30,11 +30,11 @@ class InventoryItemTest < ActiveSupport::TestCase
     end
   end
 
-  test "localizes generated power option names" do
-    item = @character.create_inventory_item!(name: "cloud_ring", equipment_kind: "ring", power_options: [ { "key" => "power", "value" => 20 } ])
+  test "localizes generated stat option names" do
+    item = @character.create_inventory_item!(name: "cloud_ring", equipment_kind: "ring", power_options: [ { "key" => "power", "value" => 20 }, { "key" => "health", "value" => 15 } ])
 
     I18n.with_locale(:ru) do
-      assert_equal [ { "key" => "power", "value" => 20, "name" => "Сила" } ], item.localized_power_options
+      assert_equal [ { "key" => "power", "value" => 20, "name" => "Сила" }, { "key" => "health", "value" => 15, "name" => "Здоровье" } ], item.localized_power_options
     end
   end
 

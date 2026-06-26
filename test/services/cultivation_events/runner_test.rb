@@ -158,10 +158,10 @@ class CultivationEvents::RunnerTest < ActiveSupport::TestCase
     assert_equal "found_equipment_item", event.event_key
     assert_equal "positive", event.outcome
     assert_equal 1, @character.inventory_items.in_inventory.count
-    assert_includes 1..5, item.power_options.size
+    assert_equal 2, item.power_options.size
     assert_includes I18n.t("inventory_items.item_keys.#{item.equipment_kind}"), item.name
     assert_equal({ "inventory_item_name_key" => item.name }, event.metadata)
-    assert_equal "power", item.power_options.first.fetch("key")
+    assert_empty item.power_options.pluck("key") - %w[ power health defense evasion accuracy critical_rate ]
     assert_cooldown_equals(:found_equipment_item, @now + 1.day)
   end
 

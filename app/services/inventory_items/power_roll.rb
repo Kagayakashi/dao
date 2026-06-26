@@ -1,36 +1,31 @@
 module InventoryItems
   class PowerRoll
-    def initialize(character, config: CultivationEvents::Registry.events.fetch(:found_equipment_item), rng: Random)
+    WEAPON_STAT_KEYS = %i[ power accuracy ].freeze
+    ACCESSORY_STAT_KEYS = %i[ power health defense evasion accuracy critical_rate ].freeze
+
+    def initialize(character, equipment_kind: nil, config: CultivationEvents::Registry.events.fetch(:found_equipment_item), rng: Random)
       @character = character
+      @equipment_kind = equipment_kind
       @config = config
       @rng = rng
     end
 
     def call
-      Array.new(random_option_count) do
-        { "key" => "power", "value" => rng.rand(power_range) }
-      end
+      stat_keys.map { |stat_key| stat_roll(stat_key).call }
     end
 
     private
 
-    attr_reader :character, :config, :rng
+    attr_reader :character, :equipment_kind, :config, :rng
 
-    def power_range
-      minimum = config.fetch(:power_option_min)
-      minimum..[ character.power, minimum ].max
+    def stat_roll(stat_key)
+      StatRoll.new(character, stat_key:, config:, rng:)
     end
 
-    def random_option_count
-      roll = rng.rand * 100
-      total = 0
+    def stat_keys
+      return WEAPON_STAT_KEYS if equipment_kind == "weapon"
 
-      config.fetch(:option_count_chances).each do |count, chance|
-        total += chance
-        return count if roll < total
-      end
-
-      1
+      ACCESSORY_STAT_KEYS.sample(2, random: rng)
     end
   end
 end

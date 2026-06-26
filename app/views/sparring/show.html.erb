@@ -29,14 +29,18 @@
         <% if event.localized_qi_delta.present? %>
           <span><%= event.localized_qi_delta %></span>
         <% end %>
-        <% if event.metadata["challenger_win_chance"].present? && event.metadata["opponent_win_chance"].present? %>
-          <span>
-            <%= t(
-              "sparring.matches.result_chances",
-              your_chance: number_to_percentage(event.metadata["challenger_win_chance"].to_f * 100, precision: 0),
-              opponent_chance: number_to_percentage(event.metadata["opponent_win_chance"].to_f * 100, precision: 0)
-            ) %>
-          </span>
+        <% if event.metadata["combat_log"].present? %>
+          <ol class="combat-log">
+            <% event.metadata.fetch("combat_log").each do |entry| %>
+              <li>
+                <%= t(
+                  "sparring.combat_log.#{entry.fetch("result")}",
+                  actor: t("sparring.combat_log.actors.#{entry.fetch("actor")}"),
+                  damage: number_with_delimiter(entry.fetch("damage"))
+                ) %>
+              </li>
+            <% end %>
+          </ol>
         <% end %>
       </div>
     <% end %>
@@ -44,11 +48,32 @@
     <% if @opponent.present? %>
       <section class="events" aria-labelledby="sparring-opponent-heading">
         <h2 id="sparring-opponent-heading"><%= cultivation_icon(:mountain) %> <%= t("sparring.show.opponent_heading") %></h2>
-        <div class="realm-card">
-          <strong class="opponent-name"><%= @opponent.name %></strong>
-          <span><%= @opponent.realm_name %>, <%= t("shared.star", count: @opponent.star) %></span>
-          <strong class="opponent-power"><%= t("shared.power_with_value", power: number_with_delimiter(@opponent.power)) %></strong>
-          <span><%= t("sparring.show.win_chance", chance: number_to_percentage(@win_chance * 100, precision: 0)) %></span>
+        <div class="sparring-matchup">
+          <div class="sparring-matchup__names">
+            <strong><%= @character.name %></strong>
+            <span><%= t("sparring.show.versus") %></span>
+            <strong><%= @opponent.name %></strong>
+          </div>
+
+          <table class="sparring-stat-table">
+            <caption class="visually-hidden"><%= t("sparring.show.stats_table_caption") %></caption>
+            <tbody>
+              <% [
+                [ :damage, number_with_delimiter(@character.damage), number_with_delimiter(@opponent.damage) ],
+                [ :defense, number_with_delimiter(@character.defense), number_with_delimiter(@opponent.defense) ],
+                [ :evasion, number_with_delimiter(@character.evasion), number_with_delimiter(@opponent.evasion) ],
+                [ :accuracy, number_with_delimiter(@character.accuracy), number_with_delimiter(@opponent.accuracy) ],
+                [ :critical_rate, number_to_percentage(@character.critical_rate, precision: 1), number_to_percentage(@opponent.critical_rate, precision: 1) ],
+                [ :gear_score, number_with_delimiter(@character.gear_score), number_with_delimiter(@opponent.gear_score) ]
+              ].each do |stat_key, character_value, opponent_value| %>
+                <tr>
+                  <td><%= character_value %></td>
+                  <th scope="row"><%= t("sparring.stats_short.#{stat_key}") %></th>
+                  <td><%= opponent_value %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
         </div>
 
         <div class="sparring-actions">
