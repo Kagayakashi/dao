@@ -22,7 +22,11 @@
 body {
   margin: 0;
   color: var(--dark-ink);
-  background: var(--dark-brown);
+  /* background-image: url("/background.png"); */
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: auto; /* cover */
+  background-color: var(--dark-brown);  
   font-family: Georgia, "Times New Roman", serif;
 }
 

@@ -2,6 +2,8 @@
 
 <main class="cultivation-page">
   <section class="cultivation-panel auth-panel">
+    <%= render "shared/media_banner", alt: "", image_name: "registration.png", banner_class: "main-banner", image_class: "main-banner__image" %>
+
     <p class="eyebrow"><%= cultivation_icon(:key) %> <%= t("registration_completions.new.eyebrow") %></p>
     <h1><%= t("registration_completions.new.heading") %></h1>
     <p class="screen-note"><%= t("registration_completions.new.screen_note", qi: number_with_delimiter(User::COMPLETION_REWARD_QI)) %></p>

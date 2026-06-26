@@ -2,6 +2,8 @@
 
 <main class="cultivation-page">
   <section class="cultivation-panel artifact-refinement-panel">
+    <%= render "shared/media_banner", alt: "", image_name: "refinement.png", banner_class: "main-banner", image_class: "main-banner__image" %>
+
     <p class="eyebrow"><%= cultivation_icon(:jade) %> <%= t("artifact_refinements.show.eyebrow") %></p>
     <h1><%= t("artifact_refinements.show.heading") %></h1>
     <p class="screen-note"><%= t("artifact_refinements.show.screen_note") %></p>

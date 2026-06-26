@@ -2,6 +2,8 @@
 
 <main class="cultivation-page">
   <section class="cultivation-panel adventure-panel">
+    <%= render "shared/media_banner", alt: "", image_name: "expedition.png", banner_class: "main-banner", image_class: "main-banner__image" %>
+
     <p class="eyebrow"><%= cultivation_icon(:jade) %> <%= t("spirit_expeditions.show.eyebrow") %></p>
     <h1><%= t("spirit_expeditions.show.heading") %></h1>
     <p class="screen-note"><%= t("spirit_expeditions.show.screen_note") %></p>

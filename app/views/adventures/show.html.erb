@@ -12,25 +12,30 @@
       <h2 id="adventure-actions-heading"><%= cultivation_icon(:scroll) %> <%= t("adventures.show.actions_heading") %></h2>
       <ul class="action-list">
         <li class="action-card">
+          <p><%= t("adventures.show.crier_note") %></p>
+          <%= link_to t("adventures.show.crier_link"), news_index_path, class: "ceremonial-link" %>
+        </li>
+
+        <li class="action-card">
           <p><%= t("adventures.show.temple_note") %></p>
           <%= link_to t("cultivation.panel.daily_reward_link"), temple_path, class: "ceremonial-link" %>
         </li>
-        <li class="action-card">
-          <p><%= t("adventures.show.sparring_note") %></p>
-          <%= link_to t("adventures.show.sparring_link"), sparring_path, class: "ceremonial-link" %>
-        </li>
+
         <li class="action-card">
           <p><%= t("adventures.show.spirit_expedition_note") %></p>
           <%= link_to t("adventures.show.spirit_expedition_link"), spirit_expedition_path, class: "ceremonial-link" %>
         </li>
+
         <li class="action-card">
           <p><%= t("adventures.show.artifact_refinement_note") %></p>
           <%= link_to t("adventures.show.artifact_refinement_link"), artifact_refinement_path, class: "ceremonial-link" %>
         </li>
+
         <li class="action-card">
-          <p><%= t("adventures.show.crier_note") %></p>
-          <%= link_to t("adventures.show.crier_link"), news_index_path, class: "ceremonial-link" %>
+          <p><%= t("adventures.show.sparring_note") %></p>
+          <%= link_to t("adventures.show.sparring_link"), sparring_path, class: "ceremonial-link" %>
         </li>
+
       </ul>
     </section>
 
