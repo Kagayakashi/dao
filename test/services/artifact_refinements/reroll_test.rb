@@ -20,8 +20,8 @@ module ArtifactRefinements
       event = character.game_events.order(:created_at).last
       assert_equal "artifact_refinement", event.event_key
       assert_equal "iron_dao_blade", event.metadata.fetch("inventory_item_name_key")
-      assert_equal 10, event.metadata.fetch("old_power")
-      assert_equal 25, event.metadata.fetch("new_power")
+      assert_equal [ { "key" => "power", "value" => 10 } ], event.metadata.fetch("old_power_options")
+      assert_equal [ { "key" => "power", "value" => 25 }, { "key" => "accuracy", "value" => 3 } ], event.metadata.fetch("new_power_options")
     end
 
     test "rerolls item power with liang" do

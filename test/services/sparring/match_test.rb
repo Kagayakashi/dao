@@ -17,7 +17,7 @@ class Sparring::MatchTest < ActiveSupport::TestCase
   test "returns victory when challenger reduces opponent to one health" do
     @opponent.update!(current_health: 10)
 
-    result = Sparring::Match.new(challenger: @challenger, opponent: @opponent, victory_qi_hours: 1, defeat_qi_hours: -1, rng: SequenceRng.always(0.0, 0.99)).call
+    result = Sparring::Match.new(challenger: @challenger, opponent: @opponent, victory_qi_hours: 1, defeat_qi_hours: 0.5, rng: SequenceRng.always(0.0, 0.99)).call
 
     assert_equal "victory", result[:outcome]
     assert_equal "defeat", result[:reciprocal_outcome]
@@ -33,19 +33,39 @@ class Sparring::MatchTest < ActiveSupport::TestCase
     @challenger.update!(realm: 1, star: 1)
     @opponent.update!(realm: 2, star: 1)
 
-    result = Sparring::Match.new(challenger: @challenger, opponent: @opponent, victory_qi_hours: 1, defeat_qi_hours: -1, rng: SequenceRng.always(0.0, 0.99)).call
+    result = Sparring::Match.new(challenger: @challenger, opponent: @opponent, victory_qi_hours: 1, defeat_qi_hours: 0.5, rng: SequenceRng.always(0.0, 0.99)).call
 
     assert_equal "defeat", result[:outcome]
-    assert_equal(-3_600, result[:qi_delta])
+    assert_equal 1_800, result[:qi_delta]
     assert_equal "sparring.matches.defeat_description", result[:description]
     assert_operator result[:metadata].fetch("damage_taken"), :>, result[:metadata].fetch("damage_done")
   end
 
   test "returns reciprocal metadata from opponent perspective" do
-    result = Sparring::Match.new(challenger: @challenger, opponent: @opponent, victory_qi_hours: 1, defeat_qi_hours: -1, rng: SequenceRng.always(0.0, 0.99)).call
+    result = Sparring::Match.new(challenger: @challenger, opponent: @opponent, victory_qi_hours: 1, defeat_qi_hours: 0.5, rng: SequenceRng.always(0.0, 0.99)).call
 
     assert_equal result[:metadata].fetch("damage_done"), result[:reciprocal_metadata].fetch("damage_taken")
     assert_equal result[:metadata].fetch("damage_taken"), result[:reciprocal_metadata].fetch("damage_done")
+  end
+
+  test "hit chance gives evasion build close to sixty percent evade against mixed accuracy" do
+    attacker = Struct.new(:accuracy).new(165)
+    defender = Struct.new(:evasion).new(96)
+    match = Sparring::Match.new(challenger: @challenger, opponent: @opponent, victory_qi_hours: 1, defeat_qi_hours: 0.5)
+
+    evade_chance = 100 - match.send(:hit_chance, attacker, defender)
+
+    assert_in_delta 58, evade_chance, 1
+  end
+
+  test "accuracy build counters evasion build" do
+    attacker = Struct.new(:accuracy).new(260)
+    defender = Struct.new(:evasion).new(96)
+    match = Sparring::Match.new(challenger: @challenger, opponent: @opponent, victory_qi_hours: 1, defeat_qi_hours: 0.5)
+
+    evade_chance = 100 - match.send(:hit_chance, attacker, defender)
+
+    assert_in_delta 37, evade_chance, 1
   end
 
   class SequenceRng

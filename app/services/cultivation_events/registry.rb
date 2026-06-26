@@ -21,7 +21,7 @@ module CultivationEvents
         cooldown: DEFAULT_COOLDOWN,
         peaceful_qi_hours: 0,
         victory_qi_hours: 1,
-        defeat_qi_hours: -1
+        defeat_qi_hours: 0.5
       },
       found_equipment_item: {
         cooldown: 1.day.to_i..1.day.to_i,

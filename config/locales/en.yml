@@ -225,6 +225,8 @@ en:
       spirit_expedition_link: "Spirit Expedition"
       artifact_refinement_note: "Visit the Artifact Refinement Hall to reroll the power within your equipment."
       artifact_refinement_link: "Artifact Refinement Hall"
+      shop_note: "Visit the market shop to buy one random treasure for Wen."
+      shop_link: "Shop"
       crier_note: "Listen to the city crier for recent announcements."
       crier_link: "Crier"
       navigation_aria: "Adventure navigation"
@@ -233,7 +235,7 @@ en:
   artifact_refinements:
     events:
       title: "Artifact Refinement"
-      description: "%{item_name} was refined from %{old_power} Power to %{new_power} Power."
+      description: "%{item_name} was refined. Before: %{old_stats}. Now: %{new_stats}."
     reroll:
       notice:
         complete: "%{item} was refined with new power."
@@ -257,6 +259,34 @@ en:
       expedition_locked: "Artifact refinement is unavailable while your cultivator is on a Spirit Expedition."
       empty: "You have no equipment to refine yet."
       navigation_aria: "Artifact refinement navigation"
+      inventory_link: "Inventory"
+      adventure_link: "Adventure"
+
+  shops:
+    events:
+      title: "Shop Purchase"
+      description: "Bought %{item_name} with %{stats}."
+    create:
+      notice:
+        purchased: "Bought %{item}."
+      alert:
+        inventory_full: "Your inventory is full. Free a slot before buying."
+        payment_missing: "Bring 300 Wen before buying."
+        expedition_active: "Your cultivator is away on a Spirit Expedition. Return before buying items."
+    show:
+      title: "Shop"
+      eyebrow: "Market Stall"
+      heading: "Shop"
+      screen_note: "Buy one random treasure. Shop items use the same fate as treasures found during cultivation."
+      offer_heading: "Market Offer"
+      cost: "%{wen} Wen"
+      currency_balance: "You carry %{wen} Wen."
+      inventory_space:
+        one: "You have space for an item."
+        other: "Your inventory is full."
+      expedition_locked: "Shopping is unavailable while your cultivator is on a Spirit Expedition."
+      buy_button: "Buy Random Item"
+      navigation_aria: "Shop navigation"
       inventory_link: "Inventory"
       adventure_link: "Adventure"
 
@@ -318,6 +348,7 @@ en:
     create:
       no_opponent: "That cultivator has already left the courtyard."
       no_points: "Your sparring focus is empty. Rest before attacking again."
+      attacker_injured: "You are too injured to attack. Recover above 25% Health before sparring."
       opponent_injured: "This cultivator is too injured to spar."
       expedition_active: "Your cultivator is away on a Spirit Expedition. Return before attacking."
     change_opponent:
@@ -335,6 +366,7 @@ en:
       versus: "vs"
       stats_table_caption: "Sparring stat comparison"
       expedition_locked: "Sparring is unavailable while your cultivator is on a Spirit Expedition."
+      injured_locked: "You are too injured to attack. Recover above 25% Health before sparring."
       spare_button: "Attack"
       change_opponent_button: "Change Cultivator"
       no_opponent: "No other cultivator is near the courtyard yet."
@@ -343,8 +375,8 @@ en:
       return_link: "Return to Cultivation"
     matches:
       title: "Sparring"
-      victory_description: "You sparred with %{name}. Your steadier aura carried the exchange."
-      defeat_description: "You sparred with %{name}. Their steadier aura guided the exchange."
+      victory_description: "You sparred with %{name} and won the exchange."
+      defeat_description: "You sparred with %{name} and lost the exchange."
     stats_short:
       damage: "DMG"
       defense: "DEF"

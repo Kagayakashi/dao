@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     resource :artifact_refinement, only: :show do
       post :reroll
     end
+    resource :shop, only: %i[ show create ]
     resource :adventure, only: :show
     resource :spirit_expedition, only: %i[ show create ] do
       post :complete

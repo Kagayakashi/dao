@@ -29,14 +29,20 @@ class GameEvent < ApplicationRecord
   private
 
   def localized_text(value, **options)
-    return value unless value.start_with?("cultivation_events.", "sparring.", "artifact_refinements.", "spirit_expeditions.")
+    return value unless value.start_with?("cultivation_events.", "sparring.", "artifact_refinements.", "spirit_expeditions.", "shops.")
 
     I18n.t(value, **options.symbolize_keys, default: value)
   end
 
   def localized_metadata
     metadata.to_h
-      .merge("item_name" => localized_item_name, "name" => localized_name)
+      .merge(
+        "item_name" => localized_item_name,
+        "name" => localized_name,
+        "old_stats" => localized_stat_options(metadata["old_power_options"], fallback_power: metadata["old_power"]),
+        "new_stats" => localized_stat_options(metadata["new_power_options"], fallback_power: metadata["new_power"]),
+        "stats" => localized_stat_options(metadata["power_options"])
+      )
       .compact
       .symbolize_keys
   end
@@ -52,6 +58,21 @@ class GameEvent < ApplicationRecord
   def localized_item_name
     return I18n.t("cultivation_events.mysterious_item.items.#{metadata['item_name_key']}") if metadata["item_name_key"].present?
     return I18n.t("inventory_items.names.#{metadata['inventory_item_name_key']}") if metadata["inventory_item_name_key"].present?
+
+    nil
+  end
+
+  def localized_stat_options(power_options, fallback_power: nil)
+    options = Array(power_options).filter_map do |option|
+      stat_key = option["key"]
+      next if stat_key.blank?
+
+      stat_name = I18n.t("inventory_items.power_options.#{stat_key}")
+      I18n.t("inventory_items.stat_bonus", name: stat_name, value: option.fetch("value", 0))
+    end
+
+    return options.join(", ") if options.any?
+    return I18n.t("inventory_items.stat_bonus", name: I18n.t("inventory_items.power_options.power"), value: fallback_power) if fallback_power.present?
 
     nil
   end

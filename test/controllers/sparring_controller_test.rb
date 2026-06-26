@@ -89,7 +89,7 @@ class SparringControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to %r{/en/sparring\?result_event_id=\d+}
     character.reload
     assert_equal 2, character.sparring_points
-    assert_includes [ 0, 3_600 ], character.qi
+    assert_includes [ 1_800, 3_600 ], character.qi
     assert_operator opponent.reload.current_health, :<, opponent.health
     event = character.game_events.order(:created_at).last
     assert_includes %w[victory defeat], event.outcome
@@ -133,6 +133,28 @@ class SparringControllerTest < ActionDispatch::IntegrationTest
     follow_redirect!
 
     assert_select ".form-alert", text: /too injured/
+  end
+
+  test "does not attack when challenger has low health" do
+    user = users(:one)
+    character = user.character
+    opponent = users(:two).character
+    character.update!(sparring_points: 3, current_health: character.health * 25 / 100, health_recovered_at: Time.current)
+    sign_in_as(user)
+
+    get sparring_path(locale: :en)
+
+    assert_response :success
+    assert_select ".form-alert", text: /too injured to attack/
+    assert_select "form button[disabled]", "Attack"
+
+    assert_no_difference -> { character.game_events.count } do
+      post sparring_path(locale: :en), params: { opponent_id: opponent.id }
+    end
+    follow_redirect!
+
+    assert_equal 3, character.reload.sparring_points
+    assert_select ".form-alert", text: /too injured to attack/
   end
 
   test "does not resolve without sparring focus" do

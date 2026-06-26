@@ -98,8 +98,8 @@ class CultivationEvents::RunnerTest < ActiveSupport::TestCase
 
     assert_equal "defeat", event.outcome
     assert_equal @opponent, event.related_character
-    assert_equal(-3_600, event.qi_delta)
-    assert_equal 1_400, @character.reload.qi
+    assert_equal 1_800, event.qi_delta
+    assert_equal 6_800, @character.reload.qi
     assert @opponent.current_health.nil? || @opponent.current_health < @opponent.health
   end
 

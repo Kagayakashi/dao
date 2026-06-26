@@ -59,7 +59,7 @@ module CombatStats
     attr_reader :character, :config
 
     def equal_level_effective_damage
-      [ cultivation_damage - base_defense, 1 ].max
+      [ cultivation_damage * (defense_effectiveness / (defense_effectiveness + base_defense)), cultivation_damage * 0.1, 1 ].max
     end
 
     def base_defense
@@ -84,6 +84,10 @@ module CombatStats
 
     def cultivation_step
       ((character.realm - 1) * character.stars_per_realm) + (character.star - 1)
+    end
+
+    def defense_effectiveness
+      100.0
     end
   end
 end

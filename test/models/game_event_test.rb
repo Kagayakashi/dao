@@ -117,13 +117,46 @@ class GameEventTest < ActiveSupport::TestCase
       outcome: "neutral",
       title: "artifact_refinements.events.title",
       description: "artifact_refinements.events.description",
-      metadata: { "inventory_item_name_key" => "iron_dao_blade", "old_power" => 10, "new_power" => 25 },
+      metadata: {
+        "inventory_item_name_key" => "iron_dao_blade",
+        "old_power_options" => [ { "key" => "power", "value" => 10 } ],
+        "new_power_options" => [ { "key" => "power", "value" => 25 }, { "key" => "accuracy", "value" => 3.2 } ]
+      },
       qi_delta: 0,
       happened_at: Time.current
     )
 
     assert_equal "Artifact Refinement", event.localized_title
-    assert_equal "Iron Dao Blade was refined from 10 Power to 25 Power.", event.localized_description
+    assert_equal "Iron Dao Blade was refined. Before: Power +10. Now: Power +25, Accuracy +3.2.", event.localized_description
+  end
+
+  test "localizes old refinement event metadata" do
+    event = characters(:one).game_events.create!(
+      event_key: "artifact_refinement",
+      outcome: "neutral",
+      title: "artifact_refinements.events.title",
+      description: "artifact_refinements.events.description",
+      metadata: { "inventory_item_name_key" => "iron_dao_blade", "old_power" => 10, "new_power" => 25 },
+      qi_delta: 0,
+      happened_at: Time.current
+    )
+
+    assert_equal "Iron Dao Blade was refined. Before: Power +10. Now: Power +25.", event.localized_description
+  end
+
+  test "localizes shop purchase event metadata" do
+    event = characters(:one).game_events.create!(
+      event_key: "shop_purchase",
+      outcome: "positive",
+      title: "shops.events.title",
+      description: "shops.events.description",
+      metadata: { "inventory_item_name_key" => "iron_dao_blade", "power_options" => [ { "key" => "power", "value" => 10 } ] },
+      qi_delta: 0,
+      happened_at: Time.current
+    )
+
+    assert_equal "Shop Purchase", event.localized_title
+    assert_equal "Bought Iron Dao Blade with Power +10.", event.localized_description
   end
 
   test "localizes spirit expedition event metadata" do

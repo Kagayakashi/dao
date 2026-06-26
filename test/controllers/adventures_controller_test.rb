@@ -16,6 +16,7 @@ class AdventuresControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href='#{sparring_path(locale: :en)}']", "Sparring"
     assert_select "a[href='#{spirit_expedition_path(locale: :en)}']", "Spirit Expedition"
     assert_select "a[href='#{artifact_refinement_path(locale: :en)}']", "Artifact Refinement Hall"
+    assert_select "a[href='#{shop_path(locale: :en)}']", "Shop"
     assert_select "a[href='#{news_index_path(locale: :en)}']", "Crier"
   end
 end

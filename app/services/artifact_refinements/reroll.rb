@@ -17,14 +17,13 @@ module ArtifactRefinements
       return failure(:item_missing) unless item
       return failure(:payment_missing) unless can_pay?
 
-      old_power = item.inventory_power
+      old_power_options = item.power_options
       power_options = InventoryItems::PowerRoll.new(character, equipment_kind: item.equipment_kind, rng:).call
-      new_power = inventory_power(power_options)
 
       ActiveRecord::Base.transaction do
         pay!
         item.update!(power_options:)
-        create_refinement_event(item, old_power:, new_power:)
+        create_refinement_event(item, old_power_options:, new_power_options: power_options)
       end
 
       Result.new(success?: true, item:, error: nil)
@@ -58,7 +57,7 @@ module ArtifactRefinements
       end
     end
 
-    def create_refinement_event(item, old_power:, new_power:)
+    def create_refinement_event(item, old_power_options:, new_power_options:)
       character.game_events.create!(
         event_key: "artifact_refinement",
         outcome: "neutral",
@@ -66,18 +65,12 @@ module ArtifactRefinements
         description: "artifact_refinements.events.description",
         metadata: {
           "inventory_item_name_key" => item.name,
-          "old_power" => old_power,
-          "new_power" => new_power
+          "old_power_options" => old_power_options,
+          "new_power_options" => new_power_options
         },
         qi_delta: 0,
         happened_at: Time.current
       )
-    end
-
-    def inventory_power(power_options)
-      power_options.sum do |option|
-        option["key"] == "power" ? option.fetch("value", 0).to_i : 0
-      end
     end
   end
 end

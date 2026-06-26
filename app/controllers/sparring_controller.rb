@@ -7,22 +7,22 @@ class SparringController < ApplicationController
 
   def create
     return redirect_to sparring_path, alert: t("sparring.create.expedition_active"), status: :see_other if @character.spirit_expedition_active?
+    return redirect_to sparring_path, alert: t("sparring.create.attacker_injured"), status: :see_other unless @character.available_for_sparring?
 
     opponent = current_opponent
     return redirect_to sparring_path, alert: t("sparring.create.no_opponent"), status: :see_other unless opponent
+    opponent.recover_health!
     return redirect_to sparring_path, alert: t("sparring.create.opponent_injured"), status: :see_other unless opponent.available_for_sparring?
 
     unless @character.spend_sparring_point!
       return redirect_to sparring_path, alert: t("sparring.create.no_points"), status: :see_other
     end
 
-    opponent.recover_health!
-
     result = Sparring::Match.new(
       challenger: @character,
       opponent: opponent,
       victory_qi_hours: 1,
-      defeat_qi_hours: -1
+      defeat_qi_hours: 0.5
     ).call
     @character.apply_qi_delta!(result.fetch(:qi_delta))
     @event = create_event(result)
@@ -51,6 +51,7 @@ class SparringController < ApplicationController
   def load_character
     @character = current_character
     @character.recover_sparring_points!
+    @character.recover_health!
   end
 
   def current_opponent

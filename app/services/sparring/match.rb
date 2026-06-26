@@ -4,6 +4,7 @@ module Sparring
     MINIMUM_HEALTH = 1
     MINIMUM_HIT_CHANCE = 5
     MAXIMUM_HIT_CHANCE = 95
+    DEFENSE_EFFECTIVENESS = 100.0
     CRITICAL_MULTIPLIER = 1.5
 
     def initialize(challenger:, opponent:, victory_qi_hours:, defeat_qi_hours:, rng: Random.new)
@@ -81,7 +82,7 @@ module Sparring
     end
 
     def attack_damage(attacker, defender, critical:)
-      damage = [ attacker.damage - defender.defense, attacker.damage * 0.1, 1 ].max
+      damage = [ reduced_damage(attacker.damage, defender.defense), attacker.damage * 0.1, 1 ].max
       damage *= CRITICAL_MULTIPLIER if critical
       damage.round
     end
@@ -91,7 +92,13 @@ module Sparring
     end
 
     def hit_chance(attacker, defender)
-      (attacker.accuracy - defender.evasion).clamp(MINIMUM_HIT_CHANCE, MAXIMUM_HIT_CHANCE)
+      return MINIMUM_HIT_CHANCE if attacker.accuracy <= 0
+
+      (100 - ((defender.evasion.to_f / attacker.accuracy) * 100)).clamp(MINIMUM_HIT_CHANCE, MAXIMUM_HIT_CHANCE)
+    end
+
+    def reduced_damage(damage, defense)
+      damage * (DEFENSE_EFFECTIVENESS / (DEFENSE_EFFECTIVENESS + defense))
     end
 
     def defeated?(character)

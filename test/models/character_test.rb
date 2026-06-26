@@ -160,12 +160,12 @@ class CharacterTest < ActiveSupport::TestCase
   test "calculates combat stats from realm and star" do
     @character.update!(realm: 1, star: 1)
 
-    assert_equal({ damage: 100, health: 975, defense: 35, evasion: 20, accuracy: 100, critical_rate: 5 }, @character.combat_stats)
+    assert_equal({ damage: 100, health: 1_111, defense: 35, evasion: 20, accuracy: 100, critical_rate: 5 }, @character.combat_stats)
 
     @character.update!(realm: 2, star: 5)
 
     assert_equal 296, @character.damage
-    assert_equal 2_886, @character.health
+    assert_equal 2_181, @character.health
     assert_equal 104, @character.defense
     assert_equal 46, @character.evasion
     assert_equal 126, @character.accuracy
@@ -174,11 +174,11 @@ class CharacterTest < ActiveSupport::TestCase
 
   test "keeps equal level no item survivability stable across realms" do
     [ [ 1, 1 ], [ 2, 5 ], [ 6, 1 ] ].each do |realm, star|
-      @character.update!(realm:, star:)
+      character = Character.new(level: realm, sublevel: star)
 
-      effective_damage = @character.damage - @character.defense
+      effective_damage = [ character.damage * (100.0 / (100 + character.defense)), character.damage * 0.1, 1 ].max
 
-      assert_equal 15, @character.health / effective_damage
+      assert_in_delta 15, character.health / effective_damage, 0.1
     end
   end
 
@@ -212,7 +212,7 @@ class CharacterTest < ActiveSupport::TestCase
 
     @character.recover_health!(at: now)
 
-    assert_equal 197, @character.current_health
+    assert_equal 211, @character.current_health
     assert_equal now, @character.health_recovered_at
   end
 
@@ -224,7 +224,7 @@ class CharacterTest < ActiveSupport::TestCase
     assert_equal 1, @character.current_health
   end
 
-  test "realm five full evasion accessories evade around sixty nine percent against equal weapon accuracy" do
+  test "realm five full evasion accessories create strong evade chance against equal weapon accuracy" do
     attacker = users(:two).character
     defender = @character
     [ attacker, defender ].each do |character|
@@ -238,9 +238,9 @@ class CharacterTest < ActiveSupport::TestCase
       equip_item_with_options(defender, name, equipment_kind, [ { "key" => "evasion", "value" => realm_five_item_max(:evasion) } ])
     end
 
-    evade_chance = 100 - (attacker.accuracy - defender.evasion)
+    evade_chance = (defender.evasion.to_f / attacker.accuracy) * 100
 
-    assert_in_delta 69, evade_chance, 1.5
+    assert_in_delta 83, evade_chance, 1.5
   end
 
   test "realm five full critical accessories reach around twenty seven percent critical rate" do

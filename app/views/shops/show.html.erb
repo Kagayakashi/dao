@@ -1,0 +1,31 @@
+<% content_for :title, t("shops.show.title") %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel shop-panel">
+    <%= render "shared/media_banner", alt: "", image_name: "city.png", banner_class: "main-banner", image_class: "main-banner__image" %>
+
+    <p class="eyebrow"><%= cultivation_icon(:coin) %> <%= t("shops.show.eyebrow") %></p>
+    <h1><%= t("shops.show.heading") %></h1>
+    <p class="screen-note"><%= t("shops.show.screen_note") %></p>
+
+    <%= tag.div(flash[:alert], class: "form-alert") if flash[:alert] %>
+    <%= tag.div(flash[:notice], class: "form-notice") if flash[:notice] %>
+    <%= tag.div(t("shops.show.expedition_locked"), class: "form-alert") if @character.spirit_expedition_active? %>
+
+    <div class="realm-card">
+      <span class="realm-label"><%= cultivation_icon(:satchel) %> <%= t("shops.show.offer_heading") %></span>
+      <strong><%= t("shops.show.cost", wen: number_with_delimiter(Shops::Purchase::WEN_COST)) %></strong>
+      <span><%= t("shops.show.currency_balance", wen: number_with_delimiter(@character.currency)) %></span>
+      <span><%= t("shops.show.inventory_space", count: @character.free_inventory_slot ? 1 : 0) %></span>
+    </div>
+
+    <div class="sparring-actions">
+      <%= button_to t("shops.show.buy_button"), shop_path, class: "ceremonial-button", disabled: @character.spirit_expedition_active? %>
+    </div>
+
+    <nav class="quiet-nav" aria-label="<%= t("shops.show.navigation_aria") %>">
+      <%= link_to t("shops.show.inventory_link"), inventory_path %>
+      <%= link_to t("shops.show.adventure_link"), adventure_path %>
+    </nav>
+  </section>
+</main>

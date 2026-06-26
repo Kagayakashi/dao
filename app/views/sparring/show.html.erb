@@ -11,6 +11,7 @@
     <%= tag.div(flash[:alert], class: "form-alert") if flash[:alert] %>
     <%= tag.div(flash[:notice], class: "form-notice") if flash[:notice] %>
     <%= tag.div(t("sparring.show.expedition_locked"), class: "form-alert") if @character.spirit_expedition_active? %>
+    <%= tag.div(t("sparring.show.injured_locked"), class: "form-alert") unless @character.available_for_sparring? %>
 
     <div class="realm-card sparring-card">
       <span class="realm-label"><%= cultivation_icon(:sword) %> <%= t("shared.sparring_points") %></span>
@@ -77,7 +78,7 @@
         </div>
 
         <div class="sparring-actions">
-          <%= button_to t("sparring.show.spare_button"), sparring_path, class: "ceremonial-button", disabled: @character.spirit_expedition_active? %>
+          <%= button_to t("sparring.show.spare_button"), sparring_path, class: "ceremonial-button", disabled: @character.spirit_expedition_active? || !@character.available_for_sparring? %>
           <%= button_to t("sparring.show.change_opponent_button"), change_opponent_sparring_path, class: "ceremonial-button", disabled: @character.spirit_expedition_active? %>
         </div>
       </section>
