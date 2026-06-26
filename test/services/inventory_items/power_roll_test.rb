@@ -5,22 +5,22 @@ module InventoryItems
     test "returns power and accuracy for weapons" do
       character = users(:one).character
       character.update!(realm: 1, star: 1)
-      rng = FixedRng.new(values: [ 11, 2 ])
+      rng = FixedRng.new(values: [ 20, 2 ])
 
       power_options = PowerRoll.new(character, equipment_kind: "weapon", rng:).call
 
-      assert_equal [ { "key" => "power", "value" => 11 }, { "key" => "accuracy", "value" => 2 } ], power_options
-      assert_equal [ 8..14, 1.0..3.0 ], rng.ranges
+      assert_equal [ { "key" => "power", "value" => 20 }, { "key" => "accuracy", "value" => 2 } ], power_options
+      assert_equal [ 15..25, 1.0..3.0 ], rng.ranges
     end
 
     test "scales power range by realm and star with overlapping steps" do
       character = users(:one).character
       expected_ranges = {
-        1 => 8..14,
-        2 => 11..18,
-        3 => 14..23,
-        4 => 18..29,
-        5 => 22..36
+        1 => 15..25,
+        2 => 19..27,
+        3 => 21..29,
+        4 => 22..31,
+        5 => 24..34
       }
 
       expected_ranges.each do |star, expected_range|

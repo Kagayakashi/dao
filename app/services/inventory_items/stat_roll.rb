@@ -2,24 +2,24 @@ module InventoryItems
   class StatRoll
     DEFAULT_CONFIGS = {
       power: {
-        base_minimum: 8,
-        base_maximum: 14,
-        step_maximum_multiplier: 1.27,
+        base_minimum: 15,
+        base_maximum: 25,
+        step_maximum_multiplier: 1.08,
         step_minimum_overlap: 0.75,
         decimals: 0,
         minimum_config_key: :power_option_min
       },
       health: {
-        base_minimum: 8,
-        base_maximum: 14,
-        step_maximum_multiplier: 1.22,
+        base_minimum: 60,
+        base_maximum: 120,
+        step_maximum_multiplier: 1.08,
         step_minimum_overlap: 0.75,
         decimals: 0
       },
       defense: {
-        base_minimum: 1.0,
-        base_maximum: 3.0,
-        step_maximum_multiplier: 1.16,
+        base_minimum: 3,
+        base_maximum: 6,
+        step_maximum_multiplier: 1.08,
         step_minimum_overlap: 0.75,
         decimals: 1
       },
@@ -71,8 +71,7 @@ module InventoryItems
     end
 
     def minimum
-      # power_option_min
-      [ calculated_minimum ].compact.max
+      [ calculated_minimum, configured_minimum ].compact.max
     end
 
     def maximum

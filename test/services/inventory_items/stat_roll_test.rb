@@ -10,7 +10,7 @@ module InventoryItems
       stat_option = StatRoll.new(character, stat_key: :health, rng:).call
 
       assert_equal({ "key" => "health", "value" => 30 }, stat_option)
-      assert_equal 19..31, rng.range
+      assert_equal 114..163, rng.range
     end
 
     test "rolls requested decimal stat from configured progression range" do
@@ -21,7 +21,7 @@ module InventoryItems
       stat_option = StatRoll.new(character, stat_key: :defense, rng:).call
 
       assert_equal({ "key" => "defense", "value" => 4.8 }, stat_option)
-      assert_equal 3.6..5.4, rng.range
+      assert_equal 5.7..8.2, rng.range
     end
 
     test "allows stat configuration overrides" do

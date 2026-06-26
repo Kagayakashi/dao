@@ -22,7 +22,7 @@ class CharactersControllerTest < ActionDispatch::IntegrationTest
     assert_select ".realm-card", text: /Dou Qi Stage/
     assert_select ".realm-card", text: /1 Star/
     assert_select ".realm-card", text: /Gender: Male/
-    assert_select ".realm-card", text: /GearScore/
+    assert_select ".realm-card", text: /Gear Score:/
     assert_select "#profile-combat-stats-heading", "Combat Stats"
     assert_select ".combat-stat-list", text: /Damage/
     assert_select ".combat-stat-list", text: /Health/
