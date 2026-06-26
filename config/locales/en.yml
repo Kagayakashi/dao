@@ -258,6 +258,11 @@ en:
       adventure_link: "Adventure"
 
   spirit_expeditions:
+    complete:
+      notice:
+        completed: "Spirit Expedition completed early: %{qi} Qi, %{wen} Wen, and %{donation_currency} Liang."
+      alert:
+        unavailable: "Bring 1 Liang, or wait until the Spirit Expedition ends naturally."
     events:
       title: "Spirit Expedition"
       description: "Returned from a %{hours}h Spirit Expedition with %{wen} Wen."
@@ -275,6 +280,8 @@ en:
       active_heading: "Expedition underway"
       active_duration: "%{hours}h journey"
       active_remaining: "Returns in %{duration}."
+      complete_now_button: "Complete now for %{cost} Liang"
+      complete_now_unavailable: "You need 1 Liang to complete the expedition immediately."
       options_heading: "Choose Duration"
       duration: "%{hours}h"
       qi_reward: "%{qi} Qi"
@@ -459,23 +466,28 @@ en:
         news_posts_link: "News Posts"
         admin_link: "Admin Panel"
     qi_adjustments:
+      resources:
+        qi: "Qi"
+        wen: "Wen"
+        liang: "Liang"
       create:
-        notice: "%{direction} %{qi} Qi for %{character}. Now %{realm}, %{star} Star."
+        notice: "%{direction} %{amount} %{resource} for %{character}. Now %{realm}, %{star} Star."
         directions:
           added: "Added"
           removed: "Removed"
       new:
-        title: "Adjust Qi"
+        title: "Adjust Resources"
         eyebrow: "Admin"
-        heading: "Adjust Character Qi"
-        screen_note: "Add or remove Qi and recalculate Realm and Star immediately."
+        heading: "Adjust Character Resources"
+        screen_note: "Add or remove Qi, Wen, or Liang. Qi changes recalculate Realm and Star immediately."
         character: "Character"
         direction: "Direction"
-        add: "Add Qi"
-        remove: "Remove Qi"
-        amount: "Qi amount"
-        submit: "Apply Qi Change"
-        navigation_aria: "Qi adjustment navigation"
+        add: "Add"
+        remove: "Remove"
+        resource: "Resource"
+        amount: "Amount"
+        submit: "Apply Change"
+        navigation_aria: "Resource adjustment navigation"
         admin_link: "Admin Panel"
         return_link: "Return to Cultivation"
 

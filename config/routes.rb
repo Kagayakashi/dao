@@ -13,7 +13,9 @@ Rails.application.routes.draw do
       post :reroll
     end
     resource :adventure, only: :show
-    resource :spirit_expedition, only: %i[ show create ]
+    resource :spirit_expedition, only: %i[ show create ] do
+      post :complete
+    end
     resources :news, only: %i[ index show ] do
       collection do
         post :read_all

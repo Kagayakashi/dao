@@ -36,6 +36,7 @@ class Character < ApplicationRecord
   class_attribute :spirit_expedition_extended_reward_multiplier, default: 0.75
   class_attribute :spirit_expedition_wen_reward_range, default: 50..100
   class_attribute :spirit_expedition_donation_currency_chance, default: 0.05
+  class_attribute :spirit_expedition_instant_completion_cost, default: 1
 
   before_validation :set_initial_last_online, on: :create
   before_validation :set_default_name, on: :create
@@ -256,6 +257,15 @@ class Character < ApplicationRecord
     end
 
     { qi: gained_qi, wen: gained_wen, donation_currency: gained_donation_currency }
+  end
+
+  def complete_spirit_expedition_now!(at: Time.current)
+    return false unless spirit_expedition_active?(at:)
+    return false if donation_currency < spirit_expedition_instant_completion_cost
+
+    self.donation_currency -= spirit_expedition_instant_completion_cost
+    self.spirit_expedition_ends_at = at
+    complete_spirit_expedition!(at:)
   end
 
   def create_spirit_expedition_event!(hours:, wen:)

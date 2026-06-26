@@ -16,6 +16,9 @@
       <%= form.label :direction, t("admin.qi_adjustments.new.direction") %>
       <%= form.select :direction, [[ t("admin.qi_adjustments.new.add"), "add" ], [ t("admin.qi_adjustments.new.remove"), "remove" ]] %>
 
+      <%= form.label :resource, t("admin.qi_adjustments.new.resource") %>
+      <%= form.select :resource, [[ t("admin.qi_adjustments.resources.qi"), "qi" ], [ t("admin.qi_adjustments.resources.wen"), "wen" ], [ t("admin.qi_adjustments.resources.liang"), "liang" ]] %>
+
       <%= form.label :amount, t("admin.qi_adjustments.new.amount") %>
       <%= form.number_field :amount, required: true, min: 0, value: 100 %>
 

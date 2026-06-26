@@ -14,6 +14,17 @@ class SpiritExpeditionsController < ApplicationController
     end
   end
 
+  def complete
+    load_character
+    result = @character.complete_spirit_expedition_now!
+
+    if result
+      redirect_to spirit_expedition_path, notice: t("spirit_expeditions.complete.notice.completed", qi: helpers.number_with_delimiter(result[:qi]), wen: helpers.number_with_delimiter(result[:wen]), donation_currency: helpers.number_with_delimiter(result[:donation_currency])), status: :see_other
+    else
+      redirect_to spirit_expedition_path, alert: t("spirit_expeditions.complete.alert.unavailable"), status: :see_other
+    end
+  end
+
   private
 
   def load_character

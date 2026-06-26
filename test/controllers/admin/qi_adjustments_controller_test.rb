@@ -19,8 +19,11 @@ module Admin
       get new_admin_qi_adjustment_path(locale: :en)
 
       assert_response :success
-      assert_select "h1", "Adjust Character Qi"
+      assert_select "h1", "Adjust Character Resources"
       assert_select "form[action='#{admin_qi_adjustment_path(locale: :en)}']"
+      assert_select "select[name='qi_adjustment[resource]'] option[value='qi']", "Qi"
+      assert_select "select[name='qi_adjustment[resource]'] option[value='wen']", "Wen"
+      assert_select "select[name='qi_adjustment[resource]'] option[value='liang']", "Liang"
     end
 
     test "adds qi and recalculates stars" do
@@ -31,6 +34,7 @@ module Admin
           qi_adjustment: {
             character_id: @character.id,
             direction: "add",
+            resource: "qi",
             amount: 250
           }
         }
@@ -51,6 +55,7 @@ module Admin
           qi_adjustment: {
             character_id: @character.id,
             direction: "remove",
+            resource: "qi",
             amount: 160
           }
         }
@@ -60,6 +65,38 @@ module Admin
         assert_equal 1, @character.star
         assert_equal 90, @character.qi
       end
+    end
+
+    test "adds wen" do
+      sign_in_admin
+
+      post admin_qi_adjustment_path(locale: :en), params: {
+        qi_adjustment: {
+          character_id: @character.id,
+          direction: "add",
+          resource: "wen",
+          amount: 300
+        }
+      }
+
+      assert_redirected_to new_admin_qi_adjustment_path(locale: :en)
+      assert_equal 300, @character.reload.currency
+    end
+
+    test "adds liang" do
+      sign_in_admin
+
+      post admin_qi_adjustment_path(locale: :en), params: {
+        qi_adjustment: {
+          character_id: @character.id,
+          direction: "add",
+          resource: "liang",
+          amount: 2
+        }
+      }
+
+      assert_redirected_to new_admin_qi_adjustment_path(locale: :en)
+      assert_equal 2, @character.reload.donation_currency
     end
 
     private

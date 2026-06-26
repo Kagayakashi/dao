@@ -60,6 +60,40 @@ class SpiritExpeditionsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select ".realm-card", text: /Expedition underway/
+    assert_select "form[action='#{complete_spirit_expedition_path(locale: :en)}']"
     assert_select "form[action='#{spirit_expedition_path(locale: :en)}']", 0
+  end
+
+  test "completes active spirit expedition immediately for one liang" do
+    user = users(:one)
+    character = user.character
+    now = Time.zone.local(2026, 6, 18, 12, 0, 0)
+    character.update!(donation_currency: 1)
+    character.start_spirit_expedition!(hours: 4, at: now)
+    sign_in_as(user)
+
+    travel_to(now + 30.minutes) do
+      post complete_spirit_expedition_path(locale: :en)
+    end
+
+    assert_redirected_to spirit_expedition_path(locale: :en)
+    character.reload
+    assert_nil character.spirit_expedition_ends_at
+    assert_equal 0, character.donation_currency
+    assert_equal 10_800, character.qi
+  end
+
+  test "does not complete active spirit expedition immediately without liang" do
+    user = users(:one)
+    character = user.character
+    character.update!(donation_currency: 0)
+    character.start_spirit_expedition!(hours: 4)
+    sign_in_as(user)
+
+    post complete_spirit_expedition_path(locale: :en)
+    follow_redirect!
+
+    assert_predicate character.reload, :spirit_expedition_active?
+    assert_select ".form-alert", text: /Bring 1 Liang/
   end
 end

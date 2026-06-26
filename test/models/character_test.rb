@@ -24,7 +24,8 @@ class CharacterTest < ActiveSupport::TestCase
       spirit_expedition_durations: Character.spirit_expedition_durations,
       spirit_expedition_extended_reward_multiplier: Character.spirit_expedition_extended_reward_multiplier,
       spirit_expedition_wen_reward_range: Character.spirit_expedition_wen_reward_range,
-      spirit_expedition_donation_currency_chance: Character.spirit_expedition_donation_currency_chance
+      spirit_expedition_donation_currency_chance: Character.spirit_expedition_donation_currency_chance,
+      spirit_expedition_instant_completion_cost: Character.spirit_expedition_instant_completion_cost
     }
 
     Character.stars_per_realm = 9
@@ -49,6 +50,7 @@ class CharacterTest < ActiveSupport::TestCase
     Character.spirit_expedition_extended_reward_multiplier = 0.75
     Character.spirit_expedition_wen_reward_range = 50..100
     Character.spirit_expedition_donation_currency_chance = 0.05
+    Character.spirit_expedition_instant_completion_cost = 1
 
     @character = characters(:one)
     @character.update!(realm: 1, star: 1, qi: 0, total_experience: 0, last_online: Time.current, currency: 0, donation_currency: 0, spirit_expedition_started_at: nil, spirit_expedition_ends_at: nil, spirit_expedition_duration_hours: nil)
@@ -409,6 +411,28 @@ class CharacterTest < ActiveSupport::TestCase
     assert_equal 21_600, @character.qi
     assert_equal 240, @character.currency
     assert_equal 0, @character.donation_currency
+  end
+
+  test "completes active spirit expedition immediately for liang" do
+    now = Time.zone.local(2026, 6, 18, 12, 0, 0)
+    @character.update!(donation_currency: 1)
+    @character.start_spirit_expedition!(hours: 4, at: now)
+
+    result = @character.complete_spirit_expedition_now!(at: now + 30.minutes)
+
+    @character.reload
+    assert_equal({ qi: 21_600, wen: result[:wen], donation_currency: 0 }, result)
+    assert_nil @character.spirit_expedition_ends_at
+    assert_equal 0, @character.donation_currency
+    assert_equal 1, @character.game_events.where(event_key: "spirit_expedition").count
+  end
+
+  test "does not complete active spirit expedition immediately without liang" do
+    now = Time.zone.local(2026, 6, 18, 12, 0, 0)
+    @character.start_spirit_expedition!(hours: 4, at: now)
+
+    assert_not @character.complete_spirit_expedition_now!(at: now + 30.minutes)
+    assert @character.reload.spirit_expedition_active?(at: now + 30.minutes)
   end
 
   private

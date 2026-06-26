@@ -258,6 +258,11 @@ ru:
       adventure_link: "Приключение"
 
   spirit_expeditions:
+    complete:
+      notice:
+        completed: "Духовная экспедиция завершена досрочно: %{qi} Ци, %{wen} Вэнь и %{donation_currency} Лян."
+      alert:
+        unavailable: "Принесите 1 Лян или дождитесь естественного завершения духовной экспедиции."
     events:
       title: "Духовная экспедиция"
       description: "Вы вернулись из духовной экспедиции на %{hours} ч и получили %{wen} Вэнь."
@@ -275,6 +280,8 @@ ru:
       active_heading: "Экспедиция продолжается"
       active_duration: "Путь на %{hours} ч"
       active_remaining: "Возвращение через %{duration}."
+      complete_now_button: "Завершить сейчас за %{cost} Лян"
+      complete_now_unavailable: "Нужен 1 Лян, чтобы завершить экспедицию сразу."
       options_heading: "Выберите длительность"
       duration: "%{hours} ч"
       qi_reward: "%{qi} Ци"
@@ -459,23 +466,28 @@ ru:
         news_posts_link: "Новости"
         admin_link: "Админ-панель"
     qi_adjustments:
+      resources:
+        qi: "Ци"
+        wen: "Вэнь"
+        liang: "Лян"
       create:
-        notice: "%{direction} %{qi} Ци для %{character}. Теперь %{realm}, %{star} звезда."
+        notice: "%{direction} %{amount} %{resource} для %{character}. Теперь %{realm}, %{star} звезда."
         directions:
           added: "Добавлено"
           removed: "Удалено"
       new:
-        title: "Изменить Ци"
+        title: "Изменить ресурсы"
         eyebrow: "Админ"
-        heading: "Изменить Ци персонажа"
-        screen_note: "Добавьте или удалите Ци, чтобы сразу пересчитать сферу и звезду."
+        heading: "Изменить ресурсы персонажа"
+        screen_note: "Добавьте или удалите Ци, Вэнь или Лян. Изменения Ци сразу пересчитывают сферу и звезду."
         character: "Персонаж"
         direction: "Действие"
-        add: "Добавить Ци"
-        remove: "Удалить Ци"
-        amount: "Количество Ци"
-        submit: "Применить изменение Ци"
-        navigation_aria: "Навигация изменения Ци"
+        add: "Добавить"
+        remove: "Удалить"
+        resource: "Ресурс"
+        amount: "Количество"
+        submit: "Применить изменение"
+        navigation_aria: "Навигация изменения ресурсов"
         admin_link: "Админ-панель"
         return_link: "Вернуться к культивации"
 

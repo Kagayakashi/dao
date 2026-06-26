@@ -23,6 +23,10 @@
         <span class="realm-label"><%= cultivation_icon(:clock) %> <%= t("spirit_expeditions.show.active_heading") %></span>
         <strong><%= t("spirit_expeditions.show.active_duration", hours: @character.spirit_expedition_duration_hours) %></strong>
         <span><%= t("spirit_expeditions.show.active_remaining", duration: distance_of_time_in_words(Time.current, @character.spirit_expedition_ends_at)) %></span>
+        <%= button_to t("spirit_expeditions.show.complete_now_button", cost: @character.spirit_expedition_instant_completion_cost), complete_spirit_expedition_path, class: "ceremonial-button", disabled: @character.donation_currency < @character.spirit_expedition_instant_completion_cost %>
+        <% if @character.donation_currency < @character.spirit_expedition_instant_completion_cost %>
+          <span><%= t("spirit_expeditions.show.complete_now_unavailable") %></span>
+        <% end %>
       </div>
     <% else %>
       <section class="events" aria-labelledby="spirit-expedition-options-heading">
