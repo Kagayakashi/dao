@@ -22,6 +22,10 @@ class ApplicationController < ActionController::Base
     { locale: I18n.locale }
   end
 
+  def current_character
+    Current.user.character || Current.user.create_character!
+  end
+
   def redirect_to_default_locale
     return if params[:locale].present?
     return unless request.get? && request.format.html?

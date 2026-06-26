@@ -20,7 +20,7 @@ class SparringController < ApplicationController
       victory_qi_hours: 1,
       defeat_qi_hours: -1
     ).call
-    apply_qi_delta(result.fetch(:qi_delta))
+    @character.apply_qi_delta!(result.fetch(:qi_delta))
     @event = create_event(result)
     create_related_event(result)
     opponent.mark_sparring_unavailable!
@@ -44,7 +44,7 @@ class SparringController < ApplicationController
   private
 
   def load_character
-    @character = Current.user.character || Current.user.create_character!
+    @character = current_character
     @character.recover_sparring_points!
   end
 
@@ -61,16 +61,6 @@ class SparringController < ApplicationController
 
   def sparring_opponents
     Character.available_for_sparring.where.not(id: @character.id)
-  end
-
-  def apply_qi_delta(qi_delta)
-    if qi_delta.positive?
-      @character.gain_qi(qi_delta)
-    elsif qi_delta.negative?
-      @character.qi = [ @character.qi + qi_delta, 0 ].max
-    end
-
-    @character.save!
   end
 
   def create_event(result)

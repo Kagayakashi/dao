@@ -17,7 +17,7 @@ module CultivationEvents
 
       config = Registry.events.fetch(event_key)
       result = build_result(event_key, config)
-      apply_qi_delta(result[:qi_delta])
+      character.apply_qi_delta!(result[:qi_delta])
       event = create_event(event_key, config, result)
       create_related_stranger_event(result) if event_key == :stranger_cultivator
       set_related_sparring_cooldown(result) if event_key == :stranger_cultivator
@@ -178,19 +178,6 @@ module CultivationEvents
       return {} if opponent
 
       { "name_i18n_key" => "cultivation_events.stranger_cultivator.passing_cultivator" }
-    end
-
-    def apply_qi_delta(qi_delta)
-      if qi_delta.positive?
-        character.gain_qi(qi_delta)
-        character.save!
-        return
-      end
-
-      return if qi_delta.zero?
-
-      character.qi = [ character.qi + qi_delta, 0 ].max
-      character.save!
     end
 
     def create_event(event_key, config, result)

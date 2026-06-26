@@ -33,7 +33,7 @@ class Character < ApplicationRecord
   class_attribute :daily_reward_star_bonus_qi, default: 50
   class_attribute :daily_reward_cooldown, default: 1.day
   class_attribute :spirit_expedition_durations, default: [ 1, 4, 12, 24 ]
-  class_attribute :spirit_expedition_extended_reward_multiplier, default: 0.25
+  class_attribute :spirit_expedition_extended_reward_multiplier, default: 0.75
   class_attribute :spirit_expedition_wen_reward_range, default: 50..100
   class_attribute :spirit_expedition_donation_currency_chance, default: 0.05
 
@@ -138,6 +138,16 @@ class Character < ApplicationRecord
     gained_qi
   end
 
+  def apply_qi_delta!(qi_delta)
+    if qi_delta.positive?
+      gain_qi(qi_delta, multiplier: 1.0)
+    elsif qi_delta.negative?
+      self.qi = [ qi + qi_delta, 0 ].max
+    end
+
+    save! if changed?
+  end
+
   def ready_for_breakthrough?
     qi >= qi_required_for_next_star
   end
@@ -239,8 +249,11 @@ class Character < ApplicationRecord
     self.spirit_expedition_started_at = nil
     self.spirit_expedition_ends_at = nil
     self.spirit_expedition_duration_hours = nil
-    save!
-    create_spirit_expedition_event!(hours:, wen: gained_wen)
+
+    transaction do
+      save!
+      create_spirit_expedition_event!(hours:, wen: gained_wen)
+    end
 
     { qi: gained_qi, wen: gained_wen, donation_currency: gained_donation_currency }
   end

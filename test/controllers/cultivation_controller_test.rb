@@ -126,6 +126,32 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
     assert_select ".section-action a[href='#{events_path(locale: :en)}']", "More events"
   end
 
+  test "shows only three recent events on dashboard" do
+    user = users(:one)
+    character = user.character || user.create_character!
+    character.game_events.destroy_all
+    4.times do |index|
+      character.game_events.create!(
+        event_key: "dashboard_event_#{index}",
+        outcome: "neutral",
+        title: "Dashboard Event #{index + 1}",
+        description: "Dashboard Description #{index + 1}",
+        metadata: {},
+        qi_delta: 0,
+        happened_at: index.minutes.ago
+      )
+    end
+    sign_in_as(user)
+
+    get root_path(locale: :en)
+
+    assert_response :success
+    assert_select ".event-list li", 3
+    assert_select ".event-list", text: /Dashboard Event 1/
+    assert_select ".event-list", { text: /Dashboard Event 4/, count: 0 }
+    assert_select ".section-action a[href='#{events_path(locale: :en)}']", "More events"
+  end
+
   test "shows refreshable cultivation panel" do
     user = users(:one)
     sign_in_as(user)

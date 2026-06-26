@@ -1,7 +1,5 @@
 <section class="cultivation-panel">
-  <div class="main-banner">
-    <%= image_tag "main.png", alt: t("cultivation.panel.banner_alt"), class: "main-banner__image" %>
-  </div>
+  <%= render "shared/media_banner", image_name: "main.png", alt: t("cultivation.panel.banner_alt"), banner_class: "main-banner", image_class: "main-banner__image" %>
 
   <p class="eyebrow"><%= cultivation_icon(:scroll) %> <%= t(".eyebrow") %></p>
   <h1><%= character.name %></h1>

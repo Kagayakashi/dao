@@ -9,7 +9,7 @@ class CultivationController < ApplicationController
   end
 
   def breakthrough
-    character = Current.user.character || Current.user.create_character!
+    character = current_character
     character.complete_spirit_expedition! if character.spirit_expedition_ends_at.present?
     character.cultivate_offline!
     result = character.breakthrough!
@@ -20,7 +20,7 @@ class CultivationController < ApplicationController
   private
 
   def load_cultivation
-    @character = Current.user.character || Current.user.create_character!
+    @character = current_character
     @completed_spirit_expedition = @character.complete_spirit_expedition! if @character.spirit_expedition_ends_at.present?
     @offline_qi_gained = @character.cultivate_offline!
     @character.recover_sparring_points!

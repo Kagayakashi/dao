@@ -7,7 +7,7 @@
     <p class="screen-note"><%= t("spirit_expeditions.show.screen_note") %></p>
 
     <%= tag.div(flash[:notice], class: "form-notice") if flash[:notice] %>
-    <%= tag.div(flash[:alert], class: "form-notice") if flash[:alert] %>
+    <%= tag.div(flash[:alert], class: "form-alert") if flash[:alert] %>
 
     <% if @completed_spirit_expedition.present? %>
       <p class="offline-gain">

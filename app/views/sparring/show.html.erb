@@ -2,15 +2,13 @@
 
 <main class="cultivation-page">
   <section class="cultivation-panel sparring-panel">
-    <div class="main-banner">
-      <%= image_tag "sparring.png", alt: t("sparring.show.banner_alt"), class: "main-banner__image" %>
-    </div>
+    <%= render "shared/media_banner", image_name: "sparring.png", alt: t("sparring.show.banner_alt"), banner_class: "main-banner", image_class: "main-banner__image" %>
 
     <p class="eyebrow"><%= cultivation_icon(:sword) %> <%= t("sparring.show.eyebrow") %></p>
     <h1><%= t("sparring.show.heading") %></h1>
     <p class="screen-note"><%= t("sparring.show.screen_note") %></p>
 
-    <%= tag.div(flash[:alert], class: "form-notice") if flash[:alert] %>
+    <%= tag.div(flash[:alert], class: "form-alert") if flash[:alert] %>
     <%= tag.div(flash[:notice], class: "form-notice") if flash[:notice] %>
 
     <div class="realm-card sparring-card">

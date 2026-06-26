@@ -21,6 +21,7 @@ class TemplesControllerTest < ActionDispatch::IntegrationTest
     assert_select ".daily-reward-card", text: /Realm 2, Star 3/
     assert_select "form button", "Pray"
     assert_select ".quiet-nav a[href='#{adventure_path(locale: :en)}']", "Adventure"
+    assert_select ".quiet-nav a[href='#{root_path(locale: :en)}']", false
   end
 
   test "prays for daily reward" do

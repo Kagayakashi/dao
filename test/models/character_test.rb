@@ -46,7 +46,7 @@ class CharacterTest < ActiveSupport::TestCase
     Character.daily_reward_star_bonus_qi = 50
     Character.daily_reward_cooldown = 1.day
     Character.spirit_expedition_durations = [ 1, 4, 12, 24 ]
-    Character.spirit_expedition_extended_reward_multiplier = 0.25
+    Character.spirit_expedition_extended_reward_multiplier = 0.75
     Character.spirit_expedition_wen_reward_range = 50..100
     Character.spirit_expedition_donation_currency_chance = 0.05
 
@@ -112,6 +112,32 @@ class CharacterTest < ActiveSupport::TestCase
     assert_equal 1, @character.star
     assert_equal 40, @character.qi
     assert_equal 40, @character.total_experience
+  end
+
+  test "applies positive qi delta as gained qi" do
+    @character.apply_qi_delta!(40)
+
+    @character.reload
+    assert_equal 40, @character.qi
+    assert_equal 40, @character.total_experience
+  end
+
+  test "applies negative qi delta without dropping below zero" do
+    @character.update!(qi: 20, total_experience: 100)
+
+    @character.apply_qi_delta!(-50)
+
+    @character.reload
+    assert_equal 0, @character.qi
+    assert_equal 100, @character.total_experience
+  end
+
+  test "applies zero qi delta without changing character" do
+    @character.update!(qi: 20, total_experience: 100)
+
+    assert_no_changes -> { @character.reload.updated_at } do
+      @character.apply_qi_delta!(0)
+    end
   end
 
   test "calculates power from realm and star" do
@@ -372,16 +398,16 @@ class CharacterTest < ActiveSupport::TestCase
     assert_equal 1, @character.donation_currency
   end
 
-  test "reduces extended spirit expedition rewards to twenty five percent" do
+  test "reduces extended spirit expedition rewards by twenty five percent" do
     now = Time.zone.local(2026, 6, 18, 12, 0, 0)
     @character.start_spirit_expedition!(hours: 4, at: now)
 
     result = @character.complete_spirit_expedition!(at: now + 4.hours, wen_per_hour: 80, donation_currency_roll: 0.0)
 
     @character.reload
-    assert_equal({ qi: 7_200, wen: 80, donation_currency: 0 }, result)
-    assert_equal 7_200, @character.qi
-    assert_equal 80, @character.currency
+    assert_equal({ qi: 21_600, wen: 240, donation_currency: 0 }, result)
+    assert_equal 21_600, @character.qi
+    assert_equal 240, @character.currency
     assert_equal 0, @character.donation_currency
   end
 

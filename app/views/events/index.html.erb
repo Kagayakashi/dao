@@ -19,7 +19,7 @@
         <% end %>
       </ul>
 
-      <nav class="quiet-nav" aria-label="<%= t("events.index.pagination_aria") %>">
+      <nav class="pagination-nav" aria-label="<%= t("events.index.pagination_aria") %>">
         <% if @page > 1 %>
           <%= link_to t("events.index.previous_page"), events_path(page: @page - 1) %>
         <% end %>

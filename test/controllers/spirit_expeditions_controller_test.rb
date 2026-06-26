@@ -13,6 +13,9 @@ class SpiritExpeditionsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".activity-option-card", text: /4h/
     assert_select ".activity-option-card", text: /3,600 Qi/
     assert_select ".activity-option-card", text: /50-100 Wen/
+    assert_select ".activity-option-card", text: /150-300 Wen/
+    assert_select ".activity-option-card", text: /450-900 Wen/
+    assert_select ".activity-option-card", text: /900-1,800 Wen/
     assert_select ".screen-note", text: /low chance to return with 1 Liang/
   end
 

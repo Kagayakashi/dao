@@ -204,7 +204,6 @@ en:
       next_prayer: "Next prayer in %{duration}."
       navigation_aria: "Temple navigation"
       adventure_link: "Adventure"
-      return_link: "Return to Cultivation"
 
   adventures:
     show:
@@ -277,10 +276,10 @@ en:
       qi_reward: "%{qi} Qi"
       wen_reward: "%{min}-%{max} Wen"
       donation_currency_chance: "5% chance for 1 Liang."
-      reduced_reward_note: "Extended expedition rewards are reduced to 25%."
+      reduced_reward_note: "Extended expedition rewards are reduced by 25%."
       start_button: "Begin"
       navigation_aria: "Spirit expedition navigation"
-      return_link: "Return to Adventure"
+      return_link: "Adventure"
 
   news:
     read_all:
@@ -294,12 +293,12 @@ en:
       unread_badge: "Unread"
       empty: "The crier has no news today."
       navigation_aria: "Crier navigation"
-      return_link: "Return to Adventure"
+      return_link: "Adventure"
     show:
       eyebrow: "Crier Notice"
       navigation_aria: "News navigation"
       news_link: "Crier"
-      return_link: "Return to Adventure"
+      return_link: "Adventure"
 
   sparring:
     create:

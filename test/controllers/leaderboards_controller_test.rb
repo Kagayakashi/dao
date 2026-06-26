@@ -23,15 +23,15 @@ class LeaderboardsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".pagination-nav", text: /Page 1 of 1/
   end
 
-  test "paginates characters without loading every row" do
-    create_leaderboard_characters(22)
+  test "paginates characters ten per page" do
+    create_leaderboard_characters(12)
     sign_in_as(users(:one))
 
     get leaderboard_path(locale: :en, page: 2)
 
     assert_response :success
     assert_select ".leaderboard-entry", 4
-    assert_select ".leaderboard-entry:first-child .leaderboard-rank", text: /21/
+    assert_select ".leaderboard-entry:first-child .leaderboard-rank", text: /11/
     assert_select ".pagination-nav", text: /Page 2 of 2/
     assert_select ".pagination-nav a[href='#{leaderboard_path(locale: :en, page: 1)}']", text: "Previous"
     assert_select ".pagination-nav a", text: /Next/, count: 0

@@ -6,12 +6,12 @@
     <h1><%= t("artifact_refinements.show.heading") %></h1>
     <p class="screen-note"><%= t("artifact_refinements.show.screen_note") %></p>
 
-    <%= tag.div(flash[:alert], class: "form-notice") if flash[:alert] %>
+    <%= tag.div(flash[:alert], class: "form-alert") if flash[:alert] %>
     <%= tag.div(flash[:notice], class: "form-notice") if flash[:notice] %>
 
     <div class="realm-card">
       <span class="realm-label"><%= cultivation_icon(:coin) %> <%= t("artifact_refinements.show.cost_heading") %></span>
-      <strong><%= t("artifact_refinements.show.cost", wen: ArtifactRefinementsController::WEN_COST, liang: ArtifactRefinementsController::LIANG_COST) %></strong>
+      <strong><%= t("artifact_refinements.show.cost", wen: ArtifactRefinements::Reroll::WEN_COST, liang: ArtifactRefinements::Reroll::LIANG_COST) %></strong>
       <span><%= t("artifact_refinements.show.currency_balance", wen: number_with_delimiter(@character.currency), liang: number_with_delimiter(@character.donation_currency)) %></span>
     </div>
 

@@ -204,7 +204,6 @@ ru:
       next_prayer: "Следующая молитва через %{duration}."
       navigation_aria: "Навигация храма"
       adventure_link: "Приключение"
-      return_link: "Вернуться к культивации"
 
   adventures:
     show:
@@ -277,10 +276,10 @@ ru:
       qi_reward: "%{qi} Ци"
       wen_reward: "%{min}-%{max} Вэнь"
       donation_currency_chance: "5% шанс получить 1 Лян."
-      reduced_reward_note: "Награды долгих экспедиций снижены до 25%."
+      reduced_reward_note: "Награды долгих экспедиций снижены на 25%."
       start_button: "Начать"
       navigation_aria: "Навигация духовной экспедиции"
-      return_link: "Вернуться к приключению"
+      return_link: "Приключение"
 
   news:
     read_all:
@@ -294,12 +293,12 @@ ru:
       unread_badge: "Новое"
       empty: "Сегодня у глашатая нет новостей."
       navigation_aria: "Навигация глашатая"
-      return_link: "Вернуться к приключению"
+      return_link: "Приключение"
     show:
       eyebrow: "Объявление глашатая"
       navigation_aria: "Навигация новости"
       news_link: "Глашатай"
-      return_link: "Вернуться к приключению"
+      return_link: "Приключение"
 
   sparring:
     create:

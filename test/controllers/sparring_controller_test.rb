@@ -101,7 +101,7 @@ class SparringControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to sparring_path(locale: :en)
     follow_redirect!
-    assert_select ".form-notice", text: /Rest before attacking again/
+    assert_select ".form-alert", text: /Rest before attacking again/
   end
 
   test "changing opponent without sparring focus does not spend or change" do
@@ -118,7 +118,7 @@ class SparringControllerTest < ActionDispatch::IntegrationTest
     follow_redirect!
 
     assert_equal 0, character.reload.sparring_points
-    assert_select ".form-notice", text: /Rest before changing partners/
+    assert_select ".form-alert", text: /Rest before changing partners/
     assert_includes response.body, first_opponent_name
   end
 

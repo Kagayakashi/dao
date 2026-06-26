@@ -22,7 +22,7 @@ class NewsController < ApplicationController
   private
 
   def load_character
-    @character = Current.user.character || Current.user.create_character!
+    @character = current_character
   end
 
   def mark_read

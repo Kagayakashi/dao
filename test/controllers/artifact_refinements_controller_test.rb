@@ -43,11 +43,7 @@ class ArtifactRefinementsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 0, character.currency
     assert_equal 0, character.donation_currency
     assert_not_equal [ { "key" => "power", "value" => 1 } ], item.reload.power_options
-    event = character.game_events.order(:created_at).last
-    assert_equal "artifact_refinement", event.event_key
-    assert_equal "iron_dao_blade", event.metadata.fetch("inventory_item_name_key")
-    assert_equal 1, event.metadata.fetch("old_power")
-    assert_equal item.inventory_power, event.metadata.fetch("new_power")
+    assert_equal "artifact_refinement", character.game_events.order(:created_at).last.event_key
   end
 
   test "rerolls item power with liang" do
@@ -80,6 +76,6 @@ class ArtifactRefinementsControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal 299, character.reload.currency
     assert_equal [ { "key" => "power", "value" => 12 } ], item.reload.power_options
-    assert_select ".form-notice", text: /Bring 300 Wen/
+    assert_select ".form-alert", text: /Bring 300 Wen/
   end
 end

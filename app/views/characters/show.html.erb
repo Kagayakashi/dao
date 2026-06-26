@@ -2,9 +2,7 @@
 
 <main class="cultivation-page">
   <section class="cultivation-panel profile-panel">
-    <div class="profile-banner">
-      <%= image_tag @character.profile_image_name, alt: t("characters.show.profile_image_alt", gender: @character.gender_name), class: "profile-banner__image" %>
-    </div>
+    <%= render "shared/media_banner", image_name: @character.profile_image_name, alt: t("characters.show.profile_image_alt", gender: @character.gender_name), banner_class: "profile-banner", image_class: "profile-banner__image" %>
 
     <p class="eyebrow"><%= cultivation_icon(:mountain) %> <%= t("characters.show.eyebrow") %></p>
     <h1><%= @character.name %></h1>
