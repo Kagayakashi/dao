@@ -521,6 +521,7 @@ ru:
       gear_score: "Рейтинг снаряжения %{gear_score}"
       combat_stats_heading: "Боевые характеристики"
       achievements_heading: "Достижения"
+      attack_button: "Атаковать"
       no_achievements: "Достижений пока нет."
       equipment_heading: "Снаряжение"
       empty_equipment_slot: "Пусто"

@@ -36,6 +36,24 @@ class CharactersControllerTest < ActionDispatch::IntegrationTest
     assert_select "a", text: /Inventory/, count: 0
   end
 
+  test "shows attack button on other player's profile" do
+    sign_in_as(users(:one))
+
+    get character_path(users(:two).character, locale: :en)
+
+    assert_response :success
+    assert_select "form[action*='opponent_id'] button", "Attack"
+  end
+
+  test "does not show attack button on own profile" do
+    sign_in_as(users(:one))
+
+    get character_path(users(:one).character, locale: :en)
+
+    assert_response :success
+    assert_select "form button", text: "Attack", count: 0
+  end
+
   test "shows inventory link on own profile" do
     sign_in_as(users(:one))
 

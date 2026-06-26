@@ -522,6 +522,7 @@ en:
       current_health: "Health: %{current} / %{max}"
       combat_stats_heading: "Combat Stats"
       achievements_heading: "Achievements"
+      attack_button: "Attack"
       no_achievements: "No achievements yet."
       equipment_heading: "Equipment"
       empty_equipment_slot: "Empty"

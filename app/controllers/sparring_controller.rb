@@ -54,7 +54,8 @@ class SparringController < ApplicationController
   end
 
   def current_opponent
-    opponent = sparring_opponents.find_by(id: session[:sparring_opponent_id]) if session[:sparring_opponent_id]
+    opponent = sparring_opponents.find_by(id: params[:opponent_id]) if params[:opponent_id]
+    opponent ||= (sparring_opponents.find_by(id: session[:sparring_opponent_id]) if session[:sparring_opponent_id])
     opponent ||= random_opponent
     session[:sparring_opponent_id] = opponent.id if opponent
     opponent
