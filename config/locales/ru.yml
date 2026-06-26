@@ -20,13 +20,14 @@ ru:
   global_header:
     navigation_aria: "Статус культиватора"
     news: "Новости глашатая"
-    character_name: "Профиль персонажа"
-    realm: "Сфера"
-    star: "Звезда"
-    power: "Сила и инвентарь"
+    character_info: "Профиль персонажа"
+    name_and_realm: "%{name} | С%{realm} Зв%{star}"
+    health: "Здоровье"
+    health_value: "Зд %{current} / %{max}"
     gear_score: "Рейтинг снаряжения и инвентарь"
     currency: "Вэнь"
     donation_currency: "Лян"
+    expedition: "Духовная экспедиция"
     sparring_focus: "Сосредоточение для спарринга"
     sparring_timer: "Таймер восстановления спарринга"
 
@@ -317,7 +318,7 @@ ru:
     create:
       no_opponent: "Этот культиватор уже покинул двор."
       no_points: "Сосредоточение для спарринга закончилось. Отдохните перед новой атакой."
-      opponent_resting: "Этот культиватор отдыхает после недавнего обмена."
+      opponent_injured: "Этот культиватор слишком ранен для спарринга."
       expedition_active: "Ваш культиватор в духовной экспедиции. Вернитесь перед атакой."
     change_opponent:
       notice: "Другой культиватор вошел во двор."

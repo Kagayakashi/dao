@@ -31,6 +31,13 @@ module ApplicationHelper
     format("%02d:%02d", seconds / 60, seconds % 60)
   end
 
+  def expedition_countdown(character)
+    return unless character.spirit_expedition_active?
+
+    seconds = [ (character.spirit_expedition_ends_at - Time.current).ceil, 0 ].max
+    format("%02d:%02d", seconds / 3600, (seconds % 3600) / 60)
+  end
+
   def unread_news?(character)
     NewsPost.unread_by(character).exists?
   end

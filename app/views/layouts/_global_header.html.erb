@@ -4,19 +4,14 @@
       <%= cultivation_icon(:bell) %>
     <% end %>
 
-    <%= link_to character_path(character), class: "global-header__item", title: t("global_header.character_name"), aria: { label: t("global_header.character_name") } do %>
+    <%= link_to character_path(character), class: "global-header__item", title: t("global_header.character_info"), aria: { label: t("global_header.character_info") } do %>
       <%= cultivation_icon(:scroll) %>
-      <span><%= character.name %></span>
+      <span><%= t("global_header.name_and_realm", name: character.name, realm: character.realm, star: character.star) %></span>
     <% end %>
 
-    <%= link_to character_path(character), class: "global-header__item", title: t("global_header.realm"), aria: { label: t("global_header.realm") } do %>
-      <%= cultivation_icon(:mountain) %>
-      <span><%= character.realm %></span>
-    <% end %>
-
-    <%= link_to character_path(character), class: "global-header__item", title: t("global_header.star"), aria: { label: t("global_header.star") } do %>
-      <%= cultivation_icon(:star) %>
-      <span><%= character.star %></span>
+    <%= link_to character_path(character), class: "global-header__item", title: t("global_header.health"), aria: { label: t("global_header.health") } do %>
+      <%= cultivation_icon(:spark) %>
+      <span><%= t("global_header.health_value", current: number_with_delimiter(character.current_health_points), max: number_with_delimiter(character.health)) %></span>
     <% end %>
 
     <%= link_to inventory_path, class: "global-header__item", title: t("global_header.gear_score"), aria: { label: t("global_header.gear_score") } do %>
@@ -32,6 +27,13 @@
     <%= link_to spirit_expedition_path, class: "global-header__item", title: t("global_header.donation_currency"), aria: { label: t("global_header.donation_currency") } do %>
       <%= cultivation_icon(:jade) %>
       <span><%= number_with_delimiter(character.donation_currency) %></span>
+    <% end %>
+
+    <% if expedition_countdown(character) %>
+      <%= link_to spirit_expedition_path, class: "global-header__item", title: t("global_header.expedition"), aria: { label: t("global_header.expedition") } do %>
+        <%= cultivation_icon(:lantern) %>
+        <span><%= expedition_countdown(character) %></span>
+      <% end %>
     <% end %>
 
     <%= link_to sparring_path, class: "global-header__item", title: t("global_header.sparring_focus"), aria: { label: t("global_header.sparring_focus") } do %>

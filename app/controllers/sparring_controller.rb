@@ -10,13 +10,12 @@ class SparringController < ApplicationController
 
     opponent = current_opponent
     return redirect_to sparring_path, alert: t("sparring.create.no_opponent"), status: :see_other unless opponent
-    return redirect_to sparring_path, alert: t("sparring.create.opponent_resting"), status: :see_other unless opponent.available_for_sparring?
+    return redirect_to sparring_path, alert: t("sparring.create.opponent_injured"), status: :see_other unless opponent.available_for_sparring?
 
     unless @character.spend_sparring_point!
       return redirect_to sparring_path, alert: t("sparring.create.no_points"), status: :see_other
     end
 
-    # @character.recover_health!
     opponent.recover_health!
 
     result = Sparring::Match.new(
@@ -28,7 +27,6 @@ class SparringController < ApplicationController
     @character.apply_qi_delta!(result.fetch(:qi_delta))
     @event = create_event(result)
     create_related_event(result)
-    opponent.mark_sparring_unavailable!
     session.delete(:sparring_opponent_id)
 
     redirect_to sparring_path(result_event_id: @event.id), status: :see_other
@@ -67,7 +65,7 @@ class SparringController < ApplicationController
   end
 
   def sparring_opponents
-    Character.available_for_sparring.where.not(id: @character.id)
+    Character.where.not(id: @character.id)
   end
 
   def create_event(result)

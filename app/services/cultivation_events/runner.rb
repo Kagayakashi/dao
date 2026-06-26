@@ -20,7 +20,6 @@ module CultivationEvents
       character.apply_qi_delta!(result[:qi_delta])
       event = create_event(event_key, config, result)
       create_related_stranger_event(result) if event_key == :stranger_cultivator
-      set_related_sparring_cooldown(result) if event_key == :stranger_cultivator
       set_cooldown(event_key, config)
       set_global_cooldown
       event
@@ -88,7 +87,7 @@ module CultivationEvents
 
     def stranger_cultivator_result(config)
       outcome = forced_outcome || [ :peaceful, :fight ].sample(random: rng)
-      opponent = Character.available_for_sparring(now).where.not(id: character.id).order("RANDOM()").first
+      opponent = Character.where.not(id: character.id).order("RANDOM()").first
 
       return peaceful_stranger_result(config, opponent) if outcome == :peaceful || opponent.nil?
 
@@ -139,7 +138,7 @@ module CultivationEvents
       item = character.create_inventory_item!(
         name: item_name_key,
         equipment_kind:,
-        power_options: InventoryItems::PowerRoll.new(character, equipment_kind:, config:, rng:).call,
+        power_options: InventoryItems::PowerRoll.new(character, equipment_kind:, rng:).call,
         metadata: {}
       )
       return false unless item
@@ -207,12 +206,6 @@ module CultivationEvents
         related_character: character,
         happened_at: now
       )
-    end
-
-    def set_related_sparring_cooldown(result)
-      return unless %w[victory defeat].include?(result.fetch(:outcome))
-
-      result.fetch(:related_character)&.mark_sparring_unavailable!(at: now)
     end
 
     def related_stranger_outcome(outcome)

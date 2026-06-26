@@ -19,9 +19,9 @@ class ApplicationHelperTest < ActionView::TestCase
     character = characters(:one)
 
     travel_to Time.zone.local(2026, 6, 18, 12, 0, 0) do
-      character.update!(sparring_points: 2, sparring_recovered_at: 30.minutes.ago)
+      character.update!(sparring_points: 2, sparring_recovered_at: 5.minutes.ago)
 
-      assert_equal "30:00", sparring_recovery_countdown(character)
+      assert_equal "05:00", sparring_recovery_countdown(character)
     end
   end
 

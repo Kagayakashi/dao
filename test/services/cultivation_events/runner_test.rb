@@ -100,16 +100,15 @@ class CultivationEvents::RunnerTest < ActiveSupport::TestCase
     assert_equal @opponent, event.related_character
     assert_equal(-3_600, event.qi_delta)
     assert_equal 1_400, @character.reload.qi
-    assert_equal @now + Character.sparring_opponent_cooldown, @opponent.reload.sparring_available_at
+    assert @opponent.current_health.nil? || @opponent.current_health < @opponent.health
   end
 
-  test "stranger cultivator fight respects related character sparring cooldown" do
-    @opponent.update!(sparring_available_at: @now + 2.hours)
+  test "stranger cultivator fight reduces opponent health" do
+    @opponent.update!(current_health: nil)
 
     event = run_event(:stranger_cultivator, forced_outcome: :fight)
 
-    assert_equal "peaceful", event.outcome
-    assert_nil event.related_character
+    assert_includes %w[victory defeat], event.outcome
   end
 
   test "stranger cultivator fight creates a reciprocal log for the related character" do

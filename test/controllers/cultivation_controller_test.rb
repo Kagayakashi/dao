@@ -33,8 +33,8 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
     assert_select ".global-header a[href='#{inventory_path(locale: :en)}']", text: /#{character.gear_score}/
     assert_select ".global-header a[href='#{spirit_expedition_path(locale: :en)}'][title='Wen']", text: /12/
     assert_select ".global-header a[href='#{spirit_expedition_path(locale: :en)}'][title='Liang']", text: /5/
-    assert_select ".global-header a[href='#{sparring_path(locale: :en)}']", text: %r{2/3}
-    assert_select ".global-header a[href='#{sparring_path(locale: :en)}']", text: /\d{2}:\d{2}/
+    assert_select ".global-header a[href='#{sparring_path(locale: :en)}']", text: %r{3/3}
+    assert_select ".global-header a[href='#{sparring_path(locale: :en)}']", text: /00:00/
     assert_select "h1", "Jade River"
     assert_select ".realm-card", text: /Dou Practitioner/
     assert_select ".realm-card", text: /3 Star/
@@ -42,7 +42,7 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
     assert_select ".qi-progress__text", text: /Qi/
     assert_select ".screen-note", text: /Qi gathers/
     assert_select ".next-breakthrough", text: /Next breakthrough/
-    assert_select ".sparring-card", text: %r{2/3}
+    assert_select ".sparring-card", text: %r{3/3}
     assert_select ".daily-reward-card", text: /1,350 Qi/
     assert_select ".daily-reward-card a[href='#{temple_path(locale: :en)}']", "Temple of Heaven"
     assert_select ".quiet-nav", text: /Profile/

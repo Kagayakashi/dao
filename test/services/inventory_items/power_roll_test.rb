@@ -33,17 +33,6 @@ module InventoryItems
       end
     end
 
-    test "uses minimum power when calculated power is lower than minimum" do
-      character = users(:one).character
-      config = CultivationEvents::Registry.events.fetch(:found_equipment_item).merge(power_option_min: 200)
-      rng = FixedRng.new(values: [ 200, 1 ])
-
-      power_options = PowerRoll.new(character, equipment_kind: "weapon", config:, rng:).call
-
-      assert_equal({ "key" => "power", "value" => 200 }, power_options.first)
-      assert_equal 200..200, rng.ranges.first
-    end
-
     test "returns two distinct random stats for rings and pendants" do
       character = users(:one).character
       allowed_keys = %w[ power health defense evasion accuracy critical_rate ]

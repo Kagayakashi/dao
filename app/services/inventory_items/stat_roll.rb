@@ -6,8 +6,7 @@ module InventoryItems
         base_maximum: 25,
         step_maximum_multiplier: 1.08,
         step_minimum_overlap: 0.75,
-        decimals: 0,
-        minimum_config_key: :power_option_min
+        decimals: 0
       },
       health: {
         base_minimum: 60,
@@ -46,11 +45,9 @@ module InventoryItems
       }
     }.freeze
 
-    def initialize(character, stat_key:, config: {}, stat_configs: DEFAULT_CONFIGS, rng: Random)
+    def initialize(character, stat_key:, rng: Random)
       @character = character
       @stat_key = stat_key.to_sym
-      @config = config
-      @stat_configs = stat_configs
       @rng = rng
     end
 
@@ -64,14 +61,14 @@ module InventoryItems
 
     private
 
-    attr_reader :character, :stat_key, :config, :stat_configs, :rng
+    attr_reader :character, :stat_key, :rng
 
     def rolled_value
       round_value(rng.rand(range))
     end
 
     def minimum
-      [ calculated_minimum, configured_minimum ].compact.max
+      calculated_minimum
     end
 
     def maximum
@@ -92,15 +89,8 @@ module InventoryItems
       round_value(stat_config.fetch(:base_maximum) * (stat_config.fetch(:step_maximum_multiplier)**step))
     end
 
-    def configured_minimum
-      key = stat_config[:minimum_config_key]
-      return unless key
-
-      config[key]
-    end
-
     def stat_config
-      stat_configs.fetch(stat_key)
+      DEFAULT_CONFIGS.fetch(stat_key)
     end
 
     def cultivation_step

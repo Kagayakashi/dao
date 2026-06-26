@@ -29,8 +29,7 @@ class Character < ApplicationRecord
   class_attribute :health_recovery_interval, default: 10.minutes
   class_attribute :health_recovery_percent, default: 5
   class_attribute :max_sparring_points, default: 3
-  class_attribute :sparring_recovery_duration, default: 1.hour
-  class_attribute :sparring_opponent_cooldown, default: 3.hours
+  class_attribute :sparring_recovery_duration, default: 10.minutes
   class_attribute :daily_reward_base_qi, default: 1_000
   class_attribute :daily_reward_realm_bonus_qi, default: 250
   class_attribute :daily_reward_star_bonus_qi, default: 50
@@ -57,7 +56,7 @@ class Character < ApplicationRecord
   validates :sparring_recovered_at, presence: true
   validates :health_recovered_at, presence: true
 
-  scope :available_for_sparring, ->(at = Time.current) { where(sparring_available_at: nil).or(where(sparring_available_at: ..at)) }
+
 
   def qi_required_for_next_star
     (base_qi_required * (realm_qi_growth**(realm - 1)) * (star_qi_growth**(star - 1))).ceil
@@ -151,6 +150,13 @@ class Character < ApplicationRecord
     save!
   end
 
+  def clamp_current_health!
+    clamped = [ current_health_points, health ].min
+    return if current_health == clamped
+
+    update!(current_health: clamped)
+  end
+
   def combat_stats
     combat_stat_profile.to_h
   end
@@ -175,6 +181,8 @@ class Character < ApplicationRecord
     return false unless slot
 
     item.update!(inventory_slot: nil, equipment_slot: slot)
+    clamp_current_health!
+    true
   end
 
   def unequip_item!(item)
@@ -184,6 +192,8 @@ class Character < ApplicationRecord
     return false unless slot
 
     item.update!(equipment_slot: nil, inventory_slot: slot)
+    clamp_current_health!
+    true
   end
 
   def create_inventory_item!(name:, equipment_kind:, power_options:, metadata: {})
@@ -366,12 +376,8 @@ class Character < ApplicationRecord
     sparring_recovered_at + sparring_recovery_duration
   end
 
-  def available_for_sparring?(at: Time.current)
-    sparring_available_at.blank? || sparring_available_at <= at
-  end
-
-  def mark_sparring_unavailable!(at: Time.current)
-    update!(sparring_available_at: at + sparring_opponent_cooldown)
+  def available_for_sparring?
+    current_health_points * 100 > health * 25
   end
 
   def daily_reward_ready?(at: Time.current)

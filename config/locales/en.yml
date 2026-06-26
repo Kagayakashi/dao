@@ -20,13 +20,14 @@ en:
   global_header:
     navigation_aria: "Cultivator status"
     news: "Crier news"
-    character_name: "Character profile"
-    realm: "Realm"
-    star: "Star"
-    power: "Power and inventory"
+    character_info: "Character profile"
+    name_and_realm: "%{name} | R%{realm} S%{star}"
+    health: "Health"
+    health_value: "HP %{current} / %{max}"
     gear_score: "GearScore and inventory"
     currency: "Wen"
     donation_currency: "Liang"
+    expedition: "Spirit Expedition"
     sparring_focus: "Sparring Focus"
     sparring_timer: "Sparring Focus recovery timer"
 
@@ -317,7 +318,7 @@ en:
     create:
       no_opponent: "That cultivator has already left the courtyard."
       no_points: "Your sparring focus is empty. Rest before attacking again."
-      opponent_resting: "That cultivator is resting after a recent exchange."
+      opponent_injured: "This cultivator is too injured to spar."
       expedition_active: "Your cultivator is away on a Spirit Expedition. Return before attacking."
     change_opponent:
       notice: "Another cultivator stepped into the courtyard."

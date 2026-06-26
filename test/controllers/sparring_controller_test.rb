@@ -90,7 +90,7 @@ class SparringControllerTest < ActionDispatch::IntegrationTest
     character.reload
     assert_equal 2, character.sparring_points
     assert_includes [ 0, 3_600 ], character.qi
-    assert_operator opponent.reload.sparring_available_at, :>, Time.current + 2.hours
+    assert_operator opponent.reload.current_health, :<, opponent.health
     event = character.game_events.order(:created_at).last
     assert_includes %w[victory defeat], event.outcome
     assert event.metadata.key?("damage_done")
@@ -106,9 +106,10 @@ class SparringControllerTest < ActionDispatch::IntegrationTest
     user = users(:one)
     character = user.character
     opponent = users(:two).character
+    opponent.update!(realm: 1, star: 1)
     character.update!(sparring_points: 3, sparring_recovered_at: Time.current)
-    recovered_from = 1.hour.ago
-    opponent.update!(current_health: 1, health_recovered_at: recovered_from)
+    recovered_from = 10.minutes.ago
+    opponent.update!(current_health: (opponent.health * 25 / 100) + 1, health_recovered_at: recovered_from)
     sign_in_as(user)
 
     post sparring_path(locale: :en), params: { opponent_id: opponent.id }
@@ -116,17 +117,22 @@ class SparringControllerTest < ActionDispatch::IntegrationTest
     assert_operator opponent.reload.health_recovered_at, :>, recovered_from
   end
 
-  test "does not show opponent during global sparring cooldown" do
+  test "does not show opponent with low health" do
     user = users(:one)
     opponent = users(:two).character
-    opponent.update!(sparring_available_at: 2.hours.from_now)
+    opponent.update!(current_health: 1, health_recovered_at: Time.current)
     sign_in_as(user)
 
     get sparring_path(locale: :en)
 
     assert_response :success
-    assert_select ".empty-state", text: /No other cultivator/
-    assert_select "#sparring-opponent-heading", false
+    assert_select "#sparring-opponent-heading"
+    assert_select "form button", "Attack"
+
+    post sparring_path(locale: :en), params: { opponent_id: opponent.id }
+    follow_redirect!
+
+    assert_select ".form-alert", text: /too injured/
   end
 
   test "does not resolve without sparring focus" do
