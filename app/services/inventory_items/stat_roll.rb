@@ -71,7 +71,8 @@ module InventoryItems
     end
 
     def minimum
-      [ calculated_minimum, configured_minimum ].compact.max
+      # power_option_min
+      [ calculated_minimum ].compact.max
     end
 
     def maximum
