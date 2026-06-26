@@ -317,7 +317,7 @@ en:
       banner_alt: "Sparring courtyard"
       screen_note: "A nearby cultivator is chosen from the city crowd. Spar once to resolve the exchange instantly."
       opponent_heading: "Sparring Opponent"
-      spare_button: "Spare"
+      spare_button: "Attack"
       change_opponent_button: "Change Cultivator"
       no_opponent: "No other cultivator is near the courtyard yet."
       navigation_aria: "Sparring navigation"

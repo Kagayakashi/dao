@@ -13,7 +13,7 @@ class SparringControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", "Sparring"
     assert_select ".sparring-card", text: %r{3/3}
     assert_select "#sparring-opponent-heading", text: /Sparring Opponent/
-    assert_select "form button", "Spare"
+    assert_select "form button", "Attack"
     assert_select "form button", "Change Cultivator"
   end
 
