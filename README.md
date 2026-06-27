@@ -1,60 +1,139 @@
-# DooGame
+# Dao
 
-DooGame is a small **browser-based Idle RPG** inspired by Chinese cultivation fantasy stories (*xianxia*), especially worlds similar to *Battle Through The Heavens*.
+Dao is a small browser-based idle RPG built with Ruby on Rails. The game has a calm Chinese cultivator / xianxia theme: one character slowly gathers Qi over real time, returns later, and performs manual Breakthroughs to grow through Stars and Realms.
 
-The project was created as a **technical experiment** and a way to explore how an idle game can be built using modern Ruby on Rails tools.
+The project is an MVP focused on readable idle progression, small meaningful choices, and long-term character growth rather than a dense MMO-style interface.
 
-The main goal was not to build a full game, but to experiment with game mechanics, backend logic, and frontend tools while creating a working MVP.
+## Gameplay Overview
 
-## What Was Implemented
+The core loop is simple:
 
-The MVP includes several core idle game systems:
+* Qi accumulates passively while the player is online or away.
+* The player spends accumulated Qi by manually performing a Breakthrough.
+* Each Breakthrough advances exactly one Star.
+* After Star 9, the next Breakthrough advances the character to the next Realm and returns them to Star 1.
+* Overflow Qi is preserved, but a random portion of overflow can be lost during Breakthrough.
+* Progression is intentionally slow and idle-friendly, with early Realms taking about a day and later Realms taking much longer at the base rate.
 
-* Passive **offline Qi generation** (experience gained while away)
-* **Dual progression system** — characters gain **Qi** (experience) over time, Qi is used to increase **Stars** (sub-levels), and after reaching enough Stars the player can attempt to advance to the next **Realm** (main level)
-* Manual **Breakthrough** system with success/failure chance
-* Risk of losing Qi during failed breakthroughs
-* Random world events with positive or negative outcomes
-* Random **PvP encounters** between players
-* Random item discovery events
-* Basic equipment system
-* Long-term idle progression system — progression is intentionally slow, with early cultivation Realms taking around **24 days** to complete, while higher stages can take **months**, focusing on long-term character growth rather than fast progression
+The dashboard stays focused on cultivation state, recent events, and the next Breakthrough. More management-heavy actions live on separate Adventure, Inventory, Event Log, and profile pages.
 
-## Purpose of This Project
+## Core Mechanics
 
-This project was mainly built to experiment with:
+### Cultivation
 
-* Building an **Idle RPG** gameplay loop
-* Working with **Hotwire**
-* Practicing Ruby on Rails architecture
-* Testing service objects and domain logic
-* Trying browser-based game mechanics in Rails
+Each character has:
 
-The idea was to quickly build a playable MVP and understand how these systems feel in practice.
+* **Qi**: experience used for Breakthroughs.
+* **Realm**: the main cultivation level.
+* **Star**: the sublevel within the current Realm.
+* **Power**: combat and equipment strength.
+* **Wen**: common currency.
+* **Liang**: rarer premium-style currency earned through limited gameplay sources.
+
+Qi is generated from elapsed real time. Gaining enough Qi does not advance the character automatically; the player must return and choose Breakthrough manually.
+
+### Breakthroughs
+
+Breakthroughs are deterministic advancement actions, not chance-based success checks. If the character has enough Qi for the next Star, a Breakthrough advances one Star and applies the configured overflow Qi loss. This preserves the idle game rhythm while keeping the main progression choice manual.
+
+### Random Events
+
+While cultivating, characters can encounter random events such as:
+
+* Finding a good cultivation place.
+* Discovering mysterious items.
+* Meeting a stranger cultivator.
+* Finding equipment.
+
+Events can grant Qi, create inventory items, or record story moments in the Event Log. Event text is localized and stored through keys instead of persisted display strings.
+
+### Adventures
+
+The Adventure hub contains side activities outside the main dashboard:
+
+* **Temple of Heaven**: claim a daily Qi reward.
+* **Sparring**: spend focus to fight opponents and earn rewards.
+* **Spirit Expedition**: send the character away for 1, 4, 12, or 24 hours to return with Qi and Wen.
+* **Artifact Refinement Hall**: reroll an item's Power options using Wen or Liang.
+* **Crier**: read news and announcements.
+
+Spirit Expeditions pause passive cultivation and personal random events while active. Longer expeditions are reduced by 25%, and short expeditions have a small chance to reward Liang.
+
+### Inventory And Equipment
+
+Characters can find and manage equipment. Current equipment kinds include:
+
+* Weapon
+* Ring
+* Pendant
+
+Equipment can be stored in inventory or equipped in available slots. Equipped item Power contributes to total character Power. Item Power options are generated through the same item power roll system used by random drops and admin grants.
+
+### Events, Profiles, And Leaderboard
+
+The game keeps an Event Log for cultivation, sparring, expeditions, refinements, and random discoveries. Public character profiles show basic character info, achievements, and equipped items. The Leaderboard ranks characters by total Qi, then Realm and Star.
+
+## Implemented MVP Features
+
+* Passive online and offline Qi generation.
+* Manual Star and Realm progression through Breakthroughs.
+* Overflow Qi preservation with configured overflow loss.
+* Random cultivation events.
+* Daily reward at the Temple of Heaven.
+* Sparring encounters.
+* Timed Spirit Expeditions.
+* Inventory and equipment management.
+* Artifact refinement and item Power rerolls.
+* Achievements.
+* Public profiles and Leaderboard.
+* Event Log and short dashboard Recent Events.
+* News/Crier page.
+* User registration, temporary onboarding, sessions, and profile completion.
+* Admin tools for item grants, Qi adjustments, news posts, and dashboard navigation.
+* English and Russian localization.
 
 ## Tech Stack
 
-* Ruby
-* Ruby on Rails
-* Hotwire
+* Ruby 4.0.1
+* Ruby on Rails 8.1
 * SQLite
-* HTML / CSS / JavaScript
+* Hotwire: Turbo and Stimulus
+* Importmap
+* Minitest
+* RuboCop, Brakeman, bundler-audit, and importmap audit through `bin/ci`
+
+## Running Locally
+
+Install dependencies and prepare the app:
+
+```sh
+bin/setup --skip-server
+```
+
+Start the development server:
+
+```sh
+bin/dev
+```
+
+Run focused tests:
+
+```sh
+bin/rails test path/to/test.rb
+```
+
+Run full verification:
+
+```sh
+bin/ci
+```
 
 ## Project Status
 
-Project is **finished in MVP state**.
-
-There are currently **no plans to continue development**.
-
-The main objective was achieved:
-
-* build a small playable idle game
-* test Rails tools in practice
-* experiment with game-oriented architecture
-
-This repository stays as a completed experiment and learning project.
+Dao is a playable MVP and technical experiment. The main goal is to explore idle RPG mechanics, Rails domain modeling, Hotwire interactions, localization, and small modular gameplay systems.
 
 ## Screenshots
+
 * Home page
 
 <img width="593" height="1311" alt="image_2026-06-21_12-04-37" src="https://github.com/user-attachments/assets/0faeffe5-2942-42ac-815e-eecc0987a583" />
