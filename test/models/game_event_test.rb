@@ -57,6 +57,20 @@ class GameEventTest < ActiveSupport::TestCase
     assert_nil neutral_event.localized_qi_delta
   end
 
+  test "formats qi delta with bonus metadata" do
+    event = characters(:one).game_events.create!(
+      event_key: "good_cultivation_place",
+      outcome: "positive",
+      title: "cultivation_events.good_cultivation_place.title",
+      description: "cultivation_events.good_cultivation_place.description",
+      metadata: { "qi" => 3_728, "base_qi" => 3_600, "qi_bonus" => 128 },
+      qi_delta: 3_728,
+      happened_at: Time.current
+    )
+
+    assert_equal "+3,600 (+128) Qi", event.localized_qi_delta
+  end
+
   test "localizes equipment item names from stored event metadata" do
     event = characters(:one).game_events.create!(
       event_key: "found_equipment_item",
@@ -165,13 +179,13 @@ class GameEventTest < ActiveSupport::TestCase
       outcome: "positive",
       title: "spirit_expeditions.events.title",
       description: "spirit_expeditions.events.description",
-      metadata: { "hours" => 4, "wen" => 80 },
-      qi_delta: 0,
+      metadata: { "hours" => 4, "qi" => 21_600, "base_qi" => 21_600, "qi_bonus" => 0, "wen" => 80, "base_wen" => 80, "wen_bonus" => 0 },
+      qi_delta: 21_600,
       happened_at: Time.current
     )
 
     assert_equal "Spirit Expedition", event.localized_title
-    assert_equal "Returned from a 4h Spirit Expedition with 80 Wen.", event.localized_description
+    assert_equal "Returned from a 4h Spirit Expedition with 21,600 Qi and 80 Wen.", event.localized_description
   end
 
   test "localizes meridian opening event metadata" do

@@ -315,7 +315,7 @@ ru:
       passive_bonus: "+%{bonus}% к %{name}"
       actions_heading: "Обязанности секты"
       daily_task_heading: "Ежедневное задание секты"
-      daily_task_reward: "Награда: %{qi_hours}ч Ци, %{wen} Вэнь и %{contribution} вклада."
+      daily_task_reward: "Награда: %{qi} Ци, %{wen} Вэнь и %{contribution} вклада."
       task_button: "Выполнить задание секты"
       next_task: "Следующее задание секты через %{duration}."
       donation_heading: "Пожертвование вклада"
@@ -499,7 +499,7 @@ ru:
         unavailable: "Принесите 1 Лян или дождитесь естественного завершения духовной экспедиции."
     events:
       title: "Духовная экспедиция"
-      description: "Вы вернулись из духовной экспедиции на %{hours} ч и получили %{wen} Вэнь."
+      description: "Вы вернулись из духовной экспедиции на %{hours} ч и получили %{qi} Ци и %{wen} Вэнь."
     create:
       notice:
         started: "Духовная экспедиция началась на %{hours} ч."

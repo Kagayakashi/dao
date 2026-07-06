@@ -69,7 +69,7 @@ class CultivationEvents::RunnerTest < ActiveSupport::TestCase
 
     assert_equal "cultivation_events.mysterious_item.title", event.title
     assert_equal "cultivation_events.mysterious_item.positive_description", event.description
-    assert_equal({ "item_name_key" => "jade_pill" }, event.metadata)
+    assert_equal({ "item_name_key" => "jade_pill", "qi" => 3_600, "base_qi" => 3_600, "qi_bonus" => 0 }, event.metadata)
 
     I18n.with_locale(:ru) do
       assert_equal "Таинственный предмет", event.localized_title
@@ -83,6 +83,16 @@ class CultivationEvents::RunnerTest < ActiveSupport::TestCase
     assert_equal "negative", event.outcome
     assert_equal(-10_800, event.qi_delta)
     assert_equal 0, @character.reload.qi
+  end
+
+  test "positive qi events use qi gain bonuses and store bonus metadata" do
+    @character.update!(sect_key: "azure_cloud")
+
+    event = run_event(:good_cultivation_place)
+
+    assert_equal 3_708, event.qi_delta
+    assert_equal 8_708, @character.reload.qi
+    assert_equal({ "qi" => 3_708, "base_qi" => 3_600, "qi_bonus" => 108 }, event.metadata)
   end
 
   test "mysterious item can be neutral" do

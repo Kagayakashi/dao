@@ -12,9 +12,10 @@
     <%= tag.div(flash[:notice], class: "form-notice") if flash[:notice] %>
     <%= tag.div(t("temples.show.expedition_locked"), class: "form-alert") if @character.spirit_expedition_active? %>
 
+    <% daily_reward = @character.daily_reward_breakdown %>
     <div class="realm-card daily-reward-card">
       <span class="realm-label"><%= cultivation_icon(:qi) %> <%= t("temples.show.reward_heading") %></span>
-      <strong><%= t("temples.show.reward_amount", qi: number_with_delimiter(@character.daily_reward_qi)) %></strong>
+      <strong><%= t("temples.show.reward_amount", qi: resource_amount_with_bonus(base: daily_reward[:base], bonus: daily_reward[:bonus])) %></strong>
       <span><%= t("temples.show.reward_scaling", realm: @character.realm_name, star: @character.star) %></span>
     </div>
 

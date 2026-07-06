@@ -315,7 +315,7 @@ en:
       passive_bonus: "+%{bonus}% %{name}"
       actions_heading: "Sect Duties"
       daily_task_heading: "Daily Sect Task"
-      daily_task_reward: "Reward: %{qi_hours}h of Qi, %{wen} Wen, and %{contribution} contribution."
+      daily_task_reward: "Reward: %{qi} Qi, %{wen} Wen, and %{contribution} contribution."
       task_button: "Perform Sect Task"
       next_task: "Next sect task in %{duration}."
       donation_heading: "Contribution Donation"
@@ -499,7 +499,7 @@ en:
         unavailable: "Bring 1 Liang, or wait until the Spirit Expedition ends naturally."
     events:
       title: "Spirit Expedition"
-      description: "Returned from a %{hours}h Spirit Expedition with %{wen} Wen."
+      description: "Returned from a %{hours}h Spirit Expedition with %{qi} Qi and %{wen} Wen."
     create:
       notice:
         started: "Spirit Expedition started for %{hours}h."

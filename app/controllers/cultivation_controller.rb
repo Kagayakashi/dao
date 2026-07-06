@@ -30,6 +30,6 @@ class CultivationController < ApplicationController
   def breakthrough_notice(result)
     return t("cultivation.breakthrough.notice.complete") if result[:lost_qi].zero?
 
-    t("cultivation.breakthrough.notice.unstable_qi_dispersed", qi: helpers.number_with_delimiter(result[:lost_qi]))
+    t("cultivation.breakthrough.notice.unstable_qi_dispersed", qi: helpers.resource_amount_with_bonus(base: result[:lost_qi], bonus: result[:preserved_qi]))
   end
 end

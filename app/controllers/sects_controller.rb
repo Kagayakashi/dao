@@ -32,7 +32,7 @@ class SectsController < ApplicationController
     result = @character.perform_sect_daily_task!
 
     if result
-      redirect_to sect_path, notice: t("sects.task.notice.completed", qi: helpers.number_with_delimiter(result[:qi]), wen: helpers.number_with_delimiter(result[:wen]), contribution: helpers.number_with_delimiter(result[:contribution])), status: :see_other
+      redirect_to sect_path, notice: t("sects.task.notice.completed", qi: helpers.resource_amount_with_bonus(base: result[:base_qi], bonus: result[:qi_bonus]), wen: helpers.resource_amount_with_bonus(base: result[:base_wen], bonus: result[:wen_bonus]), contribution: helpers.number_with_delimiter(result[:contribution])), status: :see_other
     else
       redirect_to sect_path, alert: t("sects.task.alert.unavailable"), status: :see_other
     end

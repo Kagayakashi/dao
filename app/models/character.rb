@@ -278,6 +278,14 @@ class Character < ApplicationRecord
     gained_qi
   end
 
+  def qi_reward_breakdown(base_amount)
+    reward_breakdown(base_amount, :qi_gain)
+  end
+
+  def wen_reward_breakdown(base_amount)
+    reward_breakdown(base_amount, :wen_gain)
+  end
+
   def apply_qi_delta!(qi_delta)
     if qi_delta.positive?
       gain_qi(qi_delta, multiplier: 1.0)
@@ -375,8 +383,10 @@ class Character < ApplicationRecord
   def perform_sect_daily_task!(at: Time.current)
     return false unless sect_daily_task_ready?(at:)
 
-    gained_qi = (base_qi_per_second * SECT_DAILY_TASK_QI_HOURS.hours.to_i).floor
-    gained_wen = (SECT_DAILY_TASK_WEN * active_meridian_multiplier(:wen_gain)).floor
+    qi_reward = qi_reward_breakdown((base_qi_per_second * SECT_DAILY_TASK_QI_HOURS.hours.to_i).floor)
+    wen_reward = wen_reward_breakdown(SECT_DAILY_TASK_WEN)
+    gained_qi = qi_reward.fetch(:total)
+    gained_wen = wen_reward.fetch(:total)
 
     transaction do
       gain_qi(gained_qi, multiplier: 1.0)
@@ -384,10 +394,10 @@ class Character < ApplicationRecord
       self.sect_contribution += SECT_DAILY_TASK_CONTRIBUTION
       self.sect_task_completed_at = at
       save!
-      create_sect_event!("daily_task", metadata: { "sect_key" => sect_key, "contribution" => SECT_DAILY_TASK_CONTRIBUTION, "qi" => gained_qi, "wen" => gained_wen }, qi_delta: gained_qi)
+      create_sect_event!("daily_task", metadata: { "sect_key" => sect_key, "contribution" => SECT_DAILY_TASK_CONTRIBUTION, "qi" => gained_qi, "base_qi" => qi_reward.fetch(:base), "qi_bonus" => qi_reward.fetch(:bonus), "wen" => gained_wen, "base_wen" => wen_reward.fetch(:base), "wen_bonus" => wen_reward.fetch(:bonus) }, qi_delta: gained_qi)
     end
 
-    { qi: gained_qi, wen: gained_wen, contribution: SECT_DAILY_TASK_CONTRIBUTION }
+    { qi: gained_qi, base_qi: qi_reward.fetch(:base), qi_bonus: qi_reward.fetch(:bonus), wen: gained_wen, base_wen: wen_reward.fetch(:base), wen_bonus: wen_reward.fetch(:bonus), contribution: SECT_DAILY_TASK_CONTRIBUTION }
   end
 
   def donate_to_sect!(amount: 1)
@@ -434,9 +444,13 @@ class Character < ApplicationRecord
     return false unless ready_for_breakthrough?
 
     self.qi -= qi_required_for_next_star
-    loss_percent ||= rand(breakthrough_overflow_loss_range)
-    loss_percent = [ loss_percent - meridian_stat_bonus(:breakthrough_stability), 0 ].max
+    original_loss_percent = loss_percent || rand(breakthrough_overflow_loss_range)
+    stability_bonus = meridian_stat_bonus(:breakthrough_stability)
+    loss_percent = [ original_loss_percent - stability_bonus, 0 ].max
+    unstable_qi = qi
+    base_lost_qi = breakthrough_overflow_loss(original_loss_percent)
     lost_qi = breakthrough_overflow_loss(loss_percent)
+    preserved_qi = [ base_lost_qi - lost_qi, unstable_qi ].min
     self.qi -= lost_qi
     self.total_experience = [ total_experience - lost_qi, 0 ].max
     self.star += 1
@@ -448,7 +462,7 @@ class Character < ApplicationRecord
 
     award_earned_achievements if persisted?
     save!
-    { lost_qi:, loss_percent: }
+    { lost_qi:, base_lost_qi:, preserved_qi:, loss_percent:, original_loss_percent: }
   end
 
   def earned_achievement_details
@@ -491,10 +505,26 @@ class Character < ApplicationRecord
     duration_multiplier * active_meridian_multiplier(:expedition_reward)
   end
 
-  def spirit_expedition_estimated_qi_reward(hours)
-    multiplier = hours.to_i <= 1 ? 1.0 : spirit_expedition_extended_reward_multiplier
+  def spirit_expedition_base_reward_multiplier(hours)
+    hours.to_i <= 1 ? 1.0 : spirit_expedition_extended_reward_multiplier
+  end
 
-    (base_qi_per_second * hours.to_i.hours.to_i * multiplier * active_meridian_multiplier(:expedition_reward)).floor
+  def spirit_expedition_qi_reward_breakdown(hours)
+    base = (base_qi_per_second * hours.to_i.hours.to_i * spirit_expedition_base_reward_multiplier(hours)).floor
+
+    reward_breakdown(base, :expedition_reward)
+  end
+
+  def spirit_expedition_wen_reward_breakdown(hours, wen_per_hour)
+    base = (wen_per_hour * hours.to_i * spirit_expedition_base_reward_multiplier(hours)).floor
+    expedition_total = (base * active_meridian_multiplier(:expedition_reward)).floor
+    total = (expedition_total * active_meridian_multiplier(:wen_gain)).floor
+
+    { base:, bonus: total - base, total: }
+  end
+
+  def spirit_expedition_estimated_qi_reward(hours)
+    spirit_expedition_qi_reward_breakdown(hours).fetch(:total)
   end
 
   def start_spirit_expedition!(hours:, at: Time.current)
@@ -516,9 +546,10 @@ class Character < ApplicationRecord
     return false if spirit_expedition_active?(at:)
 
     hours = spirit_expedition_duration_hours
-    multiplier = spirit_expedition_reward_multiplier
-    gained_qi = spirit_expedition_estimated_qi_reward(hours)
-    gained_wen = ((wen_per_hour || rand(spirit_expedition_wen_reward_range)) * hours * multiplier * active_meridian_multiplier(:wen_gain)).floor
+    qi_reward = spirit_expedition_qi_reward_breakdown(hours)
+    wen_reward = spirit_expedition_wen_reward_breakdown(hours, wen_per_hour || rand(spirit_expedition_wen_reward_range))
+    gained_qi = qi_reward.fetch(:total)
+    gained_wen = wen_reward.fetch(:total)
     donation_currency_roll ||= rand
     gained_donation_currency = hours.to_i == 1 && donation_currency_roll < spirit_expedition_donation_currency_chance ? 1 : 0
 
@@ -532,10 +563,10 @@ class Character < ApplicationRecord
 
     transaction do
       save!
-      create_spirit_expedition_event!(hours:, wen: gained_wen)
+      create_spirit_expedition_event!(hours:, qi_reward:, wen_reward:)
     end
 
-    { qi: gained_qi, wen: gained_wen, donation_currency: gained_donation_currency }
+    { qi: gained_qi, base_qi: qi_reward.fetch(:base), qi_bonus: qi_reward.fetch(:bonus), wen: gained_wen, base_wen: wen_reward.fetch(:base), wen_bonus: wen_reward.fetch(:bonus), donation_currency: gained_donation_currency }
   end
 
   def complete_spirit_expedition_now!(at: Time.current)
@@ -547,14 +578,14 @@ class Character < ApplicationRecord
     complete_spirit_expedition!(at:)
   end
 
-  def create_spirit_expedition_event!(hours:, wen:)
+  def create_spirit_expedition_event!(hours:, qi_reward:, wen_reward:)
     game_events.create!(
       event_key: "spirit_expedition",
       outcome: "positive",
       title: "spirit_expeditions.events.title",
       description: "spirit_expeditions.events.description",
-      metadata: { "hours" => hours, "wen" => wen },
-      qi_delta: 0,
+      metadata: { "hours" => hours, "qi" => qi_reward.fetch(:total), "base_qi" => qi_reward.fetch(:base), "qi_bonus" => qi_reward.fetch(:bonus), "wen" => wen_reward.fetch(:total), "base_wen" => wen_reward.fetch(:base), "wen_bonus" => wen_reward.fetch(:bonus) },
+      qi_delta: qi_reward.fetch(:total),
       happened_at: Time.current
     )
   end
@@ -617,6 +648,10 @@ class Character < ApplicationRecord
     daily_reward_base_qi + ((realm - 1) * daily_reward_realm_bonus_qi) + ((star - 1) * daily_reward_star_bonus_qi)
   end
 
+  def daily_reward_breakdown
+    qi_reward_breakdown(daily_reward_qi)
+  end
+
   def daily_reward_available_at(at: Time.current)
     return at unless daily_reward_claimed_at
 
@@ -626,7 +661,7 @@ class Character < ApplicationRecord
   def claim_daily_reward!(at: Time.current)
     return false unless daily_reward_ready?(at:)
 
-    gained_qi = gain_qi(daily_reward_qi, multiplier: 1.0)
+    gained_qi = gain_qi(daily_reward_breakdown.fetch(:total), multiplier: 1.0)
     self.daily_reward_claimed_at = at
     save!
     gained_qi
@@ -705,6 +740,13 @@ class Character < ApplicationRecord
 
   def effective_cultivation_multiplier
     cultivation_multiplier * active_meridian_multiplier(:qi_gain)
+  end
+
+  def reward_breakdown(base_amount, stat_key)
+    base = base_amount.to_i
+    total = (base * active_meridian_multiplier(stat_key)).floor
+
+    { base:, bonus: total - base, total: }
   end
 
   def active_character_meridians

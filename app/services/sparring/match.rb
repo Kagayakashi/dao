@@ -29,14 +29,16 @@ module Sparring
       challenger_won = winner == challenger
       persist_health!
 
+      qi_reward = challenger.qi_reward_breakdown(qi_for_hours(challenger_won ? victory_qi_hours : defeat_qi_hours))
+
       {
         outcome: challenger_won ? "victory" : "defeat",
         reciprocal_outcome: challenger_won ? "defeat" : "victory",
-        qi_delta: qi_for_hours(challenger_won ? victory_qi_hours : defeat_qi_hours),
+        qi_delta: qi_reward.fetch(:total),
         related_character: opponent,
         description: description_key(challenger_won),
         reciprocal_description: description_key(!challenger_won),
-        metadata: metadata_for(challenger, opponent),
+        metadata: metadata_for(challenger, opponent).merge(reward_metadata(qi_reward)),
         reciprocal_metadata: metadata_for(opponent, challenger)
       }
     end
@@ -118,6 +120,12 @@ module Sparring
         "opponent_health_remaining" => health_remaining.fetch(rival),
         "combat_log" => combat_log_for(owner, rival)
       }
+    end
+
+    def reward_metadata(qi_reward)
+      return {} if qi_reward.fetch(:total).zero?
+
+      { "qi" => qi_reward.fetch(:total), "base_qi" => qi_reward.fetch(:base), "qi_bonus" => qi_reward.fetch(:bonus) }
     end
 
     def combat_log_entry(attacker, result, damage)

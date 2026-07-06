@@ -25,7 +25,9 @@
         <ul class="action-list">
           <li class="action-card">
             <strong><%= t("sects.show.daily_task_heading") %></strong>
-            <p><%= t("sects.show.daily_task_reward", qi_hours: Character::SECT_DAILY_TASK_QI_HOURS, wen: Character::SECT_DAILY_TASK_WEN, contribution: Character::SECT_DAILY_TASK_CONTRIBUTION) %></p>
+            <% sect_task_qi = @character.qi_reward_breakdown((Character.base_qi_per_second * Character::SECT_DAILY_TASK_QI_HOURS.hours.to_i).floor) %>
+            <% sect_task_wen = @character.wen_reward_breakdown(Character::SECT_DAILY_TASK_WEN) %>
+            <p><%= t("sects.show.daily_task_reward", qi: resource_amount_with_bonus(base: sect_task_qi[:base], bonus: sect_task_qi[:bonus]), wen: resource_amount_with_bonus(base: sect_task_wen[:base], bonus: sect_task_wen[:bonus]), contribution: Character::SECT_DAILY_TASK_CONTRIBUTION) %></p>
             <% if @character.sect_daily_task_ready? %>
               <%= button_to t("sects.show.task_button"), task_sect_path, class: "ceremonial-button", disabled: @character.spirit_expedition_active? %>
             <% else %>

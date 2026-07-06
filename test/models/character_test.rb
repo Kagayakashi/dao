@@ -383,9 +383,9 @@ class CharacterTest < ActiveSupport::TestCase
 
     result = @character.perform_sect_daily_task!
 
-    assert_equal({ qi: 14_400, wen: 100, contribution: 100 }, result)
-    assert_equal 14_400, @character.qi
-    assert_equal 14_400, @character.total_experience
+    assert_equal({ qi: 14_832, base_qi: 14_400, qi_bonus: 432, wen: 100, base_wen: 100, wen_bonus: 0, contribution: 100 }, result)
+    assert_equal 14_832, @character.qi
+    assert_equal 14_832, @character.total_experience
     assert_equal 100, @character.currency
     assert_equal 100, @character.sect_contribution
   end
@@ -421,6 +421,17 @@ class CharacterTest < ActiveSupport::TestCase
     assert_equal 180, @character.qi
     assert_equal 180, @character.total_experience
     assert_equal now, @character.last_online
+  end
+
+  test "offline qi does not use qi gain bonuses" do
+    last_online = Time.zone.local(2026, 6, 18, 8, 0, 0)
+    now = last_online + 90.seconds
+    @character.update!(last_online: last_online, sect_key: "azure_cloud")
+
+    gained_qi = @character.cultivate_offline!(at: now)
+
+    assert_equal 180, gained_qi
+    assert_equal 180, @character.reload.qi
   end
 
   test "admin qi adjustment recalculates multiple stars upward" do
@@ -521,6 +532,17 @@ class CharacterTest < ActiveSupport::TestCase
     assert_equal now, @character.daily_reward_claimed_at
   end
 
+  test "daily reward uses qi gain bonuses" do
+    now = Time.zone.local(2026, 6, 18, 12, 0, 0)
+    @character.update!(realm: 2, star: 3, sect_key: "azure_cloud")
+
+    gained_qi = @character.claim_daily_reward!(at: now)
+
+    assert_equal({ base: 1_350, bonus: 40, total: 1_390 }, @character.daily_reward_breakdown)
+    assert_equal 1_390, gained_qi
+    assert_equal 1_390, @character.reload.qi
+  end
+
   test "daily reward scales by realm and star" do
     @character.update!(realm: 3, star: 4)
 
@@ -566,7 +588,7 @@ class CharacterTest < ActiveSupport::TestCase
     result = @character.complete_spirit_expedition!(at: now + 1.hour, wen_per_hour: 80, donation_currency_roll: 0.99)
 
     @character.reload
-    assert_equal({ qi: 7_200, wen: 80, donation_currency: 0 }, result)
+    assert_equal({ qi: 7_200, base_qi: 7_200, qi_bonus: 0, wen: 80, base_wen: 80, wen_bonus: 0, donation_currency: 0 }, result)
     assert_equal 7_200, @character.qi
     assert_equal 7_200, @character.total_experience
     assert_equal 80, @character.currency
@@ -575,6 +597,7 @@ class CharacterTest < ActiveSupport::TestCase
     event = @character.game_events.order(:created_at).last
     assert_equal "spirit_expedition", event.event_key
     assert_equal 1, event.metadata.fetch("hours")
+    assert_equal 7_200, event.metadata.fetch("base_qi")
     assert_equal 80, event.metadata.fetch("wen")
   end
 
@@ -585,7 +608,7 @@ class CharacterTest < ActiveSupport::TestCase
     result = @character.complete_spirit_expedition!(at: now + 1.hour, wen_per_hour: 80, donation_currency_roll: 0.04)
 
     @character.reload
-    assert_equal({ qi: 7_200, wen: 80, donation_currency: 1 }, result)
+    assert_equal({ qi: 7_200, base_qi: 7_200, qi_bonus: 0, wen: 80, base_wen: 80, wen_bonus: 0, donation_currency: 1 }, result)
     assert_equal 1, @character.donation_currency
   end
 
@@ -596,7 +619,7 @@ class CharacterTest < ActiveSupport::TestCase
     result = @character.complete_spirit_expedition!(at: now + 4.hours, wen_per_hour: 80, donation_currency_roll: 0.0)
 
     @character.reload
-    assert_equal({ qi: 21_600, wen: 240, donation_currency: 0 }, result)
+    assert_equal({ qi: 21_600, base_qi: 21_600, qi_bonus: 0, wen: 240, base_wen: 240, wen_bonus: 0, donation_currency: 0 }, result)
     assert_equal 21_600, @character.qi
     assert_equal 240, @character.currency
     assert_equal 0, @character.donation_currency
@@ -610,7 +633,7 @@ class CharacterTest < ActiveSupport::TestCase
     result = @character.complete_spirit_expedition_now!(at: now + 30.minutes)
 
     @character.reload
-    assert_equal({ qi: 21_600, wen: result[:wen], donation_currency: 0 }, result)
+    assert_equal({ qi: 21_600, base_qi: 21_600, qi_bonus: 0, wen: result[:wen], base_wen: result[:base_wen], wen_bonus: result[:wen_bonus], donation_currency: 0 }, result)
     assert_nil @character.spirit_expedition_ends_at
     assert_equal 0, @character.donation_currency
     assert_equal 1, @character.game_events.where(event_key: "spirit_expedition").count

@@ -20,8 +20,7 @@ class GameEvent < ApplicationRecord
   def localized_qi_delta
     return if qi_delta.zero?
 
-    qi = ActiveSupport::NumberHelper.number_to_delimited(qi_delta)
-    qi = "+#{qi}" if qi_delta.positive?
+    qi = localized_resource_delta("qi", qi_delta)
 
     I18n.t("shared.qi_with_value", qi:)
   end
@@ -44,7 +43,9 @@ class GameEvent < ApplicationRecord
         "stats" => localized_stat_options(metadata["power_options"]),
         "meridian_name" => localized_meridian_name,
         "sect_name" => localized_sect_name,
-        "rank_name" => localized_sect_rank_name
+        "rank_name" => localized_sect_rank_name,
+        "qi" => localized_resource_amount("qi"),
+        "wen" => localized_resource_amount("wen")
       )
       .compact
       .symbolize_keys
@@ -96,6 +97,32 @@ class GameEvent < ApplicationRecord
     return I18n.t("inventory_items.stat_bonus", name: I18n.t("inventory_items.power_options.power"), value: fallback_power) if fallback_power.present?
 
     nil
+  end
+
+  def localized_resource_amount(key)
+    base = metadata["base_#{key}"]
+    total = metadata[key]
+    return ActiveSupport::NumberHelper.number_to_delimited(total) unless base.present?
+
+    bonus = metadata["#{key}_bonus"].to_i
+    value = ActiveSupport::NumberHelper.number_to_delimited(base)
+    return value if bonus.zero?
+
+    bonus_value = ActiveSupport::NumberHelper.number_to_delimited(bonus.abs)
+    sign = bonus.positive? ? "+" : "-"
+    "#{value} (#{sign}#{bonus_value})"
+  end
+
+  def localized_resource_delta(key, total)
+    base = metadata["base_#{key}"]
+    bonus = metadata["#{key}_bonus"].to_i
+    value = ActiveSupport::NumberHelper.number_to_delimited(base.presence || total)
+    value = "+#{value}" if total.positive?
+    return value if base.blank? || bonus.zero?
+
+    bonus_value = ActiveSupport::NumberHelper.number_to_delimited(bonus.abs)
+    sign = bonus.positive? ? "+" : "-"
+    "#{value} (#{sign}#{bonus_value})"
   end
 
   def missing_item_description

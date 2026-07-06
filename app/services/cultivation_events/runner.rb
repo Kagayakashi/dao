@@ -64,24 +64,27 @@ module CultivationEvents
     end
 
     def good_cultivation_place_result(config)
-      qi_delta = qi_for_hours(config.fetch(:qi_hours))
+      qi_reward = character.qi_reward_breakdown(qi_for_hours(config.fetch(:qi_hours)))
+      qi_delta = qi_reward.fetch(:total)
 
       {
         outcome: "positive",
         qi_delta:,
-        description: "cultivation_events.good_cultivation_place.description"
+        description: "cultivation_events.good_cultivation_place.description",
+        metadata: reward_metadata(qi_reward)
       }
     end
 
     def mysterious_item_result(config)
       item = forced_item || config.fetch(:items).sample(random: rng)
-      qi_delta = qi_for_hours(item.fetch(:qi_hours))
+      qi_reward = item.fetch(:qi_hours).positive? ? character.qi_reward_breakdown(qi_for_hours(item.fetch(:qi_hours))) : { base: qi_for_hours(item.fetch(:qi_hours)), bonus: 0, total: qi_for_hours(item.fetch(:qi_hours)) }
+      qi_delta = qi_reward.fetch(:total)
 
       {
         outcome: item.fetch(:outcome).to_s,
         qi_delta:,
         description: mysterious_item_description_key(qi_delta),
-        metadata: mysterious_item_metadata(item)
+        metadata: mysterious_item_metadata(item).merge(reward_metadata(qi_reward))
       }
     end
 
@@ -95,14 +98,15 @@ module CultivationEvents
     end
 
     def peaceful_stranger_result(config, opponent)
-      qi_delta = qi_for_hours(config.fetch(:peaceful_qi_hours))
+      qi_reward = character.qi_reward_breakdown(qi_for_hours(config.fetch(:peaceful_qi_hours)))
+      qi_delta = qi_reward.fetch(:total)
 
       {
         outcome: "peaceful",
         qi_delta:,
         related_character: opponent,
         description: "cultivation_events.stranger_cultivator.peaceful_description",
-        metadata: stranger_metadata(opponent)
+        metadata: stranger_metadata(opponent).merge(reward_metadata(qi_reward))
       }
     end
 
@@ -190,6 +194,12 @@ module CultivationEvents
         related_character: result[:related_character],
         happened_at: now
       )
+    end
+
+    def reward_metadata(qi_reward)
+      return {} if qi_reward.fetch(:total).zero?
+
+      { "qi" => qi_reward.fetch(:total), "base_qi" => qi_reward.fetch(:base), "qi_bonus" => qi_reward.fetch(:bonus) }
     end
 
     def create_related_stranger_event(result)

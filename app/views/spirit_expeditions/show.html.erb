@@ -14,7 +14,7 @@
     <% if @completed_spirit_expedition.present? %>
       <p class="offline-gain">
         <%= cultivation_icon(:coin) %>
-        <%= t("spirit_expeditions.show.completed", qi: number_with_delimiter(@completed_spirit_expedition[:qi]), wen: number_with_delimiter(@completed_spirit_expedition[:wen]), donation_currency: number_with_delimiter(@completed_spirit_expedition[:donation_currency])) %>
+        <%= t("spirit_expeditions.show.completed", qi: resource_amount_with_bonus(base: @completed_spirit_expedition[:base_qi], bonus: @completed_spirit_expedition[:qi_bonus]), wen: resource_amount_with_bonus(base: @completed_spirit_expedition[:base_wen], bonus: @completed_spirit_expedition[:wen_bonus]), donation_currency: number_with_delimiter(@completed_spirit_expedition[:donation_currency])) %>
       </p>
     <% end %>
 
@@ -34,14 +34,14 @@
 
         <div class="activity-options">
           <% @character.spirit_expedition_durations.each do |hours| %>
-            <% multiplier = hours == 1 ? 1.0 : @character.spirit_expedition_extended_reward_multiplier %>
-            <% min_wen = (@character.spirit_expedition_wen_reward_range.min * hours * multiplier).floor %>
-            <% max_wen = (@character.spirit_expedition_wen_reward_range.max * hours * multiplier).floor %>
+            <% qi_reward = @character.spirit_expedition_qi_reward_breakdown(hours) %>
+            <% min_wen = @character.spirit_expedition_wen_reward_breakdown(hours, @character.spirit_expedition_wen_reward_range.min) %>
+            <% max_wen = @character.spirit_expedition_wen_reward_breakdown(hours, @character.spirit_expedition_wen_reward_range.max) %>
 
             <div class="realm-card activity-option-card">
               <span class="realm-label"><%= t("spirit_expeditions.show.duration", hours:) %></span>
-              <strong><%= t("spirit_expeditions.show.qi_reward", qi: number_with_delimiter(@character.spirit_expedition_estimated_qi_reward(hours))) %></strong>
-              <span><%= t("spirit_expeditions.show.wen_reward", min: number_with_delimiter(min_wen), max: number_with_delimiter(max_wen)) %></span>
+              <strong><%= t("spirit_expeditions.show.qi_reward", qi: resource_amount_with_bonus(base: qi_reward[:base], bonus: qi_reward[:bonus])) %></strong>
+              <span><%= t("spirit_expeditions.show.wen_reward", min: resource_amount_with_bonus(base: min_wen[:base], bonus: min_wen[:bonus]), max: resource_amount_with_bonus(base: max_wen[:base], bonus: max_wen[:bonus])) %></span>
               <% if hours == 1 %>
                 <span><%= t("spirit_expeditions.show.donation_currency_chance") %></span>
               <% end %>

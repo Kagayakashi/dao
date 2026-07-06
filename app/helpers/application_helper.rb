@@ -42,6 +42,17 @@ module ApplicationHelper
     NewsPost.unread_by(character).exists?
   end
 
+  def resource_amount_with_bonus(base:, bonus: 0)
+    base = base.to_i
+    bonus = bonus.to_i
+    base_value = number_with_delimiter(base)
+    return base_value if bonus.zero?
+
+    bonus_value = number_with_delimiter(bonus.abs)
+    sign = bonus.positive? ? "+" : "-"
+    "#{base_value} (#{sign}#{bonus_value})"
+  end
+
   private
 
   def cultivation_icon_paths
