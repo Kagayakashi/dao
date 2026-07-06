@@ -101,7 +101,7 @@ class GameEvent < ApplicationRecord
 
   def localized_resource_amount(key)
     base = metadata["base_#{key}"]
-    total = metadata[key]
+    total = metadata[key].presence || fallback_resource_amount(key)
     return ActiveSupport::NumberHelper.number_to_delimited(total) unless base.present?
 
     bonus = metadata["#{key}_bonus"].to_i
@@ -111,6 +111,12 @@ class GameEvent < ApplicationRecord
     bonus_value = ActiveSupport::NumberHelper.number_to_delimited(bonus.abs)
     sign = bonus.positive? ? "+" : "-"
     "#{value} (#{sign}#{bonus_value})"
+  end
+
+  def fallback_resource_amount(key)
+    return qi_delta if key == "qi" && qi_delta.present? && !qi_delta.zero?
+
+    nil
   end
 
   def localized_resource_delta(key, total)
