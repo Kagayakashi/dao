@@ -23,6 +23,7 @@ class CharactersControllerTest < ActionDispatch::IntegrationTest
     assert_select ".realm-card", text: /1 Star/
     assert_select ".realm-card", text: /Gender: Male/
     assert_select ".realm-card", text: /Gear Score:/
+    assert_select ".realm-card", text: /Sectless cultivator/
     assert_select "#profile-combat-stats-heading", "Combat Stats"
     assert_select ".combat-stat-list", text: /Damage/
     assert_select ".combat-stat-list", text: /Health/
@@ -34,6 +35,17 @@ class CharactersControllerTest < ActionDispatch::IntegrationTest
     assert_select "#profile-equipment-heading", "Equipment"
     assert_select ".inventory-card", text: /Iron Dao Blade/
     assert_select "a", text: /Inventory/, count: 0
+  end
+
+  test "shows sect information on character profile" do
+    users(:two).character.update!(sect_key: "azure_cloud", sect_rank: 1)
+    sign_in_as(users(:one))
+
+    get character_path(users(:two).character, locale: :en)
+
+    assert_response :success
+    assert_select ".realm-card", text: /Sect: Azure Cloud Sect/
+    assert_select ".realm-card", text: /Sect Rank: Inner Disciple/
   end
 
   test "shows attack button on other player's profile" do

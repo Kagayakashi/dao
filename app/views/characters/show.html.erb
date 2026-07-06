@@ -14,6 +14,12 @@
       <span><%= t("characters.show.gender", gender: @character.gender_name) %></span>
       <span><%= t("characters.show.gear_score", gear_score: number_with_delimiter(@character.gear_score)) %></span>
       <span><%= t("shared.qi_with_value", qi: number_with_delimiter(@character.total_experience)) %></span>
+      <% if @character.sect_joined? %>
+        <span><%= t("characters.show.sect", sect: @character.sect_name) %></span>
+        <span><%= t("characters.show.sect_rank", rank: @character.sect_rank_name) %></span>
+      <% else %>
+        <span><%= t("characters.show.sectless") %></span>
+      <% end %>
     </div>
 
     <section class="combat-stats" aria-labelledby="profile-combat-stats-heading">

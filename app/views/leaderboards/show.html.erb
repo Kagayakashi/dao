@@ -14,6 +14,7 @@
             <span>
               <strong><%= character.name %></strong>
               <small><%= t(".cultivator_summary", realm: character.realm_name, star: t("shared.star", count: character.star)) %></small>
+              <small><%= character.sect_joined? ? t(".sect", sect: character.sect_name) : t(".sectless") %></small>
             </span>
             <span class="leaderboard-qi"><%= t("shared.qi_with_value", qi: number_with_delimiter(character.total_experience)) %></span>
             <span class="leaderboard-power"><%= t("shared.gear_score_with_value", gear_score: number_with_delimiter(character.gear_score)) %></span>

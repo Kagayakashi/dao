@@ -9,7 +9,7 @@ class LeaderboardsControllerTest < ActionDispatch::IntegrationTest
 
   test "shows characters by total qi" do
     users(:one).character.update!(total_experience: 100)
-    users(:two).character.update!(total_experience: 500)
+    users(:two).character.update!(total_experience: 500, sect_key: "jade_river")
     sign_in_as(users(:one))
 
     get leaderboard_path(locale: :en)
@@ -19,8 +19,19 @@ class LeaderboardsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".leaderboard-entry:first-child", text: /Quiet Flame/
     assert_select ".leaderboard-entry:first-child", text: /500 Qi/
     assert_select ".leaderboard-entry:first-child", text: /GearScore/
+    assert_select ".leaderboard-entry:first-child", text: /Sect: Jade River Sect/
     assert_select ".leaderboard-entry:first-child a[href='#{character_path(users(:two).character, locale: :en)}']", text: /Quiet Flame/
     assert_select ".pagination-nav", text: /Page 1 of 1/
+  end
+
+  test "shows sectless status on qi leaderboard" do
+    users(:one).character.update!(total_experience: 500, sect_key: nil)
+    sign_in_as(users(:one))
+
+    get leaderboard_path(locale: :en)
+
+    assert_response :success
+    assert_select ".leaderboard-entry:first-child", text: /Sectless/
   end
 
   test "paginates characters ten per page" do
