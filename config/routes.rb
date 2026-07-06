@@ -13,6 +13,18 @@ Rails.application.routes.draw do
       post :reroll
     end
     resource :shop, only: %i[ show create ]
+    resource :meridians, only: :show do
+      post "open/:key", action: :open, as: :open
+      post "activate/:key", action: :activate, as: :activate
+      post "deactivate/:key", action: :deactivate, as: :deactivate
+    end
+    resource :sect, only: :show do
+      get :leaderboard
+      post :join
+      post :task
+      post :donate
+      post :promote
+    end
     resource :adventure, only: :show
     resource :spirit_expedition, only: %i[ show create ] do
       post :complete

@@ -27,7 +27,10 @@ class CharacterTest < ActiveSupport::TestCase
       spirit_expedition_extended_reward_multiplier: Character.spirit_expedition_extended_reward_multiplier,
       spirit_expedition_wen_reward_range: Character.spirit_expedition_wen_reward_range,
       spirit_expedition_donation_currency_chance: Character.spirit_expedition_donation_currency_chance,
-      spirit_expedition_instant_completion_cost: Character.spirit_expedition_instant_completion_cost
+      spirit_expedition_instant_completion_cost: Character.spirit_expedition_instant_completion_cost,
+      meridian_qi_cost_multiplier: Character.meridian_qi_cost_multiplier,
+      meridian_wen_base_cost: Character.meridian_wen_base_cost,
+      meridian_wen_cost_growth: Character.meridian_wen_cost_growth
     }
 
     Character.stars_per_realm = 9
@@ -55,9 +58,12 @@ class CharacterTest < ActiveSupport::TestCase
     Character.spirit_expedition_wen_reward_range = 50..100
     Character.spirit_expedition_donation_currency_chance = 0.05
     Character.spirit_expedition_instant_completion_cost = 1
+    Character.meridian_qi_cost_multiplier = 4
+    Character.meridian_wen_base_cost = 5_000
+    Character.meridian_wen_cost_growth = 1_500
 
     @character = characters(:one)
-    @character.update!(realm: 1, star: 1, qi: 0, total_experience: 0, last_online: Time.current, currency: 0, donation_currency: 0, current_health: nil, health_recovered_at: Time.current, spirit_expedition_started_at: nil, spirit_expedition_ends_at: nil, spirit_expedition_duration_hours: nil)
+    @character.update!(realm: 1, star: 1, qi: 0, total_experience: 0, last_online: Time.current, currency: 0, donation_currency: 0, current_health: nil, health_recovered_at: Time.current, spirit_expedition_started_at: nil, spirit_expedition_ends_at: nil, spirit_expedition_duration_hours: nil, sect_key: nil, sect_rank: 0, sect_contribution: 0, sect_task_completed_at: nil)
   end
 
   teardown do
@@ -150,7 +156,43 @@ class CharacterTest < ActiveSupport::TestCase
 
     @character.reload
     assert_equal 0, @character.qi
-    assert_equal 100, @character.total_experience
+    assert_equal 80, @character.total_experience
+  end
+
+  test "negative qi delta can decrease star and realm" do
+    @character.update!(realm: 2, star: 2, qi: 20, total_experience: 2_000)
+
+    @character.apply_qi_delta!(-150)
+
+    @character.reload
+    assert_equal 1, @character.realm
+    assert_equal 9, @character.star
+    assert_equal 70, @character.qi
+    assert_equal 1_850, @character.total_experience
+  end
+
+  test "negative qi delta preserves current star when enough current qi remains" do
+    @character.update!(realm: 1, star: 1, qi: 120, total_experience: 120)
+
+    @character.apply_qi_delta!(-30)
+
+    @character.reload
+    assert_equal 1, @character.realm
+    assert_equal 1, @character.star
+    assert_equal 90, @character.qi
+    assert_equal 90, @character.total_experience
+  end
+
+  test "recalculates cultivation from total qi" do
+    @character.update!(realm: 3, star: 5, qi: 20, total_experience: 250)
+
+    @character.recalculate_cultivation_from_total_qi!
+
+    @character.reload
+    assert_equal 1, @character.realm
+    assert_equal 3, @character.star
+    assert_equal 50, @character.qi
+    assert_equal 250, @character.total_experience
   end
 
   test "applies zero qi delta without changing character" do
@@ -287,6 +329,7 @@ class CharacterTest < ActiveSupport::TestCase
     assert_equal 1, @character.realm
     assert_equal 2, @character.star
     assert_equal 135, @character.qi
+    assert_equal 235, @character.total_experience
     assert_equal 15, result[:lost_qi]
     assert_equal 10, result[:loss_percent]
   end
@@ -323,6 +366,28 @@ class CharacterTest < ActiveSupport::TestCase
     @character.gain_qi(1_000)
 
     assert_includes @character.character_achievements.pluck(:key), "thousand_qi"
+  end
+
+  test "joins a sect and applies rank-scaled passive bonus" do
+    @character.update!(sect_key: nil, sect_rank: 0, sect_contribution: 0)
+
+    assert_equal :joined, @character.join_sect!("scarlet_flame")
+    assert_equal 103, @character.cultivation_power
+
+    @character.update!(sect_rank: 2)
+    assert_equal 106, @character.cultivation_power
+  end
+
+  test "daily sect task grants qi wen and contribution" do
+    @character.update!(sect_key: "azure_cloud", sect_task_completed_at: nil, qi: 0, total_experience: 0, currency: 0, sect_contribution: 0)
+
+    result = @character.perform_sect_daily_task!
+
+    assert_equal({ qi: 14_400, wen: 100, contribution: 100 }, result)
+    assert_equal 14_400, @character.qi
+    assert_equal 14_400, @character.total_experience
+    assert_equal 100, @character.currency
+    assert_equal 100, @character.sect_contribution
   end
 
   test "requires repeated manual breakthroughs across realm boundary" do

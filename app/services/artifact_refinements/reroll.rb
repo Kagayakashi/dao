@@ -40,7 +40,7 @@ module ArtifactRefinements
     def can_pay?
       case payment
       when "wen"
-        character.currency >= WEN_COST
+        character.currency >= character.artifact_refinement_wen_cost
       when "liang"
         character.donation_currency >= LIANG_COST
       else
@@ -51,7 +51,7 @@ module ArtifactRefinements
     def pay!
       case payment
       when "wen"
-        character.update!(currency: character.currency - WEN_COST)
+        character.update!(currency: character.currency - character.artifact_refinement_wen_cost)
       when "liang"
         character.update!(donation_currency: character.donation_currency - LIANG_COST)
       end

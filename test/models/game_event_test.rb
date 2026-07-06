@@ -174,6 +174,36 @@ class GameEventTest < ActiveSupport::TestCase
     assert_equal "Returned from a 4h Spirit Expedition with 80 Wen.", event.localized_description
   end
 
+  test "localizes meridian opening event metadata" do
+    event = characters(:one).game_events.create!(
+      event_key: "meridian_opening",
+      outcome: "positive",
+      title: "meridians.events.opened.title",
+      description: "meridians.events.opened.description",
+      metadata: { "meridian_key" => "lung", "subpoint" => 1, "qi_cost" => 400, "wen_cost" => 5_000 },
+      qi_delta: -400,
+      happened_at: Time.current
+    )
+
+    assert_equal "Meridian Opened", event.localized_title
+    assert_equal "Lung Meridian subpoint 1 opened, consuming 400 Qi and 5000 Wen.", event.localized_description
+  end
+
+  test "localizes sect event metadata" do
+    event = characters(:one).game_events.create!(
+      event_key: "sect_promotion",
+      outcome: "positive",
+      title: "sects.events.promotion.title",
+      description: "sects.events.promotion.description",
+      metadata: { "sect_key" => "azure_cloud", "rank_key" => "inner_disciple", "contribution" => 500 },
+      qi_delta: 0,
+      happened_at: Time.current
+    )
+
+    assert_equal "Sect Promotion", event.localized_title
+    assert_equal "Rose within Azure Cloud Sect to Inner Disciple, spending 500 contribution.", event.localized_description
+  end
+
   test "uses related character name without storing it in metadata" do
     event = characters(:one).game_events.create!(
       event_key: "stranger_cultivator",

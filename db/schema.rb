@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_26_005000) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_06_002000) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -69,6 +69,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_26_005000) do
     t.index ["character_id"], name: "index_character_event_cooldowns_on_character_id"
   end
 
+  create_table "character_meridians", force: :cascade do |t|
+    t.boolean "active", default: false, null: false
+    t.integer "character_id", null: false
+    t.datetime "created_at", null: false
+    t.string "key", null: false
+    t.integer "opened_subpoints", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id", "active"], name: "index_character_meridians_on_character_id_and_active"
+    t.index ["character_id", "key"], name: "index_character_meridians_on_character_id_and_key", unique: true
+    t.index ["character_id"], name: "index_character_meridians_on_character_id"
+  end
+
   create_table "characters", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "currency", default: 0, null: false
@@ -82,6 +94,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_26_005000) do
     t.integer "level", default: 1, null: false
     t.string "name", default: "Wandering Cultivator", null: false
     t.integer "reset", default: 0, null: false
+    t.bigint "sect_contribution", default: 0, null: false
+    t.string "sect_key"
+    t.integer "sect_rank", default: 0, null: false
+    t.datetime "sect_task_completed_at"
     t.datetime "sparring_available_at"
     t.integer "sparring_points", default: 3, null: false
     t.datetime "sparring_recovered_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
@@ -94,6 +110,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_26_005000) do
     t.integer "user_id", null: false
     t.index ["daily_reward_claimed_at"], name: "index_characters_on_daily_reward_claimed_at"
     t.index ["name"], name: "index_characters_on_name", unique: true
+    t.index ["sect_contribution"], name: "index_characters_on_sect_contribution"
+    t.index ["sect_key"], name: "index_characters_on_sect_key"
     t.index ["sparring_available_at"], name: "index_characters_on_sparring_available_at"
     t.index ["spirit_expedition_ends_at"], name: "index_characters_on_spirit_expedition_ends_at"
     t.index ["user_id"], name: "index_characters_on_user_id", unique: true
@@ -173,6 +191,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_26_005000) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "character_achievements", "characters"
   add_foreign_key "character_event_cooldowns", "characters"
+  add_foreign_key "character_meridians", "characters"
   add_foreign_key "characters", "users"
   add_foreign_key "game_events", "characters"
   add_foreign_key "game_events", "characters", column: "related_character_id"

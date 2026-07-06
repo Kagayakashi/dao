@@ -227,10 +227,196 @@ en:
       artifact_refinement_link: "Artifact Refinement Hall"
       shop_note: "Visit the market shop to buy one random treasure for Wen."
       shop_link: "Shop"
+      meridians_note: "Open classic meridians for permanent inner power. Only three opened meridians can be active at once."
+      meridians_link: "Meridian Chamber"
+      sect_note: "Visit the Sect Hall to join a cultivation lineage, earn contribution, and rise through its ranks."
+      sect_link: "Sect Hall"
       crier_note: "Listen to the city crier for recent announcements."
       crier_link: "Crier"
       navigation_aria: "Adventure navigation"
       return_link: "Return to Cultivation"
+
+  sects:
+    names:
+      azure_cloud: "Azure Cloud Sect"
+      iron_mountain: "Iron Mountain Sect"
+      scarlet_flame: "Scarlet Flame Sect"
+      jade_river: "Jade River Sect"
+      silent_moon: "Silent Moon Sect"
+      wandering_dao: "Wandering Dao Alliance"
+    descriptions:
+      azure_cloud: "An orthodox lineage of quiet breathing, clear skies, and steady Qi circulation."
+      iron_mountain: "A body-tempering sect whose disciples endure stone, wind, and blade."
+      scarlet_flame: "A fierce combat sect that values decisive strikes and burning intent."
+      jade_river: "A prosperous river sect known for trade routes, resource halls, and calm negotiation."
+      silent_moon: "A subtle sect of footwork, hidden blades, and moonlit movement."
+      wandering_dao: "A loose alliance for cultivators who travel beyond fixed mountain gates."
+    ranks:
+      outer_disciple: "Outer Disciple"
+      inner_disciple: "Inner Disciple"
+      core_disciple: "Core Disciple"
+      elder: "Elder"
+      peak_lord: "Peak Lord"
+    bonuses:
+      qi_gain: "Qi gain"
+      health: "Health"
+      power: "Power"
+      wen_gain: "Wen gain"
+      evasion: "Evasion and Accuracy"
+      expedition_reward: "Spirit Expedition rewards"
+    events:
+      joined:
+        title: "Sect Joined"
+        description: "Joined %{sect_name} as %{rank_name}."
+      daily_task:
+        title: "Sect Task"
+        description: "Completed sect work for %{contribution} contribution, %{qi} Qi, and %{wen} Wen."
+      donation:
+        title: "Sect Donation"
+        description: "Donated %{wen} Wen to %{sect_name} and gained %{contribution} contribution."
+      promotion:
+        title: "Sect Promotion"
+        description: "Rose within %{sect_name} to %{rank_name}, spending %{contribution} contribution."
+    join:
+      notice:
+        joined: "You joined %{name}."
+      alert:
+        already_joined: "You already belong to a sect."
+        unknown_sect: "That sect is unknown."
+    task:
+      notice:
+        completed: "Sect task complete: %{qi} Qi, %{wen} Wen, and %{contribution} contribution."
+      alert:
+        unavailable: "The sect has no task ready for you yet."
+        expedition_active: "Your cultivator is away on a Spirit Expedition. Return before taking sect work."
+    donate:
+      notice:
+        donated: "Your donation earned %{contribution} sect contribution."
+      alert:
+        no_sect: "Join a sect before donating."
+        wen_missing: "You do not have enough Wen for this donation."
+    promote:
+      notice:
+        promoted: "You were promoted to %{rank}."
+      alert:
+        no_sect: "Join a sect before seeking promotion."
+        max_rank: "You already hold the highest sect rank."
+        contribution_missing: "You need more sect contribution for promotion."
+    show:
+      title: "Sect Hall"
+      banner_alt: "Cultivation city"
+      eyebrow: "Mountain Gate"
+      heading: "Sect Hall"
+      screen_note: "Choose a lineage, earn contribution through daily work and donations, and rise from Outer Disciple to Peak Lord."
+      current_sect: "Current Sect"
+      rank: "Rank: %{rank}"
+      contribution: "Contribution: %{contribution}"
+      passive_bonus: "+%{bonus}% %{name}"
+      actions_heading: "Sect Duties"
+      daily_task_heading: "Daily Sect Task"
+      daily_task_reward: "Reward: %{qi_hours}h of Qi, %{wen} Wen, and %{contribution} contribution."
+      task_button: "Perform Sect Task"
+      next_task: "Next sect task in %{duration}."
+      donation_heading: "Contribution Donation"
+      donation_cost: "Donate %{wen} Wen for %{contribution} contribution."
+      donate_button: "Donate Wen"
+      promotion_heading: "Promotion"
+      promotion_cost: "Next rank: %{rank}. Cost: %{contribution} contribution."
+      promote_button: "Request Promotion"
+      max_rank: "You already stand at the peak of this sect."
+      choices_heading: "Choose A Sect"
+      choice_bonus: "Starting bonus: +%{bonus}% %{name}."
+      join_button: "Join Sect"
+      navigation_aria: "Sect navigation"
+      leaderboard_link: "Sect Leaderboard"
+      adventure_link: "Adventure"
+    leaderboard:
+      title: "Sect Leaderboard"
+      eyebrow: "Sect Ranking"
+      heading: "Sect Leaderboard"
+      screen_note: "%{count} members of %{sect} are ranked by contribution, rank, and total Qi."
+      sect_navigation_aria: "Sect leaderboard filters"
+      cultivator_summary: "%{rank} | %{realm}, %{star}"
+      contribution: "%{contribution} contribution"
+      empty: "No cultivators have joined this sect yet."
+      pagination_aria: "Sect leaderboard pagination"
+      page_status: "Page %{page} of %{total_pages}"
+      previous_page: "Previous"
+      next_page: "Next"
+      navigation_aria: "Sect leaderboard navigation"
+      sect_link: "Sect Hall"
+      adventure_link: "Adventure"
+
+  meridians:
+    names:
+      lung: "Lung Meridian"
+      large_intestine: "Large Intestine Meridian"
+      stomach: "Stomach Meridian"
+      spleen: "Spleen Meridian"
+      heart: "Heart Meridian"
+      small_intestine: "Small Intestine Meridian"
+      bladder: "Bladder Meridian"
+      kidney: "Kidney Meridian"
+      pericardium: "Pericardium Meridian"
+      triple_burner: "Triple Burner Meridian"
+      gallbladder: "Gallbladder Meridian"
+      liver: "Liver Meridian"
+    bonuses:
+      qi_gain: "Qi gain"
+      wen_gain: "Wen gain"
+      health: "Health"
+      expedition_reward: "Spirit Expedition reward"
+      breakthrough_stability: "Breakthrough stability"
+      sparring_recovery: "Sparring recovery"
+      defense: "Defense"
+      power: "Power"
+      critical_rate: "Critical rate"
+      refinement: "Refinement efficiency"
+      accuracy: "Accuracy"
+      evasion: "Evasion"
+    events:
+      opened:
+        title: "Meridian Opened"
+        description: "%{meridian_name} subpoint %{subpoint} opened, consuming %{qi_cost} Qi and %{wen_cost} Wen."
+    open:
+      notice:
+        opened: "%{name} opened further."
+      alert:
+        complete: "That meridian is already fully opened."
+        realm_locked: "Your Realm is too low for that subpoint."
+        wen_missing: "You do not have enough Wen."
+        qi_missing: "You do not have enough total cultivation Qi."
+    activate:
+      notice:
+        activated: "%{name} is now active."
+      alert:
+        closed: "Open at least one subpoint before activating a meridian."
+        limit: "Only three meridians can be active at once."
+        invalid: "That meridian cannot be activated."
+    deactivate:
+      notice:
+        deactivated: "%{name} is no longer active."
+    show:
+      title: "Meridian Chamber"
+      banner_alt: "Cultivation city"
+      eyebrow: "Inner Path"
+      heading: "Meridian Chamber"
+      screen_note: "Open the twelve classic meridians. Each has nine subpoints, and only %{limit} meridians can be active for bonuses at once."
+      active_heading: "Active Meridians"
+      active_count: "%{current} / %{limit} active"
+      resources: "Total cultivation Qi: %{qi}. Wen: %{wen}."
+      meridians_heading: "Classic Meridians"
+      progress: "%{opened} / %{max} subpoints opened"
+      bonus: "+%{bonus}% %{name} when active"
+      complete: "Fully opened."
+      next_requirement: "Next subpoint requires Realm %{realm}."
+      next_cost: "Cost: %{qi} Qi and %{wen} Wen."
+      active_status: "Active"
+      open_button: "Open Subpoint"
+      activate_button: "Activate"
+      deactivate_button: "Deactivate"
+      navigation_aria: "Meridian navigation"
+      adventure_link: "Adventure"
 
   artifact_refinements:
     events:
@@ -254,7 +440,7 @@ en:
       items_heading: "Artifacts"
       equipped_location: "Equipped: %{slot}"
       inventory_location: "Inventory Slot %{slot}"
-      reroll_wen_button: "Refine for 300 Wen"
+      reroll_wen_button: "Refine for %{wen} Wen"
       reroll_liang_button: "Refine for 1 Liang"
       expedition_locked: "Artifact refinement is unavailable while your cultivator is on a Spirit Expedition."
       empty: "You have no equipment to refine yet."

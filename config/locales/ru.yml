@@ -227,10 +227,196 @@ ru:
       artifact_refinement_link: "Зал очищения артефактов"
       shop_note: "Посетите лавку, чтобы купить случайное сокровище за Вэнь."
       shop_link: "Лавка"
+      meridians_note: "Открывайте классические меридианы для постоянной внутренней силы. Одновременно активны только три открытых меридиана."
+      meridians_link: "Палата меридианов"
+      sect_note: "Посетите зал секты, чтобы вступить в линию культивации, получать вклад и повышать ранг."
+      sect_link: "Зал секты"
       crier_note: "Послушайте городского глашатая, чтобы узнать последние объявления."
       crier_link: "Глашатай"
       navigation_aria: "Навигация приключения"
       return_link: "Вернуться к культивации"
+
+  sects:
+    names:
+      azure_cloud: "Секта Лазурного Облака"
+      iron_mountain: "Секта Железной Горы"
+      scarlet_flame: "Секта Алого Пламени"
+      jade_river: "Секта Нефритовой Реки"
+      silent_moon: "Секта Тихой Луны"
+      wandering_dao: "Союз Странствующего Дао"
+    descriptions:
+      azure_cloud: "Ортодоксальная линия тихого дыхания, ясного неба и устойчивого обращения Ци."
+      iron_mountain: "Секта закалки тела, где ученики выдерживают камень, ветер и клинок."
+      scarlet_flame: "Боевая секта, ценящая решительные удары и пылающее намерение."
+      jade_river: "Богатая речная секта, известная торговыми путями, залами ресурсов и спокойными переговорами."
+      silent_moon: "Скрытная секта шагов, тайных клинков и движения под луной."
+      wandering_dao: "Свободный союз культиваторов, путешествующих за пределами горных врат."
+    ranks:
+      outer_disciple: "Внешний ученик"
+      inner_disciple: "Внутренний ученик"
+      core_disciple: "Основной ученик"
+      elder: "Старейшина"
+      peak_lord: "Владыка пика"
+    bonuses:
+      qi_gain: "получению Ци"
+      health: "здоровью"
+      power: "Силе"
+      wen_gain: "получению Вэнь"
+      evasion: "уклонению и точности"
+      expedition_reward: "наградам духовной экспедиции"
+    events:
+      joined:
+        title: "Вступление в секту"
+        description: "Вы вступили в %{sect_name} как %{rank_name}."
+      daily_task:
+        title: "Задание секты"
+        description: "Выполнено задание секты: %{contribution} вклада, %{qi} Ци и %{wen} Вэнь."
+      donation:
+        title: "Пожертвование секте"
+        description: "Пожертвовано %{wen} Вэнь в %{sect_name}; получено %{contribution} вклада."
+      promotion:
+        title: "Повышение в секте"
+        description: "Вы поднялись в %{sect_name} до ранга %{rank_name}, потратив %{contribution} вклада."
+    join:
+      notice:
+        joined: "Вы вступили в %{name}."
+      alert:
+        already_joined: "Вы уже состоите в секте."
+        unknown_sect: "Эта секта неизвестна."
+    task:
+      notice:
+        completed: "Задание секты выполнено: %{qi} Ци, %{wen} Вэнь и %{contribution} вклада."
+      alert:
+        unavailable: "У секты пока нет готового задания для вас."
+        expedition_active: "Ваш культиватор в духовной экспедиции. Вернитесь перед заданиями секты."
+    donate:
+      notice:
+        donated: "Пожертвование принесло %{contribution} вклада секты."
+      alert:
+        no_sect: "Вступите в секту перед пожертвованием."
+        wen_missing: "У вас недостаточно Вэнь для этого пожертвования."
+    promote:
+      notice:
+        promoted: "Вы повышены до ранга %{rank}."
+      alert:
+        no_sect: "Вступите в секту перед просьбой о повышении."
+        max_rank: "У вас уже высший ранг секты."
+        contribution_missing: "Для повышения нужно больше вклада секты."
+    show:
+      title: "Зал секты"
+      banner_alt: "Город культиваторов"
+      eyebrow: "Горные врата"
+      heading: "Зал секты"
+      screen_note: "Выберите линию, получайте вклад через ежедневные задания и пожертвования, и поднимайтесь от внешнего ученика до владыки пика."
+      current_sect: "Текущая секта"
+      rank: "Ранг: %{rank}"
+      contribution: "Вклад: %{contribution}"
+      passive_bonus: "+%{bonus}% к %{name}"
+      actions_heading: "Обязанности секты"
+      daily_task_heading: "Ежедневное задание секты"
+      daily_task_reward: "Награда: %{qi_hours}ч Ци, %{wen} Вэнь и %{contribution} вклада."
+      task_button: "Выполнить задание секты"
+      next_task: "Следующее задание секты через %{duration}."
+      donation_heading: "Пожертвование вклада"
+      donation_cost: "Пожертвуйте %{wen} Вэнь за %{contribution} вклада."
+      donate_button: "Пожертвовать Вэнь"
+      promotion_heading: "Повышение"
+      promotion_cost: "Следующий ранг: %{rank}. Цена: %{contribution} вклада."
+      promote_button: "Попросить повышение"
+      max_rank: "Вы уже стоите на вершине этой секты."
+      choices_heading: "Выберите секту"
+      choice_bonus: "Начальный бонус: +%{bonus}% к %{name}."
+      join_button: "Вступить в секту"
+      navigation_aria: "Навигация секты"
+      leaderboard_link: "Рейтинг секты"
+      adventure_link: "Приключение"
+    leaderboard:
+      title: "Рейтинг секты"
+      eyebrow: "Рейтинг секты"
+      heading: "Рейтинг секты"
+      screen_note: "%{count} участников %{sect} ранжированы по вкладу, рангу и общей Ци."
+      sect_navigation_aria: "Фильтры рейтинга секты"
+      cultivator_summary: "%{rank} | %{realm}, %{star}"
+      contribution: "%{contribution} вклада"
+      empty: "В эту секту пока не вступил ни один культиватор."
+      pagination_aria: "Навигация страниц рейтинга секты"
+      page_status: "Страница %{page} из %{total_pages}"
+      previous_page: "Назад"
+      next_page: "Вперед"
+      navigation_aria: "Навигация рейтинга секты"
+      sect_link: "Зал секты"
+      adventure_link: "Приключение"
+
+  meridians:
+    names:
+      lung: "Меридиан лёгких"
+      large_intestine: "Меридиан толстой кишки"
+      stomach: "Меридиан желудка"
+      spleen: "Меридиан селезёнки"
+      heart: "Меридиан сердца"
+      small_intestine: "Меридиан тонкой кишки"
+      bladder: "Меридиан мочевого пузыря"
+      kidney: "Меридиан почек"
+      pericardium: "Меридиан перикарда"
+      triple_burner: "Меридиан тройного обогревателя"
+      gallbladder: "Меридиан желчного пузыря"
+      liver: "Меридиан печени"
+    bonuses:
+      qi_gain: "получению Ци"
+      wen_gain: "получению Вэнь"
+      health: "здоровью"
+      expedition_reward: "наградам духовной экспедиции"
+      breakthrough_stability: "стабильности прорыва"
+      sparring_recovery: "восстановлению спарринга"
+      defense: "защите"
+      power: "Силе"
+      critical_rate: "шансу критического удара"
+      refinement: "эффективности очищения"
+      accuracy: "точности"
+      evasion: "уклонению"
+    events:
+      opened:
+        title: "Меридиан открыт"
+        description: "Открыта точка %{subpoint} меридиана %{meridian_name}; потрачено %{qi_cost} Ци и %{wen_cost} Вэнь."
+    open:
+      notice:
+        opened: "%{name} открыт глубже."
+      alert:
+        complete: "Этот меридиан уже полностью открыт."
+        realm_locked: "Ваш уровень Сферы слишком низок для этой точки."
+        wen_missing: "У вас недостаточно Вэнь."
+        qi_missing: "У вас недостаточно общей Ци культивации."
+    activate:
+      notice:
+        activated: "%{name} теперь активен."
+      alert:
+        closed: "Откройте хотя бы одну точку перед активацией меридиана."
+        limit: "Одновременно могут быть активны только три меридиана."
+        invalid: "Этот меридиан нельзя активировать."
+    deactivate:
+      notice:
+        deactivated: "%{name} больше не активен."
+    show:
+      title: "Палата меридианов"
+      banner_alt: "Город культиваторов"
+      eyebrow: "Внутренний путь"
+      heading: "Палата меридианов"
+      screen_note: "Открывайте двенадцать классических меридианов. У каждого девять точек, а бонусы дают только %{limit} активных меридиана одновременно."
+      active_heading: "Активные меридианы"
+      active_count: "%{current} / %{limit} активны"
+      resources: "Общая Ци культивации: %{qi}. Вэнь: %{wen}."
+      meridians_heading: "Классические меридианы"
+      progress: "Открыто точек: %{opened} / %{max}"
+      bonus: "+%{bonus}% к %{name}, если активен"
+      complete: "Полностью открыт."
+      next_requirement: "Следующая точка требует Сферу %{realm}."
+      next_cost: "Цена: %{qi} Ци и %{wen} Вэнь."
+      active_status: "Активен"
+      open_button: "Открыть точку"
+      activate_button: "Активировать"
+      deactivate_button: "Деактивировать"
+      navigation_aria: "Навигация меридианов"
+      adventure_link: "Приключение"
 
   artifact_refinements:
     events:
@@ -254,7 +440,7 @@ ru:
       items_heading: "Артефакты"
       equipped_location: "Надето: %{slot}"
       inventory_location: "Ячейка инвентаря %{slot}"
-      reroll_wen_button: "Очистить за 300 Вэнь"
+      reroll_wen_button: "Очистить за %{wen} Вэнь"
       reroll_liang_button: "Очистить за 1 Лян"
       expedition_locked: "Очищение артефактов недоступно, пока культиватор в духовной экспедиции."
       empty: "У вас пока нет снаряжения для очищения."

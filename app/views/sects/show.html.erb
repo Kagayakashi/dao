@@ -1,0 +1,75 @@
+<% content_for :title, t("sects.show.title") %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel sect-panel">
+    <%= render "shared/media_banner", image_name: "city.png", alt: t("sects.show.banner_alt"), banner_class: "main-banner", image_class: "main-banner__image" %>
+
+    <p class="eyebrow"><%= cultivation_icon(:lantern) %> <%= t("sects.show.eyebrow") %></p>
+    <h1><%= t("sects.show.heading") %></h1>
+    <p class="screen-note"><%= t("sects.show.screen_note") %></p>
+
+    <%= tag.div(flash[:alert], class: "form-alert") if flash[:alert] %>
+    <%= tag.div(flash[:notice], class: "form-notice") if flash[:notice] %>
+
+    <% if @character.sect_joined? %>
+      <div class="realm-card">
+        <span class="realm-label"><%= t("sects.show.current_sect") %></span>
+        <strong><%= @character.sect_name %></strong>
+        <span><%= t("sects.show.rank", rank: @character.sect_rank_name) %></span>
+        <span><%= t("sects.show.contribution", contribution: number_with_delimiter(@character.sect_contribution)) %></span>
+        <span><%= t("sects.show.passive_bonus", bonus: number_with_precision(@character.sect_bonus_value, precision: 1, strip_insignificant_zeros: true), name: @character.sect_bonus_name) %></span>
+      </div>
+
+      <section class="events" aria-labelledby="sect-actions-heading">
+        <h2 id="sect-actions-heading"><%= cultivation_icon(:scroll) %> <%= t("sects.show.actions_heading") %></h2>
+        <ul class="action-list">
+          <li class="action-card">
+            <strong><%= t("sects.show.daily_task_heading") %></strong>
+            <p><%= t("sects.show.daily_task_reward", qi_hours: Character::SECT_DAILY_TASK_QI_HOURS, wen: Character::SECT_DAILY_TASK_WEN, contribution: Character::SECT_DAILY_TASK_CONTRIBUTION) %></p>
+            <% if @character.sect_daily_task_ready? %>
+              <%= button_to t("sects.show.task_button"), task_sect_path, class: "ceremonial-button", disabled: @character.spirit_expedition_active? %>
+            <% else %>
+              <p><%= t("sects.show.next_task", duration: distance_of_time_in_words(Time.current, @character.sect_daily_task_available_at)) %></p>
+            <% end %>
+          </li>
+
+          <li class="action-card">
+            <strong><%= t("sects.show.donation_heading") %></strong>
+            <p><%= t("sects.show.donation_cost", wen: number_with_delimiter(Character::SECT_DONATION_WEN_COST), contribution: Character::SECT_DONATION_CONTRIBUTION) %></p>
+            <%= button_to t("sects.show.donate_button"), donate_sect_path, class: "ceremonial-button" %>
+          </li>
+
+          <li class="action-card">
+            <strong><%= t("sects.show.promotion_heading") %></strong>
+            <% if @character.sect_rank >= Character::SECT_RANKS.length - 1 %>
+              <p><%= t("sects.show.max_rank") %></p>
+            <% else %>
+              <% next_rank = Character::SECT_RANKS.fetch(@character.sect_rank + 1) %>
+              <p><%= t("sects.show.promotion_cost", rank: t("sects.ranks.#{next_rank.fetch(:key)}"), contribution: number_with_delimiter(next_rank.fetch(:promotion_cost))) %></p>
+              <%= button_to t("sects.show.promote_button"), promote_sect_path, class: "ceremonial-button" %>
+            <% end %>
+          </li>
+        </ul>
+      </section>
+    <% else %>
+      <section class="events" aria-labelledby="sect-choices-heading">
+        <h2 id="sect-choices-heading"><%= cultivation_icon(:scroll) %> <%= t("sects.show.choices_heading") %></h2>
+        <ul class="action-list">
+          <% Character::SECTS.each do |key, sect| %>
+            <li class="action-card">
+              <strong><%= t("sects.names.#{key}") %></strong>
+              <p><%= t("sects.descriptions.#{key}") %></p>
+              <p><%= t("sects.show.choice_bonus", bonus: number_with_precision(sect.fetch(:bonus), precision: 1, strip_insignificant_zeros: true), name: t("sects.bonuses.#{sect.fetch(:stat)}")) %></p>
+              <%= button_to t("sects.show.join_button"), join_sect_path(sect_key: key), class: "ceremonial-button" %>
+            </li>
+          <% end %>
+        </ul>
+      </section>
+    <% end %>
+
+    <nav class="quiet-nav" aria-label="<%= t("sects.show.navigation_aria") %>">
+      <%= link_to t("sects.show.leaderboard_link"), leaderboard_sect_path(sect_key: @character.sect_key.presence || Character::SECTS.keys.first) %>
+      <%= link_to t("sects.show.adventure_link"), adventure_path %>
+    </nav>
+  </section>
+</main>

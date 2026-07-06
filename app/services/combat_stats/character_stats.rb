@@ -20,25 +20,25 @@ module CombatStats
       character.power
     end
 
-    def health
-      ((equal_level_effective_damage * config.fetch(:target_landed_hits)) + equipment_bonus(:health)).round
+  def health
+      (((equal_level_effective_damage * config.fetch(:target_landed_hits)) + equipment_bonus(:health)) * meridian_multiplier(:health)).round
     end
 
-    def defense
-      (base_defense + equipment_bonus(:defense)).round
+  def defense
+      ((base_defense + equipment_bonus(:defense)) * meridian_multiplier(:defense)).round
     end
 
-    def evasion
-      (base_evasion + equipment_bonus(:evasion)).round(1)
+  def evasion
+      ((base_evasion + equipment_bonus(:evasion)) * meridian_multiplier(:evasion)).round(1)
     end
 
-    def accuracy
-      (base_accuracy + equipment_bonus(:accuracy)).round(1)
+  def accuracy
+      ((base_accuracy + equipment_bonus(:accuracy)) * meridian_multiplier(:accuracy)).round(1)
     end
 
     def critical_rate
       [
-        config.fetch(:critical_rate_base) + (cultivation_step * config.fetch(:critical_rate_step_bonus)) + equipment_bonus(:critical_rate),
+        config.fetch(:critical_rate_base) + (cultivation_step * config.fetch(:critical_rate_step_bonus)) + equipment_bonus(:critical_rate) + character.passive_stat_bonus(:critical_rate),
         config.fetch(:maximum_critical_rate)
       ].min.round(1)
     end
@@ -76,6 +76,10 @@ module CombatStats
 
     def equipment_bonus(stat_key)
       character.equipment_stat_bonus(stat_key)
+    end
+
+    def meridian_multiplier(stat_key)
+      character.active_meridian_multiplier(stat_key)
     end
 
     def cultivation_damage

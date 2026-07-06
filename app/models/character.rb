@@ -1,5 +1,27 @@
 class Character < ApplicationRecord
   INVENTORY_SLOTS = 10
+  ACTIVE_MERIDIAN_LIMIT = 3
+  SECTS = {
+    "azure_cloud" => { stat: :qi_gain, bonus: 3.0 },
+    "iron_mountain" => { stat: :health, bonus: 5.0 },
+    "scarlet_flame" => { stat: :power, bonus: 3.0 },
+    "jade_river" => { stat: :wen_gain, bonus: 5.0 },
+    "silent_moon" => { stat: :evasion, bonus: 3.0, secondary_stat: :accuracy, secondary_bonus: 3.0 },
+    "wandering_dao" => { stat: :expedition_reward, bonus: 5.0 }
+  }.freeze
+  SECT_RANKS = [
+    { key: "outer_disciple", multiplier: 1.0, promotion_cost: 0 },
+    { key: "inner_disciple", multiplier: 1.5, promotion_cost: 500 },
+    { key: "core_disciple", multiplier: 2.0, promotion_cost: 2_000 },
+    { key: "elder", multiplier: 3.0, promotion_cost: 7_500 },
+    { key: "peak_lord", multiplier: 4.0, promotion_cost: 20_000 }
+  ].freeze
+  SECT_DAILY_TASK_COOLDOWN = 1.day
+  SECT_DAILY_TASK_CONTRIBUTION = 100
+  SECT_DAILY_TASK_QI_HOURS = 2
+  SECT_DAILY_TASK_WEN = 100
+  SECT_DONATION_WEN_COST = 1_000
+  SECT_DONATION_CONTRIBUTION = 50
 
   belongs_to :user
   has_many :character_achievements, dependent: :destroy
@@ -7,6 +29,7 @@ class Character < ApplicationRecord
   has_many :character_event_cooldowns, dependent: :destroy
   has_many :inventory_items, dependent: :destroy
   has_many :news_reads, dependent: :destroy
+  has_many :character_meridians, dependent: :destroy
 
   alias_attribute :realm, :level
   alias_attribute :star, :sublevel
@@ -39,6 +62,9 @@ class Character < ApplicationRecord
   class_attribute :spirit_expedition_wen_reward_range, default: 50..100
   class_attribute :spirit_expedition_donation_currency_chance, default: 0.05
   class_attribute :spirit_expedition_instant_completion_cost, default: 1
+  class_attribute :meridian_qi_cost_multiplier, default: 4
+  class_attribute :meridian_wen_base_cost, default: 5_000
+  class_attribute :meridian_wen_cost_growth, default: 1_500
 
   before_validation :set_initial_last_online, on: :create
   before_validation :set_default_name, on: :create
@@ -52,6 +78,9 @@ class Character < ApplicationRecord
   validates :current_health, numericality: { only_integer: true, greater_than_or_equal_to: 1 }, allow_nil: true
   validates :sparring_points, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: ->(character) { character.max_sparring_points } }
   validates :spirit_expedition_duration_hours, inclusion: { in: ->(character) { character.spirit_expedition_durations } }, allow_nil: true
+  validates :sect_key, inclusion: { in: SECTS.keys }, allow_nil: true
+  validates :sect_rank, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than: SECT_RANKS.length }
+  validates :sect_contribution, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :last_online, presence: true
   validates :sparring_recovered_at, presence: true
   validates :health_recovered_at, presence: true
@@ -60,6 +89,15 @@ class Character < ApplicationRecord
 
   def qi_required_for_next_star
     (base_qi_required * (realm_qi_growth**(realm - 1)) * (star_qi_growth**(star - 1))).ceil
+  end
+
+  def cultivation_qi_total
+    previous_realms_qi = (1...realm).sum do |realm_number|
+      (1..stars_per_realm).sum { |star_number| qi_required_for(realm_number, star_number) }
+    end
+    previous_stars_qi = (1...star).sum { |star_number| qi_required_for(realm, star_number) }
+
+    previous_realms_qi + previous_stars_qi + qi
   end
 
   def cultivation_progress
@@ -89,6 +127,10 @@ class Character < ApplicationRecord
   end
 
   def cultivation_power
+    (base_cultivation_power * active_meridian_multiplier(:power)).floor
+  end
+
+  def base_cultivation_power
     (base_power * (realm_power_multiplier**(realm - 1)) * (1 + ((star - 1) * star_power_multiplier))).floor
   end
 
@@ -98,6 +140,28 @@ class Character < ApplicationRecord
 
   def equipment_stat_bonus(stat_key)
     inventory_items.equipped.sum { |item| item.stat_value(stat_key) }
+  end
+
+  def meridian_stat_bonus(stat_key)
+    active_character_meridians.sum { |meridian| meridian.stat_bonus(stat_key) }
+  end
+
+  def active_meridian_multiplier(stat_key)
+    1.0 + (passive_stat_bonus(stat_key) / 100.0)
+  end
+
+  def passive_stat_bonus(stat_key)
+    meridian_stat_bonus(stat_key) + sect_stat_bonus(stat_key)
+  end
+
+  def sect_stat_bonus(stat_key)
+    return 0 unless sect_joined?
+
+    stat_key = stat_key.to_sym
+    bonus = 0
+    bonus += sect_definition.fetch(:bonus) if sect_definition.fetch(:stat) == stat_key
+    bonus += sect_definition.fetch(:secondary_bonus, 0) if sect_definition[:secondary_stat] == stat_key
+    bonus * sect_rank_multiplier
   end
 
   def gear_score
@@ -203,7 +267,8 @@ class Character < ApplicationRecord
     inventory_items.create!(name:, equipment_kind:, power_options:, metadata:, inventory_slot: slot)
   end
 
-  def gain_qi(amount, multiplier: cultivation_multiplier)
+  def gain_qi(amount, multiplier: nil)
+    multiplier ||= effective_cultivation_multiplier
     gained_qi = (amount.to_f * multiplier).floor
     return 0 if gained_qi <= 0
 
@@ -217,10 +282,143 @@ class Character < ApplicationRecord
     if qi_delta.positive?
       gain_qi(qi_delta, multiplier: 1.0)
     elsif qi_delta.negative?
-      self.qi = [ qi + qi_delta, 0 ].max
+      lose_cultivation_qi!(-qi_delta, save: false)
     end
 
     save! if changed?
+  end
+
+  def lose_cultivation_qi!(amount, save: true)
+    amount = amount.to_i
+    return 0 if amount <= 0
+
+    lost_qi = [ amount, cultivation_qi_total ].min
+    subtract_cultivation_qi(lost_qi)
+    self.total_experience = [ total_experience - lost_qi, 0 ].max
+    clamp_current_health!
+    save! if save && changed?
+    lost_qi
+  end
+
+  def recalculate_cultivation_from_total_qi!
+    assign_cultivation_from_cumulative_qi(total_experience)
+    clamp_current_health!
+    save! if changed?
+  end
+
+  def meridian_qi_cost_for(subpoint)
+    qi_required_for(subpoint, subpoint) * meridian_qi_cost_multiplier
+  end
+
+  def meridian_wen_cost_for(subpoint)
+    meridian_wen_base_cost + ((subpoint - 1) * meridian_wen_cost_growth)
+  end
+
+  def sect_joined?
+    sect_key.present?
+  end
+
+  def sect_definition
+    SECTS.fetch(sect_key)
+  end
+
+  def sect_name
+    I18n.t("sects.names.#{sect_key}") if sect_joined?
+  end
+
+  def sect_rank_definition
+    SECT_RANKS.fetch(sect_rank)
+  end
+
+  def sect_rank_key
+    sect_rank_definition.fetch(:key)
+  end
+
+  def sect_rank_name
+    I18n.t("sects.ranks.#{sect_rank_key}")
+  end
+
+  def sect_rank_multiplier
+    sect_rank_definition.fetch(:multiplier)
+  end
+
+  def sect_bonus_name
+    I18n.t("sects.bonuses.#{sect_definition.fetch(:stat)}") if sect_joined?
+  end
+
+  def sect_bonus_value
+    return 0 unless sect_joined?
+
+    sect_definition.fetch(:bonus) * sect_rank_multiplier
+  end
+
+  def sect_daily_task_ready?(at: Time.current)
+    sect_joined? && sect_daily_task_available_at(at:) <= at
+  end
+
+  def sect_daily_task_available_at(at: Time.current)
+    return at unless sect_task_completed_at
+
+    sect_task_completed_at + SECT_DAILY_TASK_COOLDOWN
+  end
+
+  def join_sect!(key)
+    key = key.to_s
+    return :already_joined if sect_joined?
+    return :unknown_sect unless SECTS.key?(key)
+
+    update!(sect_key: key, sect_rank: 0, sect_contribution: 0, sect_task_completed_at: nil)
+    create_sect_event!("joined", metadata: { "sect_key" => key, "rank_key" => sect_rank_key })
+    :joined
+  end
+
+  def perform_sect_daily_task!(at: Time.current)
+    return false unless sect_daily_task_ready?(at:)
+
+    gained_qi = (base_qi_per_second * SECT_DAILY_TASK_QI_HOURS.hours.to_i).floor
+    gained_wen = (SECT_DAILY_TASK_WEN * active_meridian_multiplier(:wen_gain)).floor
+
+    transaction do
+      gain_qi(gained_qi, multiplier: 1.0)
+      self.currency += gained_wen
+      self.sect_contribution += SECT_DAILY_TASK_CONTRIBUTION
+      self.sect_task_completed_at = at
+      save!
+      create_sect_event!("daily_task", metadata: { "sect_key" => sect_key, "contribution" => SECT_DAILY_TASK_CONTRIBUTION, "qi" => gained_qi, "wen" => gained_wen }, qi_delta: gained_qi)
+    end
+
+    { qi: gained_qi, wen: gained_wen, contribution: SECT_DAILY_TASK_CONTRIBUTION }
+  end
+
+  def donate_to_sect!
+    return :no_sect unless sect_joined?
+    return :wen_missing if currency < SECT_DONATION_WEN_COST
+
+    transaction do
+      self.currency -= SECT_DONATION_WEN_COST
+      self.sect_contribution += SECT_DONATION_CONTRIBUTION
+      save!
+      create_sect_event!("donation", metadata: { "sect_key" => sect_key, "contribution" => SECT_DONATION_CONTRIBUTION, "wen" => SECT_DONATION_WEN_COST })
+    end
+
+    :donated
+  end
+
+  def promote_sect_rank!
+    return :no_sect unless sect_joined?
+    return :max_rank if sect_rank >= SECT_RANKS.length - 1
+
+    cost = SECT_RANKS.fetch(sect_rank + 1).fetch(:promotion_cost)
+    return :contribution_missing if sect_contribution < cost
+
+    transaction do
+      self.sect_contribution -= cost
+      self.sect_rank += 1
+      save!
+      create_sect_event!("promotion", metadata: { "sect_key" => sect_key, "rank_key" => sect_rank_key, "contribution" => cost })
+    end
+
+    :promoted
   end
 
   def ready_for_breakthrough?
@@ -232,8 +430,10 @@ class Character < ApplicationRecord
 
     self.qi -= qi_required_for_next_star
     loss_percent ||= rand(breakthrough_overflow_loss_range)
+    loss_percent = [ loss_percent - meridian_stat_bonus(:breakthrough_stability), 0 ].max
     lost_qi = breakthrough_overflow_loss(loss_percent)
     self.qi -= lost_qi
+    self.total_experience = [ total_experience - lost_qi, 0 ].max
     self.star += 1
 
     if star > stars_per_realm
@@ -281,15 +481,15 @@ class Character < ApplicationRecord
   end
 
   def spirit_expedition_reward_multiplier
-    return 1.0 if spirit_expedition_duration_hours.to_i <= 1
+    duration_multiplier = spirit_expedition_duration_hours.to_i <= 1 ? 1.0 : spirit_expedition_extended_reward_multiplier
 
-    spirit_expedition_extended_reward_multiplier
+    duration_multiplier * active_meridian_multiplier(:expedition_reward)
   end
 
   def spirit_expedition_estimated_qi_reward(hours)
     multiplier = hours.to_i <= 1 ? 1.0 : spirit_expedition_extended_reward_multiplier
 
-    (base_qi_per_second * hours.to_i.hours.to_i * multiplier).floor
+    (base_qi_per_second * hours.to_i.hours.to_i * multiplier * active_meridian_multiplier(:expedition_reward)).floor
   end
 
   def start_spirit_expedition!(hours:, at: Time.current)
@@ -313,7 +513,7 @@ class Character < ApplicationRecord
     hours = spirit_expedition_duration_hours
     multiplier = spirit_expedition_reward_multiplier
     gained_qi = spirit_expedition_estimated_qi_reward(hours)
-    gained_wen = ((wen_per_hour || rand(spirit_expedition_wen_reward_range)) * hours * multiplier).floor
+    gained_wen = ((wen_per_hour || rand(spirit_expedition_wen_reward_range)) * hours * multiplier * active_meridian_multiplier(:wen_gain)).floor
     donation_currency_roll ||= rand
     gained_donation_currency = hours.to_i == 1 && donation_currency_roll < spirit_expedition_donation_currency_chance ? 1 : 0
 
@@ -354,6 +554,18 @@ class Character < ApplicationRecord
     )
   end
 
+  def create_sect_event!(action, metadata:, qi_delta: 0)
+    game_events.create!(
+      event_key: "sect_#{action}",
+      outcome: "positive",
+      title: "sects.events.#{action}.title",
+      description: "sects.events.#{action}.description",
+      metadata:,
+      qi_delta:,
+      happened_at: Time.current
+    )
+  end
+
   def recover_sparring_points!(at: Time.current)
     recover_sparring_points(at:)
     save! if changed?
@@ -373,7 +585,19 @@ class Character < ApplicationRecord
     recover_sparring_points(at:)
     return if sparring_points >= max_sparring_points
 
-    sparring_recovered_at + sparring_recovery_duration
+    sparring_recovered_at + effective_sparring_recovery_duration
+  end
+
+  def effective_sparring_recovery_duration
+    seconds = sparring_recovery_duration.to_i * (1 - (meridian_stat_bonus(:sparring_recovery) / 100.0))
+
+    seconds.clamp(60, sparring_recovery_duration.to_i).seconds
+  end
+
+  def artifact_refinement_wen_cost
+    discount = meridian_stat_bonus(:refinement) / 100.0
+
+    (ArtifactRefinements::Reroll::WEN_COST * (1 - discount)).floor.clamp(1, ArtifactRefinements::Reroll::WEN_COST)
   end
 
   def available_for_sparring?
@@ -404,10 +628,10 @@ class Character < ApplicationRecord
   end
 
   def admin_adjust_qi!(amount)
-    target_qi = [ cumulative_cultivation_qi + amount.to_i, 0 ].max
+    target_qi = [ total_experience + amount.to_i, 0 ].max
 
     assign_cultivation_from_cumulative_qi(target_qi)
-    self.total_experience = [ total_experience + amount.to_i, 0 ].max
+    self.total_experience = target_qi
     award_earned_achievements if persisted?
     save!
   end
@@ -418,14 +642,7 @@ class Character < ApplicationRecord
     CombatStats::CharacterStats.new(self)
   end
 
-  def cumulative_cultivation_qi
-    previous_realms_qi = (1...realm).sum do |realm_number|
-      (1..stars_per_realm).sum { |star_number| qi_required_for(realm_number, star_number) }
-    end
-    previous_stars_qi = (1...star).sum { |star_number| qi_required_for(realm, star_number) }
-
-    previous_realms_qi + previous_stars_qi + qi
-  end
+  def cumulative_cultivation_qi = cultivation_qi_total
 
   def assign_cultivation_from_cumulative_qi(target_qi)
     self.realm = 1
@@ -447,8 +664,46 @@ class Character < ApplicationRecord
     self.qi = target_qi
   end
 
+  def subtract_cultivation_qi(amount)
+    remaining_loss = amount
+
+    while remaining_loss.positive?
+      if qi >= remaining_loss
+        self.qi -= remaining_loss
+        break
+      end
+
+      remaining_loss -= qi
+
+      if realm == 1 && star == 1
+        self.qi = 0
+        break
+      end
+
+      step_back_cultivation!
+      self.qi = qi_required_for_next_star
+    end
+  end
+
+  def step_back_cultivation!
+    self.star -= 1
+
+    return if star >= 1
+
+    self.realm -= 1
+    self.star = stars_per_realm
+  end
+
   def qi_required_for(realm_number, star_number)
     (base_qi_required * (realm_qi_growth**(realm_number - 1)) * (star_qi_growth**(star_number - 1))).ceil
+  end
+
+  def effective_cultivation_multiplier
+    cultivation_multiplier * active_meridian_multiplier(:qi_gain)
+  end
+
+  def active_character_meridians
+    character_meridians.select(&:active?)
   end
 
   def set_initial_last_online
@@ -467,12 +722,13 @@ class Character < ApplicationRecord
     self.sparring_recovered_at ||= at
     return if sparring_points >= max_sparring_points
 
-    elapsed_recoveries = ((at - sparring_recovered_at) / sparring_recovery_duration.to_i).floor
+    recovery_duration = effective_sparring_recovery_duration
+    elapsed_recoveries = ((at - sparring_recovered_at) / recovery_duration.to_i).floor
     return if elapsed_recoveries <= 0
 
     recovered_points = [ elapsed_recoveries, max_sparring_points - sparring_points ].min
     self.sparring_points += recovered_points
-    self.sparring_recovered_at = sparring_points >= max_sparring_points ? at : sparring_recovered_at + (recovered_points * sparring_recovery_duration)
+    self.sparring_recovered_at = sparring_points >= max_sparring_points ? at : sparring_recovered_at + (recovered_points * recovery_duration)
   end
 
   def set_default_name

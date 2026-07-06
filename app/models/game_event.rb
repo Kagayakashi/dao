@@ -29,7 +29,7 @@ class GameEvent < ApplicationRecord
   private
 
   def localized_text(value, **options)
-    return value unless value.start_with?("cultivation_events.", "sparring.", "artifact_refinements.", "spirit_expeditions.", "shops.")
+    return value unless value.start_with?("cultivation_events.", "sparring.", "artifact_refinements.", "spirit_expeditions.", "shops.", "meridians.", "sects.")
 
     I18n.t(value, **options.symbolize_keys, default: value)
   end
@@ -41,7 +41,10 @@ class GameEvent < ApplicationRecord
         "name" => localized_name,
         "old_stats" => localized_stat_options(metadata["old_power_options"], fallback_power: metadata["old_power"]),
         "new_stats" => localized_stat_options(metadata["new_power_options"], fallback_power: metadata["new_power"]),
-        "stats" => localized_stat_options(metadata["power_options"])
+        "stats" => localized_stat_options(metadata["power_options"]),
+        "meridian_name" => localized_meridian_name,
+        "sect_name" => localized_sect_name,
+        "rank_name" => localized_sect_rank_name
       )
       .compact
       .symbolize_keys
@@ -60,6 +63,24 @@ class GameEvent < ApplicationRecord
     return I18n.t("inventory_items.names.#{metadata['inventory_item_name_key']}") if metadata["inventory_item_name_key"].present?
 
     nil
+  end
+
+  def localized_meridian_name
+    return unless metadata["meridian_key"].present?
+
+    I18n.t("meridians.names.#{metadata['meridian_key']}")
+  end
+
+  def localized_sect_name
+    return unless metadata["sect_key"].present?
+
+    I18n.t("sects.names.#{metadata['sect_key']}")
+  end
+
+  def localized_sect_rank_name
+    return unless metadata["rank_key"].present?
+
+    I18n.t("sects.ranks.#{metadata['rank_key']}")
   end
 
   def localized_stat_options(power_options, fallback_power: nil)

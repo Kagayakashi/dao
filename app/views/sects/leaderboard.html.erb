@@ -1,0 +1,50 @@
+<% content_for :title, t("sects.leaderboard.title") %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel sect-leaderboard-panel">
+    <p class="eyebrow"><%= cultivation_icon(:trophy) %> <%= t("sects.leaderboard.eyebrow") %></p>
+    <h1><%= t("sects.leaderboard.heading") %></h1>
+    <p class="screen-note"><%= t("sects.leaderboard.screen_note", sect: t("sects.names.#{@sect_key}"), count: @total_count) %></p>
+
+    <nav class="quiet-nav" aria-label="<%= t("sects.leaderboard.sect_navigation_aria") %>">
+      <% Character::SECTS.each_key do |sect_key| %>
+        <%= link_to t("sects.names.#{sect_key}"), leaderboard_sect_path(sect_key:), class: ("is-active" if sect_key == @sect_key) %>
+      <% end %>
+    </nav>
+
+    <% if @characters.any? %>
+      <ol class="leaderboard-list">
+        <% @characters.each.with_index(@rank_offset + 1) do |character, rank| %>
+          <li class="leaderboard-entry">
+            <%= link_to character_path(character), class: "leaderboard-entry__link" do %>
+              <span class="leaderboard-rank"><%= cultivation_icon(:star) %> <%= rank %></span>
+              <span>
+                <strong><%= character.name %></strong>
+                <small><%= t("sects.leaderboard.cultivator_summary", rank: character.sect_rank_name, realm: character.realm_name, star: t("shared.star", count: character.star)) %></small>
+              </span>
+              <span class="leaderboard-qi"><%= t("sects.leaderboard.contribution", contribution: number_with_delimiter(character.sect_contribution)) %></span>
+              <span class="leaderboard-power"><%= t("shared.qi_with_value", qi: number_with_delimiter(character.total_experience)) %></span>
+            <% end %>
+          </li>
+        <% end %>
+      </ol>
+    <% else %>
+      <p class="empty-state"><%= t("sects.leaderboard.empty") %></p>
+    <% end %>
+
+    <nav class="pagination-nav" aria-label="<%= t("sects.leaderboard.pagination_aria") %>">
+      <% if @page > 1 %>
+        <%= link_to t("sects.leaderboard.previous_page"), leaderboard_sect_path(sect_key: @sect_key, page: @page - 1), class: "ceremonial-link" %>
+      <% end %>
+      <span><%= t("sects.leaderboard.page_status", page: @page, total_pages: @total_pages) %></span>
+      <% if @page < @total_pages %>
+        <%= link_to t("sects.leaderboard.next_page"), leaderboard_sect_path(sect_key: @sect_key, page: @page + 1), class: "ceremonial-link" %>
+      <% end %>
+    </nav>
+
+    <nav class="quiet-nav" aria-label="<%= t("sects.leaderboard.navigation_aria") %>">
+      <%= link_to t("sects.leaderboard.sect_link"), sect_path %>
+      <%= link_to t("sects.leaderboard.adventure_link"), adventure_path %>
+    </nav>
+  </section>
+</main>

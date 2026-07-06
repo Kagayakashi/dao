@@ -1,0 +1,53 @@
+<% content_for :title, t("meridians.show.title") %>
+
+<main class="cultivation-page">
+  <section class="cultivation-panel meridians-panel">
+    <%= render "shared/media_banner", image_name: "city.png", alt: t("meridians.show.banner_alt"), banner_class: "main-banner", image_class: "main-banner__image" %>
+
+    <p class="eyebrow"><%= cultivation_icon(:scroll) %> <%= t("meridians.show.eyebrow") %></p>
+    <h1><%= t("meridians.show.heading") %></h1>
+    <p class="screen-note"><%= t("meridians.show.screen_note", limit: Character::ACTIVE_MERIDIAN_LIMIT) %></p>
+
+    <%= tag.div(flash[:alert], class: "form-alert") if flash[:alert] %>
+    <%= tag.div(flash[:notice], class: "form-notice") if flash[:notice] %>
+
+    <div class="realm-card">
+      <span class="realm-label"><%= t("meridians.show.active_heading") %></span>
+      <strong><%= t("meridians.show.active_count", current: @character.character_meridians.active.count, limit: Character::ACTIVE_MERIDIAN_LIMIT) %></strong>
+      <span><%= t("meridians.show.resources", qi: number_with_delimiter(@character.cultivation_qi_total), wen: number_with_delimiter(@character.currency)) %></span>
+    </div>
+
+    <section class="events" aria-labelledby="meridians-list-heading">
+      <h2 id="meridians-list-heading"><%= cultivation_icon(:scroll) %> <%= t("meridians.show.meridians_heading") %></h2>
+
+      <ul class="action-list">
+        <% @meridians.each do |meridian| %>
+          <li class="action-card">
+            <strong><%= meridian.localized_name %></strong>
+            <p><%= t("meridians.show.progress", opened: meridian.opened_subpoints, max: CharacterMeridian::MAX_SUBPOINTS) %></p>
+            <p><%= t("meridians.show.bonus", bonus: number_with_precision(meridian.total_bonus, precision: 1, strip_insignificant_zeros: true), name: meridian.localized_bonus_name) %></p>
+
+            <% if meridian.fully_opened? %>
+              <p><%= t("meridians.show.complete") %></p>
+            <% else %>
+              <p><%= t("meridians.show.next_requirement", realm: meridian.next_subpoint) %></p>
+              <p><%= t("meridians.show.next_cost", qi: number_with_delimiter(meridian.qi_cost), wen: number_with_delimiter(meridian.wen_cost)) %></p>
+              <%= button_to t("meridians.show.open_button"), open_meridians_path(key: meridian.key), class: "ceremonial-button", disabled: !meridian.can_open_next? %>
+            <% end %>
+
+            <% if meridian.active? %>
+              <p><%= t("meridians.show.active_status") %></p>
+              <%= button_to t("meridians.show.deactivate_button"), deactivate_meridians_path(key: meridian.key), class: "ceremonial-button" %>
+            <% elsif meridian.opened_subpoints.positive? %>
+              <%= button_to t("meridians.show.activate_button"), activate_meridians_path(key: meridian.key), class: "ceremonial-button", disabled: @character.character_meridians.active.count >= Character::ACTIVE_MERIDIAN_LIMIT %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+
+    <nav class="quiet-nav" aria-label="<%= t("meridians.show.navigation_aria") %>">
+      <%= link_to t("meridians.show.adventure_link"), adventure_path %>
+    </nav>
+  </section>
+</main>
