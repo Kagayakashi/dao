@@ -28,7 +28,7 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
     assert_select ".main-banner img[alt='Cultivation landscape'][src*='main']"
     assert_select ".global-header"
     assert_select ".global-header a[href='#{character_path(character, locale: :en)}']", text: /Jade River/
-    assert_select ".global-header a[href='#{character_path(character, locale: :en)}']", text: /2/
+    assert_select ".global-header a[href='#{character_path(character, locale: :en)}']", text: /Adept/
     assert_select ".global-header a[href='#{character_path(character, locale: :en)}']", text: /3/
     assert_select ".global-header a[href='#{inventory_path(locale: :en)}']", text: /#{character.gear_score}/
     assert_select ".global-header a[href='#{spirit_expedition_path(locale: :en)}'][title='Wen']", text: /12/
@@ -36,7 +36,7 @@ class CultivationControllerTest < ActionDispatch::IntegrationTest
     assert_select ".global-header a[href='#{sparring_path(locale: :en)}']", text: %r{3/3}
     assert_select ".global-header a[href='#{sparring_path(locale: :en)}']", text: /00:00/
     assert_select "h1", "Jade River"
-    assert_select ".realm-card", text: /Dou Practitioner/
+    assert_select ".realm-card", text: /Adept/
     assert_select ".realm-card", text: /3 Star/
     assert_select ".realm-card", text: /GearScore/
     assert_select ".qi-progress__text", text: /Qi/

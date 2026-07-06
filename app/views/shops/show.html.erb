@@ -23,6 +23,26 @@
       <%= button_to t("shops.show.buy_button"), shop_path, class: "ceremonial-button", disabled: @character.spirit_expedition_active? %>
     </div>
 
+    <section class="events" aria-labelledby="shop-sell-heading">
+      <h2 id="shop-sell-heading"><%= cultivation_icon(:satchel) %> <%= t("shops.show.sell_heading") %></h2>
+      <p><%= t("shops.show.sell_note", wen: number_with_delimiter(Shops::Sale::WEN_VALUE)) %></p>
+
+      <% if @inventory_items.any? %>
+        <ul class="action-list">
+          <% @inventory_items.each do |item| %>
+            <li class="action-card">
+              <strong><%= item.localized_name %></strong>
+              <span><%= t("inventories.show.inventory_item_summary", kind: t("inventory_items.kinds.#{item.equipment_kind}")) %></span>
+              <%= render "inventory_items/stat_options", item: %>
+              <%= button_to t("shops.show.sell_button", wen: number_with_delimiter(Shops::Sale::WEN_VALUE)), sell_shop_path(inventory_item_id: item), class: "ceremonial-button", disabled: @character.spirit_expedition_active? %>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p class="empty-state"><%= t("shops.show.no_items") %></p>
+      <% end %>
+    </section>
+
     <nav class="quiet-nav" aria-label="<%= t("shops.show.navigation_aria") %>">
       <%= link_to t("shops.show.inventory_link"), inventory_path %>
       <%= link_to t("shops.show.adventure_link"), adventure_path %>

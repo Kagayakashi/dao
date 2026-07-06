@@ -36,7 +36,11 @@
           <li class="action-card">
             <strong><%= t("sects.show.donation_heading") %></strong>
             <p><%= t("sects.show.donation_cost", wen: number_with_delimiter(Character::SECT_DONATION_WEN_COST), contribution: Character::SECT_DONATION_CONTRIBUTION) %></p>
-            <%= button_to t("sects.show.donate_button"), donate_sect_path, class: "ceremonial-button" %>
+            <%= form_with url: donate_sect_path, method: :post, class: "stacked-form" do |form| %>
+              <%= form.label :amount, t("sects.show.donation_amount_label") %>
+              <%= form.number_field :amount, value: 1, min: 1, step: 1 %>
+              <%= form.submit t("sects.show.donate_button"), class: "ceremonial-button" %>
+            <% end %>
           </li>
 
           <li class="action-card">

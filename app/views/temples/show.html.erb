@@ -15,7 +15,7 @@
     <div class="realm-card daily-reward-card">
       <span class="realm-label"><%= cultivation_icon(:qi) %> <%= t("temples.show.reward_heading") %></span>
       <strong><%= t("temples.show.reward_amount", qi: number_with_delimiter(@character.daily_reward_qi)) %></strong>
-      <span><%= t("temples.show.reward_scaling", realm: @character.realm, star: @character.star) %></span>
+      <span><%= t("temples.show.reward_scaling", realm: @character.realm_name, star: @character.star) %></span>
     </div>
 
     <% if @character.daily_reward_ready? %>

@@ -52,6 +52,29 @@ class SectsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 50, @character.sect_contribution
   end
 
+  test "donates multiple times at once" do
+    @character.update!(sect_key: "iron_mountain", currency: 10_000)
+
+    post donate_sect_path(locale: :en), params: { amount: 10 }
+
+    assert_redirected_to sect_path(locale: :en)
+    @character.reload
+    assert_equal 0, @character.currency
+    assert_equal 500, @character.sect_contribution
+    assert_equal 10_000, @character.game_events.order(:created_at).last.metadata["wen"]
+  end
+
+  test "does not donate an invalid amount" do
+    @character.update!(sect_key: "iron_mountain", currency: 1_000)
+
+    post donate_sect_path(locale: :en), params: { amount: 0 }
+    follow_redirect!
+
+    assert_equal 1_000, @character.reload.currency
+    assert_equal 0, @character.sect_contribution
+    assert_select ".form-alert", text: /at least 1/
+  end
+
   test "promotes sect rank" do
     @character.update!(sect_key: "scarlet_flame", sect_contribution: 500)
 

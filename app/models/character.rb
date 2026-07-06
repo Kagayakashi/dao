@@ -390,18 +390,23 @@ class Character < ApplicationRecord
     { qi: gained_qi, wen: gained_wen, contribution: SECT_DAILY_TASK_CONTRIBUTION }
   end
 
-  def donate_to_sect!
+  def donate_to_sect!(amount: 1)
+    amount = amount.to_i
     return :no_sect unless sect_joined?
-    return :wen_missing if currency < SECT_DONATION_WEN_COST
+    return :invalid_amount if amount < 1
+
+    wen_cost = SECT_DONATION_WEN_COST * amount
+    contribution = SECT_DONATION_CONTRIBUTION * amount
+    return :wen_missing if currency < wen_cost
 
     transaction do
-      self.currency -= SECT_DONATION_WEN_COST
-      self.sect_contribution += SECT_DONATION_CONTRIBUTION
+      self.currency -= wen_cost
+      self.sect_contribution += contribution
       save!
-      create_sect_event!("donation", metadata: { "sect_key" => sect_key, "contribution" => SECT_DONATION_CONTRIBUTION, "wen" => SECT_DONATION_WEN_COST })
+      create_sect_event!("donation", metadata: { "sect_key" => sect_key, "contribution" => contribution, "wen" => wen_cost })
     end
 
-    :donated
+    { status: :donated, contribution: }
   end
 
   def promote_sect_rank!

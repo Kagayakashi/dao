@@ -6,7 +6,7 @@
 
     <%= link_to character_path(character), class: "global-header__item", title: t("global_header.character_info"), aria: { label: t("global_header.character_info") } do %>
       <%= cultivation_icon(:scroll) %>
-      <span><%= t("global_header.name_and_realm", name: character.name, realm: character.realm, star: character.star) %></span>
+      <span><%= t("global_header.name_and_realm", name: character.name, realm: character.realm_name, star: character.star) %></span>
     <% end %>
 
     <%= link_to character_path(character), class: "global-header__item", title: t("global_header.health"), aria: { label: t("global_header.health") } do %>

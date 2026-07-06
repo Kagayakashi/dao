@@ -12,7 +12,9 @@ Rails.application.routes.draw do
     resource :artifact_refinement, only: :show do
       post :reroll
     end
-    resource :shop, only: %i[ show create ]
+    resource :shop, only: %i[ show create ] do
+      post :sell
+    end
     resource :meridians, only: :show do
       post "open/:key", action: :open, as: :open
       post "activate/:key", action: :activate, as: :activate

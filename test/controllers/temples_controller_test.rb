@@ -18,7 +18,7 @@ class TemplesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", "Temple of Heaven"
     assert_select ".daily-reward-card", text: /1,350 Qi/
-    assert_select ".daily-reward-card", text: /Realm 2, Star 3/
+    assert_select ".daily-reward-card", text: /Adept, Star 3/
     assert_select "form button", "Pray"
     assert_select ".quiet-nav a[href='#{adventure_path(locale: :en)}']", "Adventure"
     assert_select ".quiet-nav a[href='#{root_path(locale: :en)}']", false

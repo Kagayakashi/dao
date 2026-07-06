@@ -21,7 +21,7 @@ en:
     navigation_aria: "Cultivator status"
     news: "Crier news"
     character_info: "Character profile"
-    name_and_realm: "%{name} | R%{realm} S%{star}"
+    name_and_realm: "%{name} | %{realm} S%{star}"
     health: "Health"
     health_value: "%{current} / %{max}"
     gear_score: "GearScore and inventory"
@@ -293,6 +293,7 @@ en:
       notice:
         donated: "Your donation earned %{contribution} sect contribution."
       alert:
+        invalid_amount: "Enter a donation amount of at least 1."
         no_sect: "Join a sect before donating."
         wen_missing: "You do not have enough Wen for this donation."
     promote:
@@ -319,6 +320,7 @@ en:
       next_task: "Next sect task in %{duration}."
       donation_heading: "Contribution Donation"
       donation_cost: "Donate %{wen} Wen for %{contribution} contribution."
+      donation_amount_label: "Donation amount"
       donate_button: "Donate Wen"
       promotion_heading: "Promotion"
       promotion_cost: "Next rank: %{rank}. Cost: %{contribution} contribution."
@@ -452,6 +454,9 @@ en:
     events:
       title: "Shop Purchase"
       description: "Bought %{item_name} with %{stats}."
+    sale_event:
+      title: "Shop Sale"
+      description: "Sold %{item_name} for %{wen} Wen."
     create:
       notice:
         purchased: "Bought %{item}."
@@ -459,11 +464,17 @@ en:
         inventory_full: "Your inventory is full. Free a slot before buying."
         payment_missing: "Bring 300 Wen before buying."
         expedition_active: "Your cultivator is away on a Spirit Expedition. Return before buying items."
+    sell:
+      notice:
+        sold: "Sold %{item} for %{wen} Wen."
+      alert:
+        item_unavailable: "Choose an item from your inventory to sell. Equipped items cannot be sold."
+        expedition_active: "Your cultivator is away on a Spirit Expedition. Return before selling items."
     show:
       title: "Shop"
       eyebrow: "Market Stall"
       heading: "Shop"
-      screen_note: "Buy one random treasure. Shop items use the same fate as treasures found during cultivation."
+      screen_note: "Buy one random treasure, or sell stored items for Wen."
       offer_heading: "Market Offer"
       cost: "%{wen} Wen"
       currency_balance: "You carry %{wen} Wen."
@@ -472,6 +483,10 @@ en:
         other: "Your inventory is full."
       expedition_locked: "Shopping is unavailable while your cultivator is on a Spirit Expedition."
       buy_button: "Buy Random Item"
+      sell_heading: "Sell Inventory Items"
+      sell_note: "Only unequipped inventory items can be sold here. Each sale gives %{wen} Wen."
+      sell_button: "Sell for %{wen} Wen"
+      no_items: "No stored items to sell."
       navigation_aria: "Shop navigation"
       inventory_link: "Inventory"
       adventure_link: "Adventure"
@@ -763,14 +778,26 @@ en:
       critical_rate: "Critical Rate"
     realms:
       fallback: "Realm %{realm}"
-      "1": "Dou Qi Stage"
-      "2": "Dou Practitioner"
-      "3": "Dou Master"
-      "4": "Great Dou Master"
-      "5": "Dou Spirit"
-      "6": "Dou King"
-      "7": "Dou Emperor"
-      "8": "Dou Ancestor"
+      "1": "Novice"
+      "2": "Adept"
+      "3": "Disciple"
+      "4": "Guardian"
+      "5": "Master"
+      "6": "Elder"
+      "7": "Grand Elder"
+      "8": "Sage"
+      "9": "High Sage"
+      "10": "Saint"
+      "11": "Grand Saint"
+      "12": "King"
+      "13": "Spirit King"
+      "14": "Emperor"
+      "15": "Celestial Emperor"
+      "16": "Ancestor"
+      "17": "Dao Ancestor"
+      "18": "Sovereign"
+      "19": "Heavenly Sovereign"
+      "20": "Eternal One"
     achievements:
       first_star:
         name: "First Star"

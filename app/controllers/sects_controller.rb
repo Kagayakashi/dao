@@ -39,10 +39,10 @@ class SectsController < ApplicationController
   end
 
   def donate
-    result = @character.donate_to_sect!
+    result = @character.donate_to_sect!(amount: donation_amount)
 
-    if result == :donated
-      redirect_to sect_path, notice: t("sects.donate.notice.donated", contribution: Character::SECT_DONATION_CONTRIBUTION), status: :see_other
+    if result.is_a?(Hash) && result[:status] == :donated
+      redirect_to sect_path, notice: t("sects.donate.notice.donated", contribution: helpers.number_with_delimiter(result[:contribution])), status: :see_other
     else
       redirect_to sect_path, alert: t("sects.donate.alert.#{result}"), status: :see_other
     end
@@ -62,6 +62,10 @@ class SectsController < ApplicationController
 
   def load_character
     @character = current_character
+  end
+
+  def donation_amount
+    params[:amount].presence || 1
   end
 
   def leaderboard_sect_key

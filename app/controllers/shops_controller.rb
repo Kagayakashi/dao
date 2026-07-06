@@ -1,6 +1,7 @@
 class ShopsController < ApplicationController
   def show
     load_character
+    load_inventory_items
   end
 
   def create
@@ -16,9 +17,26 @@ class ShopsController < ApplicationController
     end
   end
 
+  def sell
+    load_character
+    return redirect_to shop_path, alert: t("shops.sell.alert.expedition_active"), status: :see_other if @character.spirit_expedition_active?
+
+    result = Shops::Sale.new(@character, params[:inventory_item_id]).call
+
+    if result.success?
+      redirect_to shop_path, notice: t("shops.sell.notice.sold", item: result.item_name, wen: helpers.number_with_delimiter(result.wen)), status: :see_other
+    else
+      redirect_to shop_path, alert: t("shops.sell.alert.#{result.error}"), status: :see_other
+    end
+  end
+
   private
 
   def load_character
     @character = current_character
+  end
+
+  def load_inventory_items
+    @inventory_items = @character.inventory_items.in_inventory
   end
 end
