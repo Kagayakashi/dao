@@ -114,7 +114,7 @@ class GameEvent < ApplicationRecord
   end
 
   def fallback_resource_amount(key)
-    return qi_delta if key == "qi" && qi_delta.present? && !qi_delta.zero?
+    return qi_delta if key == "qi" && event_key == "spirit_expedition" && qi_delta.present?
 
     nil
   end

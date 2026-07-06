@@ -202,6 +202,22 @@ class GameEventTest < ActiveSupport::TestCase
     assert_equal "Returned from a 24h Spirit Expedition with 129,600 Qi and 1,314 Wen.", event.localized_description
   end
 
+  test "localizes spirit expedition event without qi metadata and zero qi delta" do
+    event = characters(:one).game_events.create!(
+      event_key: "spirit_expedition",
+      outcome: "positive",
+      title: "spirit_expeditions.events.title",
+      description: "spirit_expeditions.events.description",
+      metadata: { "hours" => 24, "wen" => 954 },
+      qi_delta: 0,
+      happened_at: Time.current
+    )
+
+    I18n.with_locale(:ru) do
+      assert_equal "Вы вернулись из духовной экспедиции на 24 ч и получили 0 Ци и 954 Вэнь.", event.localized_description
+    end
+  end
+
   test "localizes meridian opening event metadata" do
     event = characters(:one).game_events.create!(
       event_key: "meridian_opening",
