@@ -659,6 +659,13 @@ en:
         heading: "Admin Sign In"
         password: "Admin password"
         submit: "Enter Admin Panel"
+        login_log_heading: "Login Log"
+        current_ip_address: "Current IP address"
+        cookie_user_id: "Saved game user ID"
+        last_login_at: "Last game login"
+        last_login_ip_address: "Last game login IP"
+        not_logged_in: "No game user in cookies"
+        unknown: "Unknown"
         navigation_aria: "Admin sign in navigation"
         return_link: "Return to Cultivation"
     items:

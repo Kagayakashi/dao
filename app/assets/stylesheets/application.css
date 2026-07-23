@@ -851,6 +851,43 @@ body {
   border: 1px solid rgb(58 125 68 / 35%);
 }
 
+.admin-login-log {
+  margin-top: 1.25rem;
+  padding: 0.85rem;
+  background: rgb(44 24 16 / 8%);
+  border: 1px solid rgb(44 24 16 / 18%);
+  border-radius: 0.25rem;
+}
+
+.admin-login-log h2 {
+  margin: 0 0 0.75rem;
+  color: var(--dark-brown);
+  font-size: 1rem;
+}
+
+.admin-login-log dl {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+}
+
+.admin-login-log div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.admin-login-log dt {
+  color: var(--soft-gray);
+}
+
+.admin-login-log dd {
+  margin: 0;
+  color: var(--dark-ink);
+  font-weight: 700;
+  text-align: right;
+}
+
 .leaderboard-list {
   display: grid;
   gap: 0.75rem;

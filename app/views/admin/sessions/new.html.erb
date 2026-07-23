@@ -14,6 +14,45 @@
       <%= form.submit t("admin.sessions.new.submit"), class: "ceremonial-button" %>
     <% end %>
 
+    <section class="admin-login-log" aria-labelledby="admin-login-log-heading">
+      <h2 id="admin-login-log-heading"><%= t("admin.sessions.new.login_log_heading") %></h2>
+
+      <dl>
+        <div>
+          <dt><%= t("admin.sessions.new.current_ip_address") %></dt>
+          <dd><%= @login_log[:current_ip_address] %></dd>
+        </div>
+
+        <% if @login_log[:game_session] %>
+          <div>
+            <dt><%= t("admin.sessions.new.cookie_user_id") %></dt>
+            <dd><%= @login_log[:game_session].user_id %></dd>
+          </div>
+          <div>
+            <dt><%= t("admin.sessions.new.last_login_at") %></dt>
+            <dd><%= l(@login_log[:game_session].created_at, format: :long) %></dd>
+          </div>
+          <div>
+            <dt><%= t("admin.sessions.new.last_login_ip_address") %></dt>
+            <dd><%= @login_log[:game_session].ip_address.presence || t("admin.sessions.new.unknown") %></dd>
+          </div>
+        <% else %>
+          <div>
+            <dt><%= t("admin.sessions.new.cookie_user_id") %></dt>
+            <dd><%= t("admin.sessions.new.not_logged_in") %></dd>
+          </div>
+          <div>
+            <dt><%= t("admin.sessions.new.last_login_at") %></dt>
+            <dd><%= t("admin.sessions.new.not_logged_in") %></dd>
+          </div>
+          <div>
+            <dt><%= t("admin.sessions.new.last_login_ip_address") %></dt>
+            <dd><%= t("admin.sessions.new.not_logged_in") %></dd>
+          </div>
+        <% end %>
+      </dl>
+    </section>
+
     <nav class="quiet-nav" aria-label="<%= t("admin.sessions.new.navigation_aria") %>">
       <%= link_to t("admin.sessions.new.return_link"), root_path %>
     </nav>
