@@ -865,26 +865,29 @@ body {
   font-size: 1rem;
 }
 
-.admin-login-log dl {
-  display: grid;
-  gap: 0.55rem;
-  margin: 0;
-}
-
-.admin-login-log div {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.admin-login-log dt {
-  color: var(--soft-gray);
-}
-
-.admin-login-log dd {
-  margin: 0;
+.admin-login-log table {
+  width: 100%;
+  margin-top: 0.85rem;
+  border-collapse: collapse;
   color: var(--dark-ink);
+}
+
+.admin-login-log caption {
+  margin-bottom: 0.45rem;
+  color: var(--dark-brown);
   font-weight: 700;
+  text-align: left;
+}
+
+.admin-login-log th,
+.admin-login-log td {
+  padding: 0.45rem 0;
+  border-top: 1px solid rgb(44 24 16 / 14%);
+  text-align: left;
+}
+
+.admin-login-log th:last-child,
+.admin-login-log td:last-child {
   text-align: right;
 }
 

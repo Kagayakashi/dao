@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_06_002000) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_23_093000) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -47,6 +47,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_06_002000) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "admin_logins", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "game_user_id"
+    t.string "ip_address"
+    t.datetime "updated_at", null: false
+    t.string "user_agent"
+    t.index ["created_at"], name: "index_admin_logins_on_created_at"
+    t.index ["game_user_id"], name: "index_admin_logins_on_game_user_id"
   end
 
   create_table "character_achievements", force: :cascade do |t|

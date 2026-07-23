@@ -1,0 +1,2 @@
+class AdminLogin < ApplicationRecord
+end

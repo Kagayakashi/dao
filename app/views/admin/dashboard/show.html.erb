@@ -15,6 +15,34 @@
       <%= link_to t("admin.dashboard.show.news_posts_link"), admin_news_posts_path %>
     </nav>
 
+    <section class="admin-login-log" aria-labelledby="admin-login-log-heading">
+      <h2 id="admin-login-log-heading"><%= t("admin.dashboard.show.login_log_heading") %></h2>
+
+      <% if @admin_logins.any? %>
+        <table>
+          <caption><%= t("admin.dashboard.show.last_admin_logins_caption") %></caption>
+          <thead>
+            <tr>
+              <th scope="col"><%= t("admin.dashboard.show.admin_login_at") %></th>
+              <th scope="col"><%= t("admin.dashboard.show.admin_ip_address") %></th>
+              <th scope="col"><%= t("admin.dashboard.show.cookie_user_id") %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @admin_logins.each do |admin_login| %>
+              <tr>
+                <td><%= l(admin_login.created_at, format: :long) %></td>
+                <td><%= admin_login.ip_address.presence || t("admin.dashboard.show.unknown") %></td>
+                <td><%= admin_login.game_user_id || t("admin.dashboard.show.not_logged_in") %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p><%= t("admin.dashboard.show.no_admin_logins") %></p>
+      <% end %>
+    </section>
+
     <nav class="quiet-nav" aria-label="<%= t("admin.dashboard.show.secondary_navigation_aria") %>">
       <%= link_to t("admin.dashboard.show.return_link"), root_path %>
       <%= button_to t("admin.dashboard.show.sign_out_button"), admin_session_path, method: :delete, class: "ceremonial-button" %>
